@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+movies.db
+node_modules/
+* - Copy*.py
+

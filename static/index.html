@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SDK Movies</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="apple-touch-icon" href="/static/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07080d;
+    --bg-2:#0d0f18;
+    --surface:rgba(255,255,255,.045);
+    --surface-2:rgba(255,255,255,.07);
+    --stroke:rgba(255,255,255,.09);
+    --stroke-2:rgba(255,255,255,.16);
+    --text:#eef0f6;
+    --muted:#8b90a3;
+    --muted-2:#666b7e;
+    --brand:#7c5cff;
+    --brand-2:#12d8b4;
+    --amber:#ffb340;
+    --radius:18px;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Outfit',system-ui,-apple-system,sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- ambient background ---------- */
+  .aura{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;animation:drift 22s var(--ease) infinite alternate}
+  .orb.a{width:620px;height:620px;background:radial-gradient(circle,#7c5cff,transparent 68%);top:-220px;left:-140px}
+  .orb.b{width:560px;height:560px;background:radial-gradient(circle,#12d8b4,transparent 68%);bottom:-240px;right:-120px;animation-delay:-8s}
+  .orb.c{width:420px;height:420px;background:radial-gradient(circle,#ff4d8d,transparent 70%);top:36%;right:22%;animation-delay:-14s;opacity:.28}
+  @keyframes drift{to{transform:translate3d(70px,-50px,0) scale(1.15)}}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 24px 100px}
+
+  /* ---------- header ---------- */
+  header{padding:44px 0 0;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:21px;letter-spacing:-.02em}
+  .mark{
+    width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    box-shadow:0 8px 26px rgba(124,92,255,.42);
+    animation:pop .7s var(--ease) backwards;
+  }
+  .mark svg{width:21px;height:21px;fill:#fff}
+  .logo span{background:linear-gradient(90deg,#fff,#b9b2ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .pill{
+    font-size:12.5px;color:var(--muted);border:1px solid var(--stroke);
+    background:var(--surface);padding:8px 14px;border-radius:999px;backdrop-filter:blur(12px);
+    display:flex;align-items:center;gap:8px;
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-2);box-shadow:0 0 0 0 rgba(18,216,180,.6);animation:ping 2s infinite}
+  @keyframes ping{70%{box-shadow:0 0 0 7px rgba(18,216,180,0)}100%{box-shadow:0 0 0 0 rgba(18,216,180,0)}}
+  @keyframes pop{from{opacity:0;transform:scale(.6) rotate(-18deg)}}
+
+  /* ---------- hero ---------- */
+  .hero{padding:74px 0 40px;text-align:center}
+  .hero h1{
+    font-size:clamp(40px,7vw,74px);font-weight:800;letter-spacing:-.045em;line-height:1.02;
+    background:linear-gradient(180deg,#fff 30%,#9a93c8);-webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:rise .8s var(--ease) backwards;
+  }
+  .hero p{margin:18px auto 0;max-width:520px;color:var(--muted);font-size:16.5px;font-weight:300;animation:rise .8s .1s var(--ease) backwards}
+  @keyframes rise{from{opacity:0;transform:translateY(22px)}}
+
+  /* ---------- search ---------- */
+  .search{margin:38px auto 0;max-width:640px;position:relative;animation:rise .8s .2s var(--ease) backwards}
+  .search-in{
+    display:flex;align-items:center;gap:12px;padding:6px 6px 6px 20px;
+    background:var(--surface);border:1px solid var(--stroke);border-radius:999px;
+    backdrop-filter:blur(18px);transition:border-color .35s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease);
+  }
+  .search-in:focus-within{border-color:rgba(124,92,255,.55);box-shadow:0 0 0 4px rgba(124,92,255,.12),0 18px 50px -12px rgba(124,92,255,.4);transform:translateY(-2px)}
+  .search-in svg{width:19px;height:19px;fill:var(--muted-2);flex:none;transition:fill .3s}
+  .search-in:focus-within svg{fill:var(--brand)}
+  #q{flex:1;background:none;border:0;outline:0;color:var(--text);font:400 16px 'Outfit';padding:16px 0}
+  #q::placeholder{color:var(--muted-2)}
+  .go{
+    border:0;cursor:pointer;padding:13px 26px;border-radius:999px;flex:none;
+    background:linear-gradient(135deg,var(--brand),#9d7bff);color:#fff;font:600 14.5px 'Outfit';
+    transition:transform .3s var(--ease),box-shadow .3s var(--ease),filter .3s;
+    box-shadow:0 8px 22px -6px rgba(124,92,255,.6);
+  }
+  .go:hover{transform:translateY(-1px) scale(1.03);box-shadow:0 12px 30px -6px rgba(124,92,255,.75)}
+  .go:active{transform:scale(.97)}
+  .go:disabled{opacity:.55;cursor:default;filter:grayscale(.4)}
+
+  .chips{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:20px;animation:rise .8s .3s var(--ease) backwards}
+  .chip{
+    cursor:pointer;font:400 13px 'Outfit';color:var(--muted);padding:8px 15px;border-radius:999px;
+    border:1px solid var(--stroke);background:var(--surface);
+    transition:all .3s var(--ease);
+  }
+  .chip:hover{color:#fff;border-color:var(--stroke-2);background:var(--surface-2);transform:translateY(-2px)}
+
+  /* ---------- results ---------- */
+  .bar{display:flex;align-items:baseline;justify-content:space-between;margin:56px 0 20px;opacity:0;transition:opacity .5s}
+  .bar.on{opacity:1}
+  .bar h2{font-size:15px;font-weight:600;letter-spacing:-.01em}
+  .bar b{color:var(--brand)}
+  .bar em{font-style:normal;color:var(--muted-2);font-size:13px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+
+  .card{
+    position:relative;overflow:hidden;
+    background:var(--surface);border:1px solid var(--stroke);border-radius:var(--radius);
+    padding:20px;cursor:pointer;backdrop-filter:blur(14px);
+    transition:transform .45s var(--ease),border-color .45s var(--ease),background .45s var(--ease),box-shadow .45s var(--ease);
+    animation:card .55s var(--ease) backwards;
+  }
+  @keyframes card{from{opacity:0;transform:translateY(18px) scale(.97)}}
+  .card::before{
+    content:'';position:absolute;inset:0;border-radius:var(--radius);opacity:0;pointer-events:none;
+    background:radial-gradient(520px circle at var(--mx,50%) var(--my,50%),rgba(124,92,255,.16),transparent 42%);
+    transition:opacity .45s var(--ease);
+  }
+  .card:hover{transform:translateY(-5px);border-color:var(--stroke-2);background:var(--surface-2);box-shadow:0 22px 50px -18px rgba(0,0,0,.85)}
+  .card:hover::before{opacity:1}
+  .card{display:flex;flex-direction:column}
+  /* accent rail keyed to the card's gradient */
+  .card::after{
+    content:'';position:absolute;left:0;top:18px;bottom:18px;width:3px;border-radius:0 3px 3px 0;
+    background:linear-gradient(180deg,var(--c1),var(--c2));
+    opacity:0;transform:scaleY(.4);transform-origin:center;
+    transition:opacity .45s var(--ease),transform .45s var(--ease);
+  }
+  .card:hover::after{opacity:1;transform:scaleY(1)}
+
+  .card h3{
+    font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.3;
+    display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;
+  }
+  .yr{color:var(--muted-2);font-weight:400;font-size:15px}
+  .of{
+    font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.01em;
+    color:var(--amber);border:1px solid rgba(255,179,64,.3);background:rgba(255,179,64,.09);
+  }
+  /* full quality/release string — never truncated */
+  .qline{
+    color:var(--muted);font-size:12.5px;font-weight:300;line-height:1.55;margin-top:9px;
+    word-break:break-word;
+  }
+  .facts{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+  .fact{
+    font-size:11.5px;font-weight:500;padding:5px 11px;border-radius:7px;
+    background:rgba(255,255,255,.05);border:1px solid var(--stroke);color:var(--muted);
+  }
+  .fact.sz{color:var(--brand-2);border-color:rgba(18,216,180,.28);background:rgba(18,216,180,.08)}
+  .fact.lang{color:#b9a7ff;border-color:rgba(124,92,255,.3);background:rgba(124,92,255,.09)}
+  .fact.dl{color:#6ee7a8;border-color:rgba(110,231,168,.28);background:rgba(110,231,168,.08)}
+
+  .card-foot{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin-top:auto;padding-top:14px;border-top:1px solid var(--stroke);
+  }
+  .card-foot .spacer{margin-top:16px}
+  .views{font-size:12px;color:var(--muted-2);display:flex;align-items:center;gap:6px}
+  .views svg{width:13px;height:13px;fill:var(--muted-2)}
+  .get{font-size:13px;font-weight:600;color:var(--brand);display:flex;align-items:center;gap:5px;transition:gap .3s var(--ease)}
+  .card:hover .get{gap:9px}
+  .get svg{width:13px;height:13px;fill:currentColor}
+
+  /* ---------- states ---------- */
+  .state{text-align:center;padding:80px 20px;animation:rise .5s var(--ease)}
+  .state h3{font-size:19px;font-weight:600;margin-bottom:8px}
+  .state p{color:var(--muted);font-size:14.5px;font-weight:300}
+  .state .ico{font-size:44px;margin-bottom:16px;opacity:.5}
+  .skel{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--radius);height:172px;position:relative;overflow:hidden}
+  .skel::after{
+    content:'';position:absolute;inset:0;transform:translateX(-100%);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.055),transparent);
+    animation:shimmer 1.5s infinite;
+  }
+  @keyframes shimmer{to{transform:translateX(100%)}}
+
+  /* ---------- modal ---------- */
+  .scrim{
+    position:fixed;inset:0;z-index:50;background:rgba(3,4,8,.76);backdrop-filter:blur(10px);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    opacity:0;pointer-events:none;transition:opacity .4s var(--ease);
+  }
+  .scrim.on{opacity:1;pointer-events:auto}
+  .modal{
+    width:100%;max-width:660px;max-height:84vh;overflow:hidden;display:flex;flex-direction:column;
+    background:linear-gradient(180deg,#12141f,#0b0d14);
+    border:1px solid var(--stroke-2);border-radius:24px;
+    box-shadow:0 40px 100px -20px rgba(0,0,0,.9);
+    transform:translateY(24px) scale(.96);opacity:0;
+    transition:transform .45s var(--ease),opacity .45s var(--ease);
+  }
+  .scrim.on .modal{transform:none;opacity:1}
+  .m-head{padding:24px 26px;border-bottom:1px solid var(--stroke);display:flex;gap:16px;align-items:flex-start}
+  .m-head h3{font-size:17.5px;font-weight:600;letter-spacing:-.02em;line-height:1.35;flex:1}
+  .m-head p{color:var(--muted);font-size:13px;font-weight:300;margin-top:5px}
+  .x{
+    border:1px solid var(--stroke);background:var(--surface);color:var(--muted);cursor:pointer;flex:none;
+    width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:16px;
+    transition:all .3s var(--ease);
+  }
+  .x:hover{color:#fff;background:var(--surface-2);transform:rotate(90deg)}
+  .m-body{padding:16px 26px 26px;overflow-y:auto}
+  .m-body::-webkit-scrollbar{width:7px}
+  .m-body::-webkit-scrollbar-thumb{background:var(--stroke-2);border-radius:99px}
+
+  .opt{
+    display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:14px;
+    border:1px solid var(--stroke);background:var(--surface);margin-top:10px;
+    transition:border-color .35s var(--ease),background .35s var(--ease),transform .35s var(--ease);
+    animation:card .45s var(--ease) backwards;
+  }
+  .opt:hover{border-color:var(--stroke-2);background:var(--surface-2);transform:translateX(3px)}
+  .q{
+    font-weight:700;font-size:13px;letter-spacing:-.01em;padding:7px 11px;border-radius:9px;flex:none;min-width:66px;text-align:center;
+    background:linear-gradient(135deg,rgba(124,92,255,.22),rgba(124,92,255,.08));
+    border:1px solid rgba(124,92,255,.32);color:#b9a7ff;
+  }
+  .opt-mid{flex:1;min-width:0}
+  .opt-mid .s{font-size:14.5px;font-weight:600}
+  .opt-mid .n{font-size:11.5px;color:var(--muted-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-weight:300}
+  .acts{display:flex;gap:8px;flex:none}
+  .btn{
+    border:1px solid var(--stroke);background:var(--surface);color:var(--muted);cursor:pointer;
+    padding:9px 13px;border-radius:10px;font:600 12.5px 'Outfit';text-decoration:none;
+    display:flex;align-items:center;gap:6px;transition:all .3s var(--ease);
+  }
+  .btn:hover{color:#fff;border-color:var(--stroke-2);background:var(--surface-2);transform:translateY(-2px)}
+  .btn.mag{color:#c3b4ff;border-color:rgba(124,92,255,.35);background:rgba(124,92,255,.12)}
+  .btn.mag:hover{background:rgba(124,92,255,.24)}
+  .btn.play{color:#fff;border-color:rgba(18,216,180,.45);background:linear-gradient(135deg,rgba(18,216,180,.25),rgba(124,92,255,.3));font-weight:700}
+  .btn.play:hover{background:linear-gradient(135deg,rgba(18,216,180,.45),rgba(124,92,255,.5));transform:translateY(-2px);box-shadow:0 6px 18px rgba(18,216,180,.3)}
+  .btn svg{width:13px;height:13px;fill:currentColor}
+  .btn.ok{color:#6ee7a8;border-color:rgba(110,231,168,.4);background:rgba(110,231,168,.14)}
+
+  .toast{
+    position:fixed;bottom:26px;left:50%;z-index:80;
+    transform:translate(-50%,90px);opacity:0;
+    background:rgba(18,20,30,.96);border:1px solid var(--stroke-2);color:#fff;
+    padding:13px 20px;border-radius:13px;font:500 13.5px 'Outfit';
+    box-shadow:0 18px 44px -10px rgba(0,0,0,.8);backdrop-filter:blur(14px);
+    transition:transform .5s var(--ease),opacity .5s var(--ease);
+    display:flex;align-items:center;gap:9px;
+  }
+  .toast.on{transform:translate(-50%,0);opacity:1}
+  .toast .tick{color:var(--brand-2);font-size:15px}
+
+  footer{text-align:center;color:var(--muted-2);font-size:12.5px;font-weight:300;padding:50px 0 0}
+  footer b{color:var(--muted);font-weight:500}
+
+  @media(max-width:640px){
+    .wrap{padding:0 16px 70px}
+    header{padding-top:28px}
+    .hero{padding:46px 0 26px}
+    .grid{grid-template-columns:1fr}
+    .search-in{padding-left:16px}
+    .go{padding:12px 18px}
+    .opt{flex-wrap:wrap}
+    .acts{width:100%}
+    .btn{flex:1;justify-content:center}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="aura"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+<div class="grain"></div>
+
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <div class="mark">
+        <svg viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V4h-4z"/></svg>
+      </div>
+      <div>SDK <span>Movies</span></div>
+    </div>
+    <div class="pill"><span class="dot"></span><span id="stat">connecting…</span></div>
+  </header>
+
+  <section class="hero">
+    <h1>Find any movie.<br>Instantly.</h1>
+    <p>Search thousands of titles across Tamil, Telugu, Hindi, Malayalam &amp; English — then grab every quality in one click.</p>
+
+    <div class="search">
+      <form class="search-in" id="form">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input id="q" placeholder="Search a movie or series…" autocomplete="off" spellcheck="false">
+        <button class="go" id="go" type="submit">Search</button>
+      </form>
+      <div class="chips" id="chips"></div>
+    </div>
+  </section>
+
+  <div class="bar" id="bar">
+    <h2 id="count"></h2>
+    <em id="hint">Click a card for downloads</em>
+  </div>
+
+  <div id="out"></div>
+
+  <footer>
+    <b>SDK Movies</b> — a local front-end over your SDK-scraper.<br>
+    Links point to third-party sources; nothing is hosted or downloaded here.
+  </footer>
+</div>
+
+<div class="scrim" id="scrim">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="m-head">
+      <div style="flex:1;min-width:0">
+        <h3 id="mt"></h3>
+        <p id="ms"></p>
+      </div>
+      <button class="x" id="mx" aria-label="Close">✕</button>
+    </div>
+    <div class="m-body" id="mb"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="tick">✓</span><span id="tmsg"></span></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const out=$('#out'), bar=$('#bar'), scrim=$('#scrim'), toast=$('#toast');
+const GRADS=[['#7c5cff','#4a2fd0'],['#12d8b4','#0a8f78'],['#ff4d8d','#c01f5c'],['#ffb340','#d17d10'],['#4d9dff','#1f5fc0'],['#a855f7','#6d28d9']];
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SEEDS=['Avengers','Deadpool','Logan','Interstellar','Leo','Jailer','Vikram','Inception'];
+
+$('#chips').innerHTML = SEEDS.map(s=>`<button class="chip" data-s="${s}">${s}</button>`).join('');
+$('#chips').addEventListener('click', e=>{
+  const c = e.target.closest('.chip'); if(!c) return;
+  $('#q').value = c.dataset.s; run();
+});
+
+fetch('/api/stats').then(r=>r.json()).then(d=>$('#stat').textContent=`${d.cached.toLocaleString()} cached`).catch(()=>$('#stat').textContent='offline');
+
+function showToast(msg){
+  $('#tmsg').textContent = msg;
+  toast.classList.add('on');
+  clearTimeout(showToast.t);
+  showToast.t = setTimeout(()=>toast.classList.remove('on'), 2400);
+}
+
+function fmtViews(n){
+  if(n==null) return null;
+  return n>=1000 ? (n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,'')+'k' : String(n);
+}
+
+let current = [];
+
+$('#form').addEventListener('submit', e=>{ e.preventDefault(); run(); });
+
+function scrollToResults(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const top = bar.getBoundingClientRect().top + window.scrollY - 24;
+  window.scrollTo({top, behavior: reduce ? 'auto' : 'smooth'});
+}
+
+async function run(){
+  const q = $('#q').value.trim();
+  if(!q) return;
+  $('#go').disabled = true;
+  bar.classList.remove('on');
+  out.innerHTML = `<div class="grid">${'<div class="skel"></div>'.repeat(6)}</div>`;
+  $('#q').blur();
+  scrollToResults();
+
+  try{
+    const r = await fetch('/api/search?q='+encodeURIComponent(q));
+    if(!r.ok) throw new Error((await r.json().catch(()=>({}))).detail || 'HTTP '+r.status);
+    current = await r.json();
+    render(q);
+  }catch(err){
+    out.innerHTML = `<div class="state"><div class="ico">⚠️</div><h3>Search failed</h3><p>${esc(err.message)}</p></div>`;
+    bar.classList.remove('on');
+  }finally{ $('#go').disabled = false; }
+}
+
+function render(q){
+  if(!current.length){
+    out.innerHTML = `<div class="state"><div class="ico">🔍</div><h3>No results for “${esc(q)}”</h3><p>Try a shorter query, or check the spelling.</p></div>`;
+    bar.classList.remove('on');
+    return;
+  }
+  $('#count').innerHTML = `<b>${current.length}</b> result${current.length>1?'s':''} for “${esc(q)}”`;
+  bar.classList.add('on');
+
+  out.innerHTML = `<div class="grid">${current.map((m,i)=>{
+    const g = GRADS[i % GRADS.length];
+    const facts = [];
+    if(m.size) facts.push(`<span class="fact sz">${esc(m.size)}</span>`);
+    if(m.language) facts.push(`<span class="fact lang">${esc(m.language)}</span>`);
+    if(m.has_direct_link) facts.push('<span class="fact dl">Direct</span>');
+    const v = fmtViews(m.views);
+    return `<article class="card" data-i="${i}" style="animation-delay:${i*45}ms;--c1:${g[0]};--c2:${g[1]}">
+      <h3>${esc(m.title)}${m.year?`<span class="yr">(${m.year})</span>`:''}${m.is_official?'<span class="of">★ Official</span>':''}</h3>
+      ${m.quality?`<div class="qline">${esc(m.quality)}</div>`:''}
+      ${facts.length?`<div class="facts">${facts.join('')}</div>`:''}
+      <div class="card-foot${facts.length||m.quality?'':' spacer'}">
+        <span class="views">${v?`<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/></svg>${v} views`:'&nbsp;'}</span>
+        <span class="get">Downloads <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></span>
+      </div>
+    </article>`;
+  }).join('')}</div>`;
+
+  out.querySelectorAll('.card').forEach(c=>{
+    c.addEventListener('mousemove', e=>{
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', (e.clientX-r.left)+'px');
+      c.style.setProperty('--my', (e.clientY-r.top)+'px');
+    });
+    c.addEventListener('click', ()=>openModal(current[+c.dataset.i]));
+  });
+}
+
+async function openModal(m){
+  $('#mt').textContent = m.title + (m.year?` (${m.year})`:'');
+  $('#ms').textContent = m.language || '';
+  $('#mb').innerHTML = `<div class="skel" style="height:74px"></div><div class="skel" style="height:74px;margin-top:10px"></div>`;
+  scrim.classList.add('on');
+  document.body.style.overflow='hidden';
+
+  try{
+    const r = await fetch('/api/downloads?url='+encodeURIComponent(m.topic_url));
+    if(!r.ok) throw new Error((await r.json().catch(()=>({}))).detail || 'HTTP '+r.status);
+    const opts = await r.json();
+    if(!opts.length){
+      $('#mb').innerHTML = `<div class="state" style="padding:44px 10px">
+        <div class="ico">☁️</div><h3>No torrent links here</h3>
+        <p>This post hosts files on Google Drive behind a link shortener,<br>so there's no magnet to pull. Open the topic page directly.</p>
+        <a class="btn" style="display:inline-flex;margin-top:18px" href="${esc(m.topic_url)}" target="_blank" rel="noopener noreferrer">Open topic page ↗</a>
+      </div>`;
+      return;
+    }
+    $('#mb').innerHTML = opts.map((o,i)=>`
+      <div class="opt" style="animation-delay:${i*55}ms">
+        <span class="q">${esc(o.quality||'—')}</span>
+        <div class="opt-mid">
+          <div class="s">${esc(o.size||'Unknown size')}</div>
+          <div class="n">${esc(o.label||'')}</div>
+        </div>
+        <div class="acts">
+          ${o.magnet?`<a class="btn mag" href="${esc(o.magnet)}"><svg viewBox="0 0 24 24"><path d="M3 5v6a9 9 0 0018 0V5h-5v6a4 4 0 01-8 0V5H3z"/></svg>Magnet</a>`:''}
+          ${o.torrent_url?`<a class="btn" href="${esc(o.torrent_url)}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>.torrent</a>`:''}
+        </div>
+      </div>`).join('');
+
+    $('#mb').querySelectorAll('a.mag').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        showToast('Opening in your torrent app…');
+      });
+    });
+  }catch(err){
+    $('#mb').innerHTML = `<div class="state" style="padding:44px 10px"><div class="ico">⚠️</div><h3>Couldn't load links</h3><p>${esc(err.message)}</p></div>`;
+  }
+}
+
+function closeModal(){ scrim.classList.remove('on'); document.body.style.overflow=''; }
+$('#mx').addEventListener('click', closeModal);
+scrim.addEventListener('click', e=>{ if(e.target===scrim) closeModal(); });
+document.addEventListener('keydown', e=>{ 
+  if(e.key==='Escape') {
+    if(scrim.classList.contains('on')) closeModal();
+  }
+});
+
+out.innerHTML = `<div class="state"><div class="ico">🎬</div><h3>Search to get started</h3><p>Try a title above, or tap one of the suggestions.</p></div>`;
+$('#q').focus();
+</script>
+</body>
+</html>
