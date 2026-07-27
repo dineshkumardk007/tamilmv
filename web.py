@@ -46,6 +46,21 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="SDK Movies", lifespan=lifespan)
 
 
+async def _background_fetch_posters(results: list[dict]):
+    """Fetch and cache posters in the background without blocking search response or raising errors."""
+    for m in results[:8]:
+        topic_url = m.get("topic_url")
+        if not topic_url or m.get("poster_url"):
+            continue
+        try:
+            details = await asyncio.to_thread(scraper.fetch_download_details, topic_url)
+            if details.get("poster_url"):
+                with db.get_conn() as conn:
+                    db.update_poster_url(conn, topic_url, details["poster_url"])
+        except Exception:
+            pass
+
+
 @app.get("/api/search")
 async def api_search(
     q: str = Query(..., min_length=1),
@@ -66,6 +81,9 @@ async def api_search(
             for e in live:
                 db.upsert_movie(conn, e)
         results = db.search_movies(query) or live
+
+    if results:
+        asyncio.create_task(_background_fetch_posters(results))
 
     return JSONResponse(results)
 

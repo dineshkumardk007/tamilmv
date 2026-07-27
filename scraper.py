@@ -409,24 +409,41 @@ def parse_download_page(html: str) -> list[dict]:
 
 def extract_poster_url(soup: BeautifulSoup) -> str | None:
     """Extract movie poster image URL from topic page HTML."""
-    # 1. Look for lightbox anchor wrapping an image (data-ipslightbox attribute)
-    lightbox = soup.find("a", attrs={"data-ipslightbox": True})
-    if lightbox and lightbox.get("href"):
-        return lightbox["href"]
+    # Find the post content area
+    container = (
+        soup.find("div", attrs={"data-role": "commentContent"})
+        or soup.find("div", class_=re.compile(r"cPost_contentWrap|ipsType_richText", re.I))
+        or soup
+    )
 
-    # 2. Look for img tag with class ipsImage
-    ips_img = soup.find("img", class_=re.compile(r"ipsImage", re.I))
-    if ips_img:
-        src = ips_img.get("src") or ips_img.get("data-src")
-        if src:
-            return src
-
-    # 3. Look for images hosted on common image hosts
-    for img in soup.find_all("img"):
+    # Walk through all <img> tags in document order within the post
+    for img in container.find_all("img"):
         src = img.get("src") or img.get("data-src")
-        if src and any(d in src for d in ["media-amazon.com", "postimg.cc", "ibb.co", "pixhost.to", "imagebam.com", "imgur.com"]):
-            if not src.endswith(".gif") and "logo" not in src.lower() and "emoticon" not in src.lower():
-                return src
+        if not src:
+            continue
+        if src.startswith("//"):
+            src = "https:" + src
+        if not src.startswith("http"):
+            continue
+
+        lower = src.lower()
+
+        # Skip UI elements, badges, reaction icons, torrent logos, gifs
+        if (
+            lower.endswith(".gif")
+            or "torrborder" in lower
+            or "utorrent" in lower
+            or "reaction" in lower
+            or "badge" in lower
+            or "emoticon" in lower
+            or "staff" in lower
+            or "logo" in lower
+        ):
+            continue
+
+        # Accept any valid movie poster image (.jpg, .jpeg, .png, .webp) or CDN URL
+        if any(ext in lower for ext in [".jpg", ".jpeg", ".png", ".webp"]) or "cdn" in lower:
+            return src
 
     return None
 
