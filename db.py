@@ -59,12 +59,14 @@ _EXTRA_COLUMNS = {
     "author": "TEXT",
     "replies": "INTEGER",
     "views": "INTEGER",
+    "poster_url": "TEXT",
 }
 
 # Every column upsert_movie writes (besides scraped_at).
 _FIELDS = [
     "title", "year", "language", "quality", "size", "topic_url", "watch_url",
     "topic_id", "is_official", "has_direct_link", "author", "replies", "views",
+    "poster_url",
 ]
 
 
@@ -136,3 +138,12 @@ def search_movies(query: str, limit: int = 15):
 def count_movies() -> int:
     with get_conn() as conn:
         return conn.execute("SELECT COUNT(*) AS c FROM movies").fetchone()["c"]
+
+
+def update_poster_url(conn, topic_url: str, poster_url: str):
+    """Update poster_url for an existing topic_url entry."""
+    conn.execute(
+        "UPDATE movies SET poster_url = ? WHERE topic_url = ?",
+        (poster_url, topic_url),
+    )
+

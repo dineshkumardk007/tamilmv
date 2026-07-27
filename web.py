@@ -75,10 +75,13 @@ async def api_downloads(url: str = Query(...)):
     if "1tamilmv" not in url:
         raise HTTPException(status_code=400, detail="Not a valid topic URL")
     try:
-        options = await asyncio.to_thread(scraper.fetch_download_links, url)
+        details = await asyncio.to_thread(scraper.fetch_download_details, url)
+        if details.get("poster_url"):
+            with db.get_conn() as conn:
+                db.update_poster_url(conn, url, details["poster_url"])
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Failed to fetch page: {exc}")
-    return JSONResponse(options)
+    return JSONResponse(details)
 
 
 @app.get("/api/stats")

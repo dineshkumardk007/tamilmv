@@ -177,6 +177,24 @@
   .card:hover .get{gap:9px}
   .get svg{width:13px;height:13px;fill:currentColor}
 
+  .card-body-wrap{display:flex;gap:14px;align-items:flex-start;flex:1}
+  .card-main{flex:1;min-width:0}
+  .card-poster{
+    width:72px;height:102px;border-radius:12px;overflow:hidden;flex:none;
+    background:rgba(255,255,255,.05);border:1px solid var(--stroke);
+    display:grid;place-items:center;position:relative;
+  }
+  .card-poster img{width:100%;height:100%;object-fit:cover;transition:transform .4s var(--ease)}
+  .card:hover .card-poster img{transform:scale(1.06)}
+  .card-poster .ph{font-size:24px;opacity:.35}
+
+  .m-poster{
+    width:84px;height:120px;border-radius:14px;overflow:hidden;flex:none;
+    background:rgba(255,255,255,.05);border:1px solid var(--stroke);
+    display:grid;place-items:center;
+  }
+  .m-poster img{width:100%;height:100%;object-fit:cover}
+
   /* ---------- states ---------- */
   .state{text-align:center;padding:80px 20px;animation:rise .5s var(--ease)}
   .state h3{font-size:19px;font-weight:600;margin-bottom:8px}
@@ -323,6 +341,7 @@
 <div class="scrim" id="scrim">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="m-head">
+      <div class="m-poster" id="mp" style="display:none"></div>
       <div style="flex:1;min-width:0">
         <h3 id="mt"></h3>
         <p id="ms"></p>
@@ -408,10 +427,19 @@ function render(q){
     if(m.language) facts.push(`<span class="fact lang">${esc(m.language)}</span>`);
     if(m.has_direct_link) facts.push('<span class="fact dl">Direct</span>');
     const v = fmtViews(m.views);
+    const posterHtml = m.poster_url 
+      ? `<img src="${esc(m.poster_url)}" alt="${esc(m.title)}" loading="lazy" onerror="this.parentNode.innerHTML='<span class=\\'ph\\'>🎬</span>'">`
+      : `<span class="ph">🎬</span>`;
+
     return `<article class="card" data-i="${i}" style="animation-delay:${i*45}ms;--c1:${g[0]};--c2:${g[1]}">
-      <h3>${esc(m.title)}${m.year?`<span class="yr">(${m.year})</span>`:''}${m.is_official?'<span class="of">★ Official</span>':''}</h3>
-      ${m.quality?`<div class="qline">${esc(m.quality)}</div>`:''}
-      ${facts.length?`<div class="facts">${facts.join('')}</div>`:''}
+      <div class="card-body-wrap">
+        <div class="card-poster">${posterHtml}</div>
+        <div class="card-main">
+          <h3>${esc(m.title)}${m.year?`<span class="yr">(${m.year})</span>`:''}${m.is_official?'<span class="of">★ Official</span>':''}</h3>
+          ${m.quality?`<div class="qline">${esc(m.quality)}</div>`:''}
+          ${facts.length?`<div class="facts">${facts.join('')}</div>`:''}
+        </div>
+      </div>
       <div class="card-foot${facts.length||m.quality?'':' spacer'}">
         <span class="views">${v?`<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/></svg>${v} views`:'&nbsp;'}</span>
         <span class="get">Downloads <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></span>
@@ -432,6 +460,14 @@ function render(q){
 async function openModal(m){
   $('#mt').textContent = m.title + (m.year?` (${m.year})`:'');
   $('#ms').textContent = m.language || '';
+  const mp = $('#mp');
+  if(m.poster_url){
+    mp.innerHTML = `<img src="${esc(m.poster_url)}" alt="${esc(m.title)}">`;
+    mp.style.display = 'grid';
+  } else {
+    mp.style.display = 'none';
+    mp.innerHTML = '';
+  }
   $('#mb').innerHTML = `<div class="skel" style="height:74px"></div><div class="skel" style="height:74px;margin-top:10px"></div>`;
   scrim.classList.add('on');
   document.body.style.overflow='hidden';
@@ -439,7 +475,17 @@ async function openModal(m){
   try{
     const r = await fetch('/api/downloads?url='+encodeURIComponent(m.topic_url));
     if(!r.ok) throw new Error((await r.json().catch(()=>({}))).detail || 'HTTP '+r.status);
-    const opts = await r.json();
+    const data = await r.json();
+    const opts = Array.isArray(data) ? data : (data.options || []);
+    if(data && data.poster_url){
+      m.poster_url = data.poster_url;
+      mp.innerHTML = `<img src="${esc(data.poster_url)}" alt="${esc(m.title)}">`;
+      mp.style.display = 'grid';
+      const cardPoster = out.querySelector(`.card[data-i="${current.indexOf(m)}"] .card-poster`);
+      if(cardPoster && !cardPoster.querySelector('img')){
+        cardPoster.innerHTML = `<img src="${esc(data.poster_url)}" alt="${esc(m.title)}" loading="lazy">`;
+      }
+    }
     if(!opts.length){
       $('#mb').innerHTML = `<div class="state" style="padding:44px 10px">
         <div class="ico">☁️</div><h3>No torrent links here</h3>
