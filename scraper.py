@@ -57,7 +57,7 @@ from urllib.parse import quote_plus, unquote
 import requests
 from bs4 import BeautifulSoup
 
-BASE_HOST = "www.1tamilmv.reisen"
+BASE_HOST = "www.1tamilmv.observer"
 BASE_URL = f"https://{BASE_HOST}"
 SEARCH_URL = BASE_URL + "/search/?q={query}"
 # The search page itself now renders results client-side: it fetches this
