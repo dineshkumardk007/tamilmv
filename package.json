@@ -1,7 +1,7 @@
 {
   "name": "moviesearch",
   "version": "1.0.0",
-  "description": "Local MCP server that searches 1tamilmv.reisen listings and caches results in SQLite.",
+  "description": "Local MCP server that searches 1tamilmv.pizza listings and caches results in SQLite.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
