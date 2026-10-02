@@ -107,6 +107,11 @@ async def api_stats():
     return {"cached": db.count_movies()}
 
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
 @app.get("/")
 async def index():
     return FileResponse(STATIC_DIR / "index.html")

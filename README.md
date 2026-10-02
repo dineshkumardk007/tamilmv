@@ -1,6 +1,6 @@
 # tamilmv-search MCP server
 
-Local MCP server that searches 1tamilmv.pizza listings and caches results in SQLite.
+Local MCP server that searches 1tamilmv.capital listings and caches results in SQLite.
 
 ## Setup
 

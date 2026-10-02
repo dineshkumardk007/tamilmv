@@ -1,5 +1,5 @@
 """
-Scraper for 1tamilmv.pizza listing/search pages.
+Scraper for 1tamilmv.capital listing/search pages.
 
 Site structure (per the "RECENTLY ADDED" block on the homepage):
 
@@ -57,7 +57,7 @@ from urllib.parse import quote_plus, unquote
 import requests
 from bs4 import BeautifulSoup
 
-BASE_HOST = "www.1tamilmv.pizza"
+BASE_HOST = "www.1tamilmv.capital"
 BASE_URL = f"https://{BASE_HOST}"
 SEARCH_URL = BASE_URL + "/search/?q={query}"
 # The search page itself now renders results client-side: it fetches this

@@ -1,0 +1,42 @@
+name: Keep Render Server Alive
+
+on:
+  schedule:
+    # Run every 10 minutes (Render free instances sleep after 15 minutes of inactivity)
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Server
+        run: |
+          URL="${{ secrets.RENDER_SERVER_URL }}"
+          if [ -z "$URL" ]; then
+            URL="${{ vars.RENDER_SERVER_URL }}"
+          fi
+          if [ -z "$URL" ]; then
+            URL="https://tamilmv-4vej.onrender.com"
+          fi
+
+          # Strip trailing slash if present
+          URL="${URL%/}"
+
+          echo "Pinging server at ${URL}/health ..."
+          STATUS=$(curl -s -L -o /dev/null -w "%{http_code}" --max-time 60 "${URL}/health")
+          echo "Response HTTP code: ${STATUS}"
+
+          if [ "$STATUS" -eq 200 ]; then
+            echo "Server is awake and healthy!"
+          else
+            echo "Health endpoint returned $STATUS. Trying root URL ${URL} ..."
+            STATUS_ROOT=$(curl -s -L -o /dev/null -w "%{http_code}" --max-time 60 "${URL}/")
+            echo "Root URL HTTP code: ${STATUS_ROOT}"
+            if [ "$STATUS_ROOT" -ge 200 ] && [ "$STATUS_ROOT" -lt 400 ]; then
+              echo "Server responded successfully!"
+            else
+              echo "Failed to wake server (status: ${STATUS_ROOT})"
+              exit 1
+            fi
+          fi
