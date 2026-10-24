@@ -11,7 +11,29 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## Run standalone (for testing)
+## Running the Web Application & Streamer
+
+1. **Start the Web UI** (Port 8777):
+   ```bash
+   .venv\Scripts\python.exe web.py
+   ```
+   Open [http://127.0.0.1:8777](http://127.0.0.1:8777) in your browser.
+
+2. **Start the WebTorrent Streaming Engine** (Port 8778):
+   ```bash
+   node streamer.js
+   ```
+
+### Web App Features:
+- 🎬 **In-Browser Video Player**: Stream torrent releases directly inside the browser using WebTorrent chunk streaming.
+- 🔥 **Latest Releases Feed**: Instant loading of homepage releases with one-click **🔄 Sync Feed** button.
+- 🎯 **Interactive Filters**: Instant filtering by Language (Tamil, Telugu, Hindi, Malayalam, English), Quality (4K, 1080p, 720p), and Official TMV releases.
+- ♥ **Watchlist & Favorites**: Persistent browser storage to bookmark releases for later.
+- ⭐ **IMDb / TMDb Ratings & Synopsis**: Automatically enriches movie cards and modals with ratings, plot, and genres.
+- 📋 **1-Click Magnet Copying**: Instant clipboard copy with animated toasts.
+- 🌐 **Domain Switcher**: Dynamically test and update rotating 1tamilmv mirror domains right from the UI.
+
+## Run standalone MCP server (for testing)
 
 ```
 python server.py

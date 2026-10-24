@@ -57,7 +57,7 @@ from urllib.parse import quote_plus, unquote
 import requests
 from bs4 import BeautifulSoup
 
-BASE_HOST = "www.1tamilmv.capital"
+BASE_HOST = "www.1tamilmv.solar"
 BASE_URL = f"https://{BASE_HOST}"
 SEARCH_URL = BASE_URL + "/search/?q={query}"
 # The search page itself now renders results client-side: it fetches this
@@ -65,6 +65,43 @@ SEARCH_URL = BASE_URL + "/search/?q={query}"
 # <div id="results"> after load. Scraping the static page HTML finds nothing
 # for any query not already cached, since that div is empty server-side.
 SEARCH_API_URL = BASE_URL + "/search/api/search.php"
+
+
+def set_base_host(host: str) -> str:
+    """Dynamically update base domain for rotating TLDs."""
+    global BASE_HOST, BASE_URL, SEARCH_URL, SEARCH_API_URL
+    cleaned = host.strip().lower().replace("https://", "").replace("http://", "").strip("/")
+    if not cleaned:
+        raise ValueError("Invalid host")
+    BASE_HOST = cleaned
+    BASE_URL = f"https://{BASE_HOST}"
+    SEARCH_URL = BASE_URL + "/search/?q={query}"
+    SEARCH_API_URL = BASE_URL + "/search/api/search.php"
+    return BASE_HOST
+
+
+def get_base_host() -> str:
+    return BASE_HOST
+
+
+def check_host_health(host: str | None = None) -> dict:
+    target_host = host.strip().lower().replace("https://", "").replace("http://", "").strip("/") if host else BASE_HOST
+    target_url = f"https://{target_host}"
+    try:
+        resp = requests.get(target_url, headers=HEADERS, timeout=8)
+        return {
+            "host": target_host,
+            "status": "online" if resp.status_code == 200 else "degraded",
+            "status_code": resp.status_code,
+            "latency_ms": int(resp.elapsed.total_seconds() * 1000),
+        }
+    except Exception as exc:
+        return {
+            "host": target_host,
+            "status": "offline",
+            "error": str(exc),
+        }
+
 
 # Matches both "/topic/12345-slug/" and "/forums/topic/12345-slug/"
 TOPIC_URL_RE = re.compile(r"/(?:forums/)?topic/\d+")
@@ -76,6 +113,9 @@ HEADERS = {
     ),
     "Accept-Language": "en-US,en;q=0.9",
 }
+
+_SESSION = requests.Session()
+_SESSION.headers.update(HEADERS)
 
 YEAR_RE = re.compile(r"\((\d{4})\)")
 QUALITY_RE = re.compile(r"\[(.*?)\]")
@@ -143,13 +183,48 @@ def _extract_meta(title_text: str, url: str) -> dict:
     else:
         clean_title = title_text.split(" - [")[0].strip(" -")
 
+    year = int(year_match.group(1)) if year_match else None
+
+    # Fallback: if clean_title starts with bracket (e.g. only quality was in anchor text)
+    # or is empty, extract the clean movie title and year from the topic URL slug!
+    if not clean_title or clean_title.startswith("[") or clean_title == title_text:
+        slug_match = re.search(r"/topic/\d+-([a-z0-9-]+?)(?:-((?:19|20)\d{2}))?", url, re.I)
+        if slug_match:
+            slug_words = slug_match.group(1).replace("-", " ").title()
+            clean_name = re.sub(
+                r"\b(True|Web|Dl|Hq|Predvd|Rip|Rips|X264|Hevc|Avc|Tam|Tel|Hin|Eng|Tamil|Telugu|Hindi|Malayalam)\b.*$",
+                "",
+                slug_words,
+                flags=re.I,
+            ).strip()
+            clean_title = clean_name or slug_words
+            if slug_match.group(2) and not year:
+                year = int(slug_match.group(2))
+
+    # Detect language from URL if missing from title text
+    if not langs:
+        url_langs = sorted(
+            set(m.group(0) for m in LANG_RE.finditer(url)), key=url.find
+        )
+        if url_langs:
+            langs = url_langs
+
+    topic_id = None
+    tid_match = re.search(r"/topic/(\d+)", url)
+    if tid_match:
+        try:
+            topic_id = int(tid_match.group(1))
+        except ValueError:
+            pass
+
     return {
         "title": clean_title or title_text,
-        "year": int(year_match.group(1)) if year_match else None,
+        "year": year,
         "language": ", ".join(langs) if langs else None,
         "quality": quality,
         "size": size_match.group(1) if size_match else None,
         "topic_url": url,
+        "topic_id": topic_id,
         "raw_text": title_text,
     }
 
@@ -269,12 +344,6 @@ def parse_search_results(html: str) -> list[dict]:
     return results
 
 
-def fetch_homepage() -> list[dict]:
-    resp = requests.get(BASE_URL, headers=HEADERS, timeout=20)
-    resp.raise_for_status()
-    return parse_listing_html(resp.text)
-
-
 def _slugify(text: str) -> str:
     """Mirror the site's client-side slugify() in search.js exactly."""
     base = re.sub(r"[^a-z0-9\s-]+", " ", (text or "").lower())
@@ -298,11 +367,13 @@ def _entry_from_api_result(r: dict) -> dict:
     return entry
 
 
-def _fetch_search_api(query: str, page: int = 1, per_page: int = 25) -> list[dict]:
+def _fetch_search_api(
+    query: str, page: int = 1, per_page: int = 25, sort: str = "date_desc"
+) -> list[dict]:
     params = {
         "q": query,
         "priority": "1",
-        "sort": "title_asc",
+        "sort": sort,
         "page": str(page),
         "per_page": str(per_page),
     }
@@ -310,6 +381,137 @@ def _fetch_search_api(query: str, page: int = 1, per_page: int = 25) -> list[dic
     resp.raise_for_status()
     data = resp.json()
     return [_entry_from_api_result(r) for r in data.get("results", [])]
+
+
+def fetch_homepage_html() -> str:
+    """Fetch homepage HTML using persistent session or fallback to curl."""
+    try:
+        resp = _SESSION.get(BASE_URL, timeout=12)
+        if resp.status_code == 200 and "banger-container" in resp.text:
+            return resp.text
+    except Exception:
+        pass
+    try:
+        import subprocess
+        res = subprocess.run(
+            ["curl.exe", "-s", "-L", "-A", HEADERS["User-Agent"], BASE_URL],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="ignore",
+            timeout=15,
+        )
+        if res.stdout and "banger-container" in res.stdout:
+            return res.stdout
+    except Exception:
+        pass
+    return ""
+
+
+def parse_top_releases(html: str) -> list[dict]:
+    """Parse the 'TOP RELEASES THIS WEEK' banger container from the homepage."""
+    soup = BeautifulSoup(html, "lxml")
+    banger = soup.find("div", class_="banger-container")
+    if not banger:
+        return []
+
+    row = banger.find("div", class_="banger-row")
+    if not row:
+        return []
+
+    items = []
+    seen_urls = set()
+
+    for a in row.find_all("a", href=True):
+        href = a["href"]
+        if not re.search(r"/topic/\d+", href) or href in seen_urls:
+            continue
+
+        parts = []
+        cur = a
+        while cur.previous_sibling:
+            cur = cur.previous_sibling
+            if getattr(cur, "name", None) == "br":
+                break
+            txt = cur.get_text(strip=True) if hasattr(cur, "get_text") else str(cur).strip()
+            if txt:
+                parts.insert(0, txt)
+
+        if a.parent and a.parent.name == "strong":
+            p = a.parent
+            while p.previous_sibling:
+                p = p.previous_sibling
+                if getattr(p, "name", None) == "br":
+                    break
+                txt = p.get_text(strip=True) if hasattr(p, "get_text") else str(p).strip()
+                if txt:
+                    parts.insert(0, txt)
+
+        full_line = " ".join(parts) + " " + a.get_text(strip=True)
+
+        watch_url = None
+        next_s = a.next_sibling
+        while next_s:
+            if getattr(next_s, "name", None) == "a" and "[W]" in next_s.get_text():
+                watch_url = next_s.get("href")
+                break
+            if getattr(next_s, "name", None):
+                w = next_s.find("a", href=True)
+                if w and "[W]" in w.get_text():
+                    watch_url = w["href"]
+                    break
+            next_s = next_s.next_sibling
+
+        meta = _extract_meta(full_line, href)
+        meta["is_top_week"] = 1
+        if watch_url:
+            meta["watch_url"] = watch_url
+
+        seen_urls.add(href)
+        items.append(meta)
+
+    return items
+
+
+def fetch_homepage() -> list[dict]:
+    """Fetch top releases this week, newest search releases, and homepage listings."""
+    results = []
+    seen_urls = set()
+
+    # 1. First fetch "TOP RELEASES THIS WEEK" from homepage banger block
+    hp_html = fetch_homepage_html()
+    if hp_html:
+        top_items = parse_top_releases(hp_html)
+        for item in top_items:
+            if item["topic_url"] not in seen_urls:
+                seen_urls.add(item["topic_url"])
+                results.append(item)
+
+    # 2. Fetch newest releases via API (2026, 2025) sorted by date_desc
+    for query in ["2026", "2025"]:
+        try:
+            api_items = _fetch_search_api(query, per_page=35, sort="date_desc")
+            for item in api_items:
+                if item["topic_url"] not in seen_urls:
+                    seen_urls.add(item["topic_url"])
+                    results.append(item)
+        except Exception:
+            pass
+
+    # 3. Also parse general listing items if available
+    if hp_html:
+        try:
+            hp_items = parse_listing_html(hp_html)
+            for item in hp_items:
+                if item["topic_url"] not in seen_urls:
+                    seen_urls.add(item["topic_url"])
+                    results.append(item)
+        except Exception:
+            pass
+
+    # Sort newest forum topics first
+    results.sort(key=lambda x: (x.get("topic_id") or 0), reverse=True)
+    return results
 
 
 def fetch_search(query: str) -> list[dict]:
@@ -441,19 +643,65 @@ def extract_poster_url(soup: BeautifulSoup) -> str | None:
         ):
             continue
 
-        # Accept any valid movie poster image (.jpg, .jpeg, .png, .webp) or CDN URL
-        if any(ext in lower for ext in [".jpg", ".jpeg", ".png", ".webp"]) or "cdn" in lower:
+        # Accept any valid movie poster image or CDN URL (including Twitter, ibb, postimg, etc.)
+        if (
+            any(ext in lower for ext in [".jpg", ".jpeg", ".png", ".webp", "format=jpg", "format=png", "format=webp", "jpg", "jpeg", "png", "webp"])
+            or any(host in lower for host in ["twimg", "pixelbb", "imageride", "cdn", "ibb", "postimg", "imagebam", "media-amazon", "tmdb", "imdb"])
+        ):
             return src
 
     return None
 
 
+def _clean_topic_fetch_url(topic_url: str) -> str:
+    tid_match = re.search(r"/topic/(\d+)", topic_url)
+    if tid_match:
+        return f"{BASE_URL}/index.php?/topic/{tid_match.group(1)}-t/"
+    return re.sub(r"^https?://[^/]+", BASE_URL, topic_url.strip())
+
+
 def fetch_download_details(topic_url: str) -> dict:
     """Fetch download links and poster_url from a topic page."""
-    resp = requests.get(topic_url, headers=HEADERS, timeout=20)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "lxml")
-    options = parse_download_page(resp.text)
+    clean_url = _clean_topic_fetch_url(topic_url)
+    html = ""
+    try:
+        resp = _SESSION.get(clean_url, timeout=12)
+        if resp.status_code == 200:
+            html = resp.text
+    except Exception:
+        pass
+
+    if not html:
+        try:
+            fallback_url = re.sub(r"^https?://[^/]+", BASE_URL, topic_url.strip())
+            resp = _SESSION.get(fallback_url, timeout=12)
+            if resp.status_code == 200:
+                html = resp.text
+        except Exception:
+            pass
+
+    # Fallback to curl if requests connection failed
+    if not html:
+        try:
+            import subprocess
+            res = subprocess.run(
+                ["curl.exe", "-s", "-L", "-A", HEADERS["User-Agent"], clean_url],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="ignore",
+                timeout=15,
+            )
+            if res.stdout:
+                html = res.stdout
+        except Exception:
+            pass
+
+    if not html:
+        raise RuntimeError(f"Could not fetch topic page: {topic_url}")
+
+    soup = BeautifulSoup(html, "lxml")
+    options = parse_download_page(html)
     poster_url = extract_poster_url(soup)
     return {
         "options": options,

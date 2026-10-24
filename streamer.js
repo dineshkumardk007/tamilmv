@@ -41,6 +41,36 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', torrents: client.torrents.length });
 });
 
+app.get('/info', async (req, res) => {
+  if (!client) return res.status(503).json({ error: 'Engine initializing' });
+  const magnet = req.query.magnet;
+  if (!magnet) return res.status(400).json({ error: 'Magnet required' });
+
+  let infoHash = null;
+  if (parseTorrent) {
+    try {
+      const parsed = await parseTorrent(magnet);
+      infoHash = parsed.infoHash;
+    } catch (e) {}
+  }
+
+  const torrent = infoHash ? client.get(infoHash) : client.get(magnet);
+  if (!torrent) {
+    return res.json({ found: false, peers: 0, progress: 0, downloadSpeed: 0 });
+  }
+
+  return res.json({
+    found: true,
+    name: torrent.name || 'Loading...',
+    peers: torrent.numPeers || 0,
+    downloadSpeed: torrent.downloadSpeed || 0,
+    progress: torrent.progress || 0,
+    downloaded: torrent.downloaded || 0,
+    length: torrent.length || 0,
+    ready: !!torrent.ready,
+  });
+});
+
 app.get('/stream', async (req, res) => {
   if (!client) {
     return res.status(503).send('Torrent engine starting up, please try again in a moment...');
