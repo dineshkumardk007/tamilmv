@@ -131,6 +131,10 @@ SIZE_RE = re.compile(r"(\d+(?:\.\d+)?\s?(?:GB|MB))", re.IGNORECASE)
 LANG_RE = re.compile(
     r"\b(Tamil|Telugu|Hindi|Malayalam|Kannada|English)\b", re.IGNORECASE
 )
+SERIES_RE = re.compile(
+    r"\b(?:S\d{1,2}|Season\s*\d+|EP\s*\(?\d+|Episodes?|E\d{1,3})\b",
+    re.IGNORECASE,
+)
 
 
 def _clean_text(text: str) -> str:
@@ -217,6 +221,14 @@ def _extract_meta(title_text: str, url: str) -> dict:
         except ValueError:
             pass
 
+    is_series = bool(
+        SERIES_RE.search(title_text)
+        or SERIES_RE.search(url)
+        or re.search(r"/(?:series|web-series|shows)/", url, re.I)
+        or re.search(r"-s\d{1,2}-", url, re.I)
+    )
+    content_type = "series" if is_series else "movie"
+
     return {
         "title": clean_title or title_text,
         "year": year,
@@ -226,6 +238,7 @@ def _extract_meta(title_text: str, url: str) -> dict:
         "topic_url": url,
         "topic_id": topic_id,
         "raw_text": title_text,
+        "content_type": content_type,
     }
 
 

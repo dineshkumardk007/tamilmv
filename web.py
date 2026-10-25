@@ -7,12 +7,13 @@ then open http://127.0.0.1:8777
 """
 import asyncio
 from contextlib import asynccontextmanager
+import os
 from pathlib import Path
 import re
 from urllib.parse import quote
 
-from fastapi import FastAPI, HTTPException, Query, Body
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi import FastAPI, HTTPException, Query, Body, Request
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 import requests
 
@@ -21,7 +22,8 @@ import scraper
 
 BASE_DIR = Path(__file__).parent
 STATIC_DIR = BASE_DIR / "static"
-PORT = 8777
+PORT = int(os.environ.get("PORT", 8777))
+HOST = os.environ.get("HOST", "0.0.0.0")
 
 # In-memory cache for movie metadata (plot, ratings, genres, posters)
 _META_CACHE: dict[str, dict] = {}
@@ -94,8 +96,44 @@ async def _initial_poster_backfill():
         pass
 
 
+# Background Auto-Sync Cron State
+_LAST_SYNC_TIME: float | None = None
+_LAST_SYNC_STATUS: str = "never"
+_LAST_SYNC_ADDED: int = 0
+AUTO_SYNC_INTERVAL_SECONDS: int = 3600  # Run hourly
+
+
+async def _background_auto_sync():
+    """Background cron loop that periodically fetches new releases from homepage into SQLite."""
+    global _LAST_SYNC_TIME, _LAST_SYNC_STATUS, _LAST_SYNC_ADDED
+    import time
+    # Wait 30 seconds after server launch before initial periodic sync
+    await asyncio.sleep(30)
+    while True:
+        try:
+            print("[Auto-Sync Cron] Starting scheduled homepage sync...")
+            entries = await asyncio.to_thread(scraper.fetch_homepage)
+            added = 0
+            if entries:
+                with db.get_conn() as conn:
+                    for e in entries:
+                        db.upsert_movie(conn, e)
+                        added += 1
+                asyncio.create_task(_background_fetch_posters(entries))
+            _LAST_SYNC_TIME = time.time()
+            _LAST_SYNC_STATUS = "ok"
+            _LAST_SYNC_ADDED = added
+            print(f"[Auto-Sync Cron] Scheduled sync finished. Added/updated {added} releases.")
+        except Exception as exc:
+            _LAST_SYNC_STATUS = f"error: {exc}"
+            print(f"[Auto-Sync Cron] Periodic sync encountered error: {exc}")
+
+        await asyncio.sleep(AUTO_SYNC_INTERVAL_SECONDS)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    import time
     db.init_db()
 
     # Auto-refresh cache on cold start if DB is empty
@@ -105,12 +143,19 @@ async def lifespan(app: FastAPI):
             with db.get_conn() as conn:
                 for e in entries:
                     db.upsert_movie(conn, e)
+            global _LAST_SYNC_TIME, _LAST_SYNC_STATUS, _LAST_SYNC_ADDED
+            _LAST_SYNC_TIME = time.time()
+            _LAST_SYNC_STATUS = "ok"
+            _LAST_SYNC_ADDED = len(entries)
         except Exception:
             pass  # fail silently, user can still search live
 
     # Background backfill of posters for already stored records
     asyncio.create_task(_initial_poster_backfill())
+    # Start scheduled periodic auto-sync cron
+    sync_task = asyncio.create_task(_background_auto_sync())
     yield
+    sync_task.cancel()
 
 
 app = FastAPI(title="SDK Movies", lifespan=lifespan)
@@ -123,6 +168,7 @@ async def api_recent(
     language: str | None = None,
     quality: str | None = None,
     sort_by: str = "recent",
+    content_type: str | None = None,
 ):
     """Fetch latest releases from local database, or auto-sync if empty."""
     results = db.get_recent_movies(
@@ -131,6 +177,7 @@ async def api_recent(
         language=language,
         quality=quality,
         sort_by=sort_by,
+        content_type=content_type,
     )
 
     if not results and offset == 0:
@@ -145,6 +192,7 @@ async def api_recent(
                 language=language,
                 quality=quality,
                 sort_by=sort_by,
+                content_type=content_type,
             )
         except Exception:
             pass
@@ -185,6 +233,8 @@ async def api_search(
 @app.post("/api/refresh")
 async def api_refresh():
     """Trigger a fresh scrape of the homepage recently added listing."""
+    global _LAST_SYNC_TIME, _LAST_SYNC_STATUS, _LAST_SYNC_ADDED
+    import time
     try:
         entries = await asyncio.to_thread(scraper.fetch_homepage)
         count = 0
@@ -192,12 +242,19 @@ async def api_refresh():
             for e in entries:
                 db.upsert_movie(conn, e)
                 count += 1
+        _LAST_SYNC_TIME = time.time()
+        _LAST_SYNC_STATUS = "ok"
+        _LAST_SYNC_ADDED = count
+        if entries:
+            asyncio.create_task(_background_fetch_posters(entries))
         return JSONResponse({
             "status": "ok",
             "added": count,
             "total": db.count_movies(),
+            "last_sync_time": _LAST_SYNC_TIME,
         })
     except Exception as exc:
+        _LAST_SYNC_STATUS = f"error: {exc}"
         raise HTTPException(status_code=502, detail=f"Refresh failed: {exc}")
 
 
@@ -265,20 +322,67 @@ async def api_watchlist(urls: str = Query(..., description="Comma-separated topi
 
 
 @app.get("/api/stream-health")
-async def api_stream_health():
+async def api_stream_health(request: Request):
     """Verify if the local Node.js WebTorrent streamer (port 8778) is running."""
     def _check():
         try:
             r = requests.get("http://127.0.0.1:8778/health", timeout=1.5)
             if r.status_code == 200:
                 data = r.json()
-                return {"online": True, "streamer_url": "http://127.0.0.1:8778", "torrents": data.get("torrents", 0)}
+                base_url = str(request.base_url).rstrip("/")
+                return {"online": True, "streamer_url": base_url, "torrents": data.get("torrents", 0)}
         except Exception:
             pass
         return {"online": False, "streamer_url": "http://127.0.0.1:8778", "torrents": 0}
 
     res = await asyncio.to_thread(_check)
     return JSONResponse(res)
+
+
+@app.get("/stream")
+async def proxy_stream(request: Request, magnet: str = Query(...)):
+    """Reverse proxy torrent video chunk streaming from the background streamer engine."""
+    headers = {}
+    if "range" in request.headers:
+        headers["Range"] = request.headers["range"]
+
+    def _fetch():
+        try:
+            clean_magnet = quote(magnet, safe=":?=&")
+            return requests.get(
+                f"http://127.0.0.1:8778/stream?magnet={clean_magnet}",
+                headers=headers,
+                stream=True,
+                timeout=45,
+            )
+        except Exception as exc:
+            return exc
+
+    stream_res = await asyncio.to_thread(_fetch)
+    if isinstance(stream_res, Exception):
+        raise HTTPException(status_code=503, detail=f"Streaming engine unavailable: {stream_res}")
+
+    def iter_content():
+        try:
+            for chunk in stream_res.iter_content(chunk_size=64 * 1024):
+                if chunk:
+                    yield chunk
+        except Exception:
+            pass
+
+    response_headers = {
+        "Accept-Ranges": "bytes",
+        "Access-Control-Allow-Origin": "*",
+    }
+    for h in ("Content-Range", "Content-Length", "Content-Type"):
+        if h in stream_res.headers:
+            response_headers[h] = stream_res.headers[h]
+
+    return StreamingResponse(
+        iter_content(),
+        status_code=stream_res.status_code,
+        headers=response_headers,
+    )
 
 
 @app.get("/api/metadata")
@@ -369,6 +473,10 @@ async def api_stats():
     return {
         "cached": db.count_movies(),
         "domain": scraper.get_base_host(),
+        "last_sync_time": _LAST_SYNC_TIME,
+        "last_sync_status": _LAST_SYNC_STATUS,
+        "last_sync_added": _LAST_SYNC_ADDED,
+        "auto_sync_interval_seconds": AUTO_SYNC_INTERVAL_SECONDS,
     }
 
 @app.api_route("/ping", methods=["GET", "HEAD"])
@@ -399,4 +507,4 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=PORT)
+    uvicorn.run("web:app", host=HOST, port=PORT, reload=False)

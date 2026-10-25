@@ -61,13 +61,14 @@ _EXTRA_COLUMNS = {
     "views": "INTEGER",
     "poster_url": "TEXT",
     "is_top_week": "INTEGER",
+    "content_type": "TEXT",
 }
 
 # Every column upsert_movie writes (besides scraped_at).
 _FIELDS = [
     "title", "year", "language", "quality", "size", "topic_url", "watch_url",
     "topic_id", "is_official", "has_direct_link", "author", "replies", "views",
-    "poster_url", "is_top_week",
+    "poster_url", "is_top_week", "content_type",
 ]
 
 
@@ -76,6 +77,20 @@ def _migrate(conn):
     for col, ddl in _EXTRA_COLUMNS.items():
         if col not in existing:
             conn.execute(f"ALTER TABLE movies ADD COLUMN {col} {ddl}")
+
+    # Auto-classify existing null content_type rows as series or movie
+    conn.execute(
+        """
+        UPDATE movies
+        SET content_type = CASE
+            WHEN title LIKE '% S0%' OR title LIKE '% S1%' OR title LIKE '% S2%' OR title LIKE '% Season%'
+                 OR title LIKE '% EP%' OR title LIKE '% Episode%' OR topic_url LIKE '%-s0%' OR topic_url LIKE '%-season%'
+                 THEN 'series'
+            ELSE 'movie'
+        END
+        WHERE content_type IS NULL OR content_type = ''
+        """
+    )
 
 
 def init_db():
@@ -172,6 +187,7 @@ def get_recent_movies(
     language: str | None = None,
     quality: str | None = None,
     sort_by: str = "recent",
+    content_type: str | None = None,
 ) -> list[dict]:
     """Retrieve recently scraped or popular movies with optional filtering and sorting."""
     with get_conn() as conn:
@@ -183,6 +199,11 @@ def get_recent_movies(
         if quality and quality.lower() != "all":
             conditions.append("(quality LIKE ? OR title LIKE ?)")
             params.extend([f"%{quality}%", f"%{quality}%"])
+        if content_type and content_type.lower() != "all":
+            if content_type.lower() == "series":
+                conditions.append("content_type = 'series'")
+            elif content_type.lower() == "movie":
+                conditions.append("(content_type = 'movie' OR content_type IS NULL)")
 
         where_clause = f"WHERE {' AND '.join(conditions)}"
 

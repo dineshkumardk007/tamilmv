@@ -881,6 +881,43 @@
       }
     }
 
+    /* ---------- infinite scroll ---------- */
+    .scroll-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 34px 20px;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .scroll-loader.hidden,
+    .scroll-end-msg.hidden {
+      display: none !important;
+    }
+
+    .scroll-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(124, 92, 255, .2);
+      border-top-color: var(--brand-2);
+      border-radius: 50%;
+      animation: spin .85s linear infinite;
+    }
+
+    .scroll-end-msg {
+      text-align: center;
+      padding: 36px 20px 10px;
+      color: var(--muted-2);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
     /* ---------- modals (generic) ---------- */
     .scrim {
       position: fixed;
@@ -1495,6 +1532,15 @@
 
     <!-- Controls Strip: Filters & Sorting -->
     <div class="controls-strip" id="controls-strip">
+      <div class="filter-row" style="padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--stroke);">
+        <div class="pill-group" id="type-pills">
+          <span class="filter-label">Type:</span>
+          <button class="f-pill on" data-type="all">✨ All</button>
+          <button class="f-pill" data-type="movie">🎬 Movies</button>
+          <button class="f-pill" data-type="series">📺 Web Series &amp; Shows</button>
+        </div>
+      </div>
+
       <div class="filter-row">
         <div class="pill-group" id="lang-pills">
           <span class="filter-label">Language:</span>
@@ -1542,6 +1588,19 @@
     </div>
 
     <div id="out"></div>
+
+    <!-- Infinite Scroll Sentinel & Status -->
+    <div id="infinite-scroll-container">
+      <div id="scroll-loader" class="scroll-loader hidden">
+        <div class="scroll-spinner"></div>
+        <span>Loading more releases…</span>
+      </div>
+      <div id="scroll-end" class="scroll-end-msg hidden">
+        <span>✨</span>
+        <span>You've reached the end of the catalog</span>
+      </div>
+      <div id="scroll-sentinel" style="height: 20px; margin-top: 10px;"></div>
+    </div>
 
     <footer id="easter-footer" style="cursor:pointer;user-select:none;">
       <b>SDK Movies</b> — a local front-end over your scraper &amp; WebTorrent engine.<br>
@@ -1696,6 +1755,7 @@
     let allMovies = [];
     let current = [];
     let currentMode = 'recent'; // 'recent', 'search', 'watchlist'
+    let activeType = 'all'; // 'all', 'movie', 'series'
     let activeLang = 'all';
     let activeQuality = 'all';
     let activeSort = 'recent';
@@ -1704,6 +1764,12 @@
     let streamerOnline = false;
     let streamerUrl = 'http://127.0.0.1:8778';
     let activePollTimer = null;
+
+    // Pagination & Infinite Scroll State
+    let recentOffset = 0;
+    const PAGE_SIZE = 48;
+    let hasMoreRecent = true;
+    let isLoadingMore = false;
 
     // Local Watchlist
     let watchlist = JSON.parse(localStorage.getItem('sdk_watchlist') || '[]');
@@ -1741,20 +1807,39 @@
       $('#btn-watchlist').classList.toggle('active', currentMode === 'watchlist');
     }
 
+    // Live Search Debounce & Abort State
+    let searchDebounceTimer = null;
+    let activeSearchAbort = null;
+
     // Chips
     $('#chips').innerHTML = SEEDS.map(s => `<button class="chip" data-s="${s}">${s}</button>`).join('');
     $('#chips').addEventListener('click', e => {
       const c = e.target.closest('.chip'); if (!c) return;
       $('#q').value = c.dataset.s;
       clearBtn.style.display = 'block';
-      runSearch();
+      clearTimeout(searchDebounceTimer);
+      runSearch(true);
     });
 
     $('#q').addEventListener('input', e => {
+      const val = e.target.value.trim();
       clearBtn.style.display = e.target.value ? 'block' : 'none';
+      clearTimeout(searchDebounceTimer);
+
+      if (!val) {
+        searchDebounceTimer = setTimeout(() => {
+          if (currentMode === 'search') loadRecentFeed();
+        }, 220);
+      } else if (val.length >= 2) {
+        searchDebounceTimer = setTimeout(() => {
+          runSearch(false);
+        }, 360);
+      }
     });
 
     clearBtn.addEventListener('click', () => {
+      clearTimeout(searchDebounceTimer);
+      if (activeSearchAbort) activeSearchAbort.abort();
       $('#q').value = '';
       clearBtn.style.display = 'none';
       $('#q').focus();
@@ -1762,6 +1847,8 @@
     });
 
     $('#logo-home').addEventListener('click', () => {
+      clearTimeout(searchDebounceTimer);
+      if (activeSearchAbort) activeSearchAbort.abort();
       $('#q').value = '';
       clearBtn.style.display = 'none';
       loadRecentFeed();
@@ -1838,52 +1925,142 @@
       fetch('/api/stats').then(r => r.json()).then(d => {
         const s = $('#stat');
         if (s) s.textContent = `${d.cached.toLocaleString()} cached`;
+        const syncBtn = $('#btn-sync');
+        if (syncBtn && d.last_sync_time) {
+          const secAgo = Math.floor(Date.now() / 1000 - d.last_sync_time);
+          const minAgo = Math.floor(secAgo / 60);
+          const timeText = minAgo <= 0 ? 'just now' : `${minAgo}m ago`;
+          syncBtn.title = `Auto-sync cron: active (hourly). Last synced: ${timeText} (${d.last_sync_added || 0} updated). Click for manual sync.`;
+        }
       }).catch(() => {});
     }
 
     // ---------- Loaders & Search ----------
-    async function loadRecentFeed() {
+    async function loadRecentFeed(reset = true) {
       currentMode = 'recent';
       $('#feed-tag').textContent = 'Latest Releases';
       $('#btn-watchlist').classList.remove('active');
-      out.innerHTML = `<div class="grid">${'<div class="skel"></div>'.repeat(6)}</div>`;
-      bar.classList.remove('on');
+      const scrollEnd = $('#scroll-end');
+      const scrollLoader = $('#scroll-loader');
+      if (scrollEnd) scrollEnd.classList.add('hidden');
+      if (scrollLoader) scrollLoader.classList.add('hidden');
+
+      if (reset) {
+        recentOffset = 0;
+        hasMoreRecent = true;
+        allMovies = [];
+        out.innerHTML = `<div class="grid">${'<div class="skel"></div>'.repeat(6)}</div>`;
+        bar.classList.remove('on');
+      }
 
       try {
         const params = new URLSearchParams({
-          limit: '50',
+          limit: String(PAGE_SIZE),
+          offset: String(recentOffset),
           language: activeLang,
           quality: activeQuality,
           sort_by: activeSort,
+          content_type: activeType,
         });
         const r = await fetch('/api/recent?' + params.toString());
         if (!r.ok) throw new Error('Failed to load recent releases');
-        allMovies = await r.json();
+        const data = await r.json();
+        allMovies = data;
+        recentOffset = data.length;
+        if (data.length < PAGE_SIZE) {
+          hasMoreRecent = false;
+        }
         applyFiltersAndRender();
+        if (!hasMoreRecent && allMovies.length > 0 && scrollEnd) {
+          scrollEnd.classList.remove('hidden');
+        }
       } catch (err) {
         out.innerHTML = `<div class="state"><div class="ico">⚠️</div><h3>Could not load feed</h3><p>${esc(err.message)}</p></div>`;
       }
     }
 
-    async function runSearch() {
+    async function loadMoreRecent() {
+      if (isLoadingMore || !hasMoreRecent || currentMode !== 'recent') return;
+      isLoadingMore = true;
+      const scrollLoader = $('#scroll-loader');
+      const scrollEnd = $('#scroll-end');
+      if (scrollLoader) scrollLoader.classList.remove('hidden');
+
+      try {
+        const params = new URLSearchParams({
+          limit: String(PAGE_SIZE),
+          offset: String(recentOffset),
+          language: activeLang,
+          quality: activeQuality,
+          sort_by: activeSort,
+          content_type: activeType,
+        });
+        const r = await fetch('/api/recent?' + params.toString());
+        if (!r.ok) throw new Error('Failed to fetch more releases');
+        const newItems = await r.json();
+
+        if (!newItems || !newItems.length) {
+          hasMoreRecent = false;
+          if (scrollEnd) scrollEnd.classList.remove('hidden');
+          return;
+        }
+
+        if (newItems.length < PAGE_SIZE) {
+          hasMoreRecent = false;
+          if (scrollEnd) scrollEnd.classList.remove('hidden');
+        }
+
+        // Deduplicate against existing allMovies
+        const existingUrls = new Set(allMovies.map(m => m.topic_url));
+        const uniqueNew = newItems.filter(m => !existingUrls.has(m.topic_url));
+
+        allMovies.push(...uniqueNew);
+        recentOffset += newItems.length;
+
+        appendCards(uniqueNew);
+      } catch (err) {
+        console.warn('[Infinite Scroll] Load more error:', err);
+      } finally {
+        if (scrollLoader) scrollLoader.classList.add('hidden');
+        isLoadingMore = false;
+      }
+    }
+
+    async function runSearch(isManualSubmit = false) {
+      clearTimeout(searchDebounceTimer);
+      if (activeSearchAbort) {
+        try { activeSearchAbort.abort(); } catch {}
+      }
+
       const q = $('#q').value.trim();
       if (!q) { loadRecentFeed(); return; }
 
+      activeSearchAbort = new AbortController();
       currentMode = 'search';
+      hasMoreRecent = false;
+      const scrollEnd = $('#scroll-end');
+      const scrollLoader = $('#scroll-loader');
+      if (scrollEnd) scrollEnd.classList.add('hidden');
+      if (scrollLoader) scrollLoader.classList.add('hidden');
+
       $('#feed-tag').textContent = `Search: “${q}”`;
       $('#btn-watchlist').classList.remove('active');
       $('#go').disabled = true;
-      bar.classList.remove('on');
-      out.innerHTML = `<div class="grid">${'<div class="skel"></div>'.repeat(6)}</div>`;
-      $('#q').blur();
-      scrollToResults();
+
+      if (isManualSubmit) {
+        bar.classList.remove('on');
+        out.innerHTML = `<div class="grid">${'<div class="skel"></div>'.repeat(6)}</div>`;
+        $('#q').blur();
+        scrollToResults();
+      }
 
       try {
-        const r = await fetch('/api/search?q=' + encodeURIComponent(q));
+        const r = await fetch('/api/search?q=' + encodeURIComponent(q), { signal: activeSearchAbort.signal });
         if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || 'HTTP ' + r.status);
         allMovies = await r.json();
         applyFiltersAndRender(q);
       } catch (err) {
+        if (err.name === 'AbortError') return;
         out.innerHTML = `<div class="state"><div class="ico">⚠️</div><h3>Search failed</h3><p>${esc(err.message)}</p></div>`;
         bar.classList.remove('on');
       } finally {
@@ -1891,7 +2068,11 @@
       }
     }
 
-    $('#form').addEventListener('submit', e => { e.preventDefault(); runSearch(); });
+    $('#form').addEventListener('submit', e => {
+      e.preventDefault();
+      clearTimeout(searchDebounceTimer);
+      runSearch(true);
+    });
 
     // Sync Feed Button
     $('#btn-sync').addEventListener('click', async () => {
@@ -1921,6 +2102,11 @@
         loadRecentFeed();
       } else {
         currentMode = 'watchlist';
+        hasMoreRecent = false;
+        const scrollEnd = $('#scroll-end');
+        const scrollLoader = $('#scroll-loader');
+        if (scrollEnd) scrollEnd.classList.add('hidden');
+        if (scrollLoader) scrollLoader.classList.add('hidden');
         $('#feed-tag').textContent = 'My Watchlist';
         $('#btn-watchlist').classList.add('active');
         allMovies = [...watchlist];
@@ -1930,6 +2116,16 @@
     });
 
     // Filter events
+    $('#type-pills').addEventListener('click', e => {
+      const p = e.target.closest('.f-pill');
+      if (!p) return;
+      $('#type-pills').querySelectorAll('.f-pill').forEach(b => b.classList.remove('on'));
+      p.classList.add('on');
+      activeType = p.dataset.type;
+      if (currentMode === 'recent') loadRecentFeed();
+      else applyFiltersAndRender();
+    });
+
     $('#lang-pills').addEventListener('click', e => {
       const p = e.target.closest('.f-pill');
       if (!p) return;
@@ -1970,6 +2166,14 @@
 
     function applyFiltersAndRender(queryText) {
       let list = [...allMovies];
+
+      if (activeType !== 'all') {
+        if (activeType === 'series') {
+          list = list.filter(m => m.content_type === 'series' || /\b(S\d+|Season|EP\d+)\b/i.test(m.title));
+        } else if (activeType === 'movie') {
+          list = list.filter(m => m.content_type !== 'series' && !/\b(S\d+|Season|EP\d+)\b/i.test(m.title));
+        }
+      }
 
       if (filterOfficialOnly) {
         list = list.filter(m => m.is_official);
@@ -2096,6 +2300,128 @@
       } catch {}
     }
 
+    // Global card metadata observer
+    const cardObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          obs.unobserve(card);
+          const movie = card.__movie || (card.dataset.i != null ? current[parseInt(card.dataset.i, 10)] : null);
+          if (movie) loadCardMetadata(movie, card);
+        }
+      });
+    }, { rootMargin: '300px' });
+
+    function createCardHtml(m, i) {
+      const g = GRADS[i % GRADS.length];
+      const facts = [];
+      if (m.size) facts.push(`<span class="fact sz">${esc(m.size)}</span>`);
+      if (m.language) facts.push(`<span class="fact lang">${esc(m.language)}</span>`);
+      if (m.has_direct_link) facts.push('<span class="fact dl">Direct Link</span>');
+      if (m.watch_url) facts.push('<span class="fact dl" style="color:#12d8b4;border-color:rgba(18,216,180,.3)">Web Stream [W]</span>');
+
+      const v = fmtViews(m.views);
+      const isFav = isWatchlisted(m.topic_url);
+      const topBadge = m.is_top_week ? '<span class="top-week-badge">🔥 Top This Week</span>' : '';
+      const isSeries = m.content_type === 'series' || /\b(S\d+|Season|EP\d+)\b/i.test(m.title);
+      const seriesBadge = isSeries ? '<span class="top-week-badge" style="color:#12d8b4;border-color:rgba(18,216,180,.38);background:rgba(18,216,180,.12);box-shadow:none;">📺 Series</span>' : '';
+      const officialBadge = m.is_official ? '<span class="of">★ Official</span>' : '';
+
+      const posterBoxHtml = `
+        <div class="card-poster">
+          <button class="card-fav-btn ${isFav ? 'active' : ''}" data-url="${esc(m.topic_url)}" title="Save to Watchlist">
+            ${isFav ? '♥' : '♡'}
+          </button>
+          ${m.poster_url 
+            ? `<img src="${esc(m.poster_url)}" alt="${esc(m.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this, '${esc(m.title)}')">` 
+            : `<div class="card-no-poster"><span>🎬</span></div>`}
+        </div>`;
+
+      return `<article class="card" data-i="${i}" style="animation-delay:${Math.min((i % 48) * 30, 500)}ms;--c1:${g[0]};--c2:${g[1]}">
+        <div class="card-body-wrap">
+          ${posterBoxHtml}
+          <div class="card-main">
+            <div class="card-head-row">
+              <h3>${esc(m.title)}${m.year ? `<span class="yr">(${m.year})</span>` : ''}${topBadge}${seriesBadge}${officialBadge}</h3>
+            </div>
+            ${m.quality ? `<div class="qline">${esc(m.quality)}</div>` : ''}
+            ${facts.length ? `<div class="facts">${facts.join('')}</div>` : ''}
+          </div>
+        </div>
+        <div class="card-foot">
+          <span class="views">${v ? `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/></svg>${v} views` : '&nbsp;'}</span>
+          <span class="get">Downloads &amp; Stream <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></span>
+        </div>
+      </article>`;
+    }
+
+    function setupCardEvents(c, movie) {
+      c.__movie = movie;
+      c.addEventListener('mousemove', e => {
+        const r = c.getBoundingClientRect();
+        c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+
+      const favBtn = c.querySelector('.card-fav-btn');
+      if (favBtn) {
+        favBtn.addEventListener('click', e => toggleWatchlist(movie, e));
+      }
+
+      c.addEventListener('click', () => openModal(movie));
+      cardObserver.observe(c);
+    }
+
+    function appendCards(newBatch) {
+      if (!newBatch || !newBatch.length) return;
+      const grid = out.querySelector('.grid');
+      if (!grid) {
+        applyFiltersAndRender();
+        return;
+      }
+
+      let filteredBatch = [...newBatch];
+      if (activeType !== 'all') {
+        if (activeType === 'series') {
+          filteredBatch = filteredBatch.filter(m => m.content_type === 'series' || /\b(S\d+|Season|EP\d+)\b/i.test(m.title));
+        } else if (activeType === 'movie') {
+          filteredBatch = filteredBatch.filter(m => m.content_type !== 'series' && !/\b(S\d+|Season|EP\d+)\b/i.test(m.title));
+        }
+      }
+      if (filterOfficialOnly) filteredBatch = filteredBatch.filter(m => m.is_official);
+      if (filterDirectOnly) filteredBatch = filteredBatch.filter(m => m.has_direct_link || m.watch_url);
+      if (activeLang !== 'all') {
+        const needle = activeLang.toLowerCase();
+        filteredBatch = filteredBatch.filter(m => 
+          (m.language && m.language.toLowerCase().includes(needle)) ||
+          (m.title && m.title.toLowerCase().includes(needle))
+        );
+      }
+      if (activeQuality !== 'all') {
+        const qneedle = activeQuality.toLowerCase();
+        filteredBatch = filteredBatch.filter(m => 
+          (m.quality && m.quality.toLowerCase().includes(qneedle)) ||
+          (m.title && m.title.toLowerCase().includes(qneedle))
+        );
+      }
+
+      const startIndex = current.length;
+      current.push(...filteredBatch);
+
+      const tempWrap = document.createElement('div');
+      tempWrap.innerHTML = filteredBatch.map((m, idx) => createCardHtml(m, startIndex + idx)).join('');
+
+      const newCards = Array.from(tempWrap.children);
+      newCards.forEach((c, idx) => {
+        grid.appendChild(c);
+        setupCardEvents(c, filteredBatch[idx]);
+      });
+
+      if (currentMode === 'recent') {
+        $('#count').innerHTML = `<b>${current.length}</b> trending release${current.length > 1 ? 's' : ''}`;
+      }
+    }
+
     function render(q) {
       if (!current.length) {
         if (currentMode === 'watchlist') {
@@ -2125,75 +2451,10 @@
       }
       bar.classList.add('on');
 
-      out.innerHTML = `<div class="grid">${current.map((m, i) => {
-        const g = GRADS[i % GRADS.length];
-        const facts = [];
-        if (m.size) facts.push(`<span class="fact sz">${esc(m.size)}</span>`);
-        if (m.language) facts.push(`<span class="fact lang">${esc(m.language)}</span>`);
-        if (m.has_direct_link) facts.push('<span class="fact dl">Direct Link</span>');
-        if (m.watch_url) facts.push('<span class="fact dl" style="color:#12d8b4;border-color:rgba(18,216,180,.3)">Web Stream [W]</span>');
-
-        const v = fmtViews(m.views);
-        const isFav = isWatchlisted(m.topic_url);
-        const topBadge = m.is_top_week ? '<span class="top-week-badge">🔥 Top This Week</span>' : '';
-        const officialBadge = m.is_official ? '<span class="of">★ Official</span>' : '';
-
-        const posterBoxHtml = `
-          <div class="card-poster">
-            <button class="card-fav-btn ${isFav ? 'active' : ''}" data-url="${esc(m.topic_url)}" title="Save to Watchlist">
-              ${isFav ? '♥' : '♡'}
-            </button>
-            ${m.poster_url 
-              ? `<img src="${esc(m.poster_url)}" alt="${esc(m.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this, '${esc(m.title)}')">` 
-              : `<div class="card-no-poster"><span>🎬</span></div>`}
-          </div>`;
-
-        return `<article class="card" data-i="${i}" style="animation-delay:${Math.min(i * 35, 600)}ms;--c1:${g[0]};--c2:${g[1]}">
-          <div class="card-body-wrap">
-            ${posterBoxHtml}
-            <div class="card-main">
-              <div class="card-head-row">
-                <h3>${esc(m.title)}${m.year ? `<span class="yr">(${m.year})</span>` : ''}${topBadge}${officialBadge}</h3>
-              </div>
-              ${m.quality ? `<div class="qline">${esc(m.quality)}</div>` : ''}
-              ${facts.length ? `<div class="facts">${facts.join('')}</div>` : ''}
-            </div>
-          </div>
-          <div class="card-foot">
-            <span class="views">${v ? `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/></svg>${v} views` : '&nbsp;'}</span>
-            <span class="get">Downloads &amp; Stream <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></span>
-          </div>
-        </article>`;
-      }).join('')}</div>`;
-
-      // Lazy load metadata (IMDb rating & missing posters) when cards enter viewport
-      const cardObserver = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const card = entry.target;
-            obs.unobserve(card);
-            const idx = parseInt(card.dataset.i, 10);
-            const movie = current[idx];
-            if (movie) loadCardMetadata(movie, card);
-          }
-        });
-      }, { rootMargin: '300px' });
+      out.innerHTML = `<div class="grid">${current.map((m, i) => createCardHtml(m, i)).join('')}</div>`;
 
       out.querySelectorAll('.card').forEach((c, idx) => {
-        const movie = current[idx];
-        c.addEventListener('mousemove', e => {
-          const r = c.getBoundingClientRect();
-          c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-          c.style.setProperty('--my', (e.clientY - r.top) + 'px');
-        });
-
-        const favBtn = c.querySelector('.card-fav-btn');
-        favBtn.addEventListener('click', e => toggleWatchlist(movie, e));
-
-        c.addEventListener('click', () => openModal(movie));
-
-        // Connect observer for lazy metadata + poster resolution
-        cardObserver.observe(c);
+        setupCardEvents(c, current[idx]);
       });
     }
 
@@ -2590,6 +2851,31 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
+
+    // Infinite Scroll Intersection Observer
+    const scrollSentinel = $('#scroll-sentinel');
+    if (scrollSentinel) {
+      const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && currentMode === 'recent' && hasMoreRecent && !isLoadingMore) {
+            loadMoreRecent();
+          }
+        });
+      }, { rootMargin: '450px' });
+      scrollObserver.observe(scrollSentinel);
+    }
+
+    // Window scroll fallback check
+    window.addEventListener('scroll', () => {
+      if (currentMode === 'recent' && hasMoreRecent && !isLoadingMore) {
+        const scrollHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const clientHeight = window.innerHeight;
+        if (scrollHeight - (scrollTop + clientHeight) < 600) {
+          loadMoreRecent();
+        }
+      }
+    }, { passive: true });
 
     // ---------- App Initialization ----------
     updateWatchlistUI();
