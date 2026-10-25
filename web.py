@@ -371,10 +371,16 @@ async def api_stats():
         "domain": scraper.get_base_host(),
     }
 
+@app.api_route("/ping", methods=["GET", "HEAD"])
+async def ping():
+    """Ultra-lightweight 2-byte response for cron-job.org / uptime monitors."""
+    return Response(content="OK", media_type="text/plain")
 
-@app.get("/health")
+
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health():
-    return {"status": "ok"}
+    """Lightweight health check for keep-alive pings."""
+    return Response(content="OK", media_type="text/plain")
 
 
 @app.get("/")

@@ -2,9 +2,9 @@ name: Keep Render Server Alive
 
 on:
   schedule:
-    # Run every 10 minutes (Render free instances sleep after 15 minutes of inactivity)
-    - cron: '*/10 * * * *'
-  workflow_dispatch: # Allows manual trigger from GitHub Actions
+    # Runs every 14 minutes (Render sleeps after 15 min of inactivity)
+    - cron: '*/14 * * * *'
+  workflow_dispatch: # Allows manual trigger from the GitHub Actions tab
 
 jobs:
   ping:
@@ -23,20 +23,24 @@ jobs:
           # Strip trailing slash if present
           URL="${URL%/}"
 
-          echo "Pinging server at ${URL}/health ..."
-          STATUS=$(curl -s -L -o /dev/null -w "%{http_code}" --max-time 60 "${URL}/health")
+          echo "Pinging ${URL}/ping (max-time: 90s) ..."
+          STATUS=$(curl -s -L -o /dev/null -w "%{http_code}" --max-time 90 --retry 2 --retry-delay 5 "${URL}/ping")
           echo "Response HTTP code: ${STATUS}"
 
-          if [ "$STATUS" -eq 200 ]; then
-            echo "Server is awake and healthy!"
-          else
-            echo "Health endpoint returned $STATUS. Trying root URL ${URL} ..."
-            STATUS_ROOT=$(curl -s -L -o /dev/null -w "%{http_code}" --max-time 60 "${URL}/")
-            echo "Root URL HTTP code: ${STATUS_ROOT}"
-            if [ "$STATUS_ROOT" -ge 200 ] && [ "$STATUS_ROOT" -lt 400 ]; then
-              echo "Server responded successfully!"
-            else
-              echo "Failed to wake server (status: ${STATUS_ROOT})"
-              exit 1
-            fi
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ]; then
+            echo "Server is awake and healthy (HTTP ${STATUS})!"
+            exit 0
           fi
+
+          echo "Ping endpoint returned ${STATUS}. Trying fallback /health ..."
+          STATUS_HEALTH=$(curl -s -L -o /dev/null -w "%{http_code}" --max-time 90 "${URL}/health")
+          echo "Health HTTP code: ${STATUS_HEALTH}"
+
+          if [ "$STATUS_HEALTH" -ge 200 ] && [ "$STATUS_HEALTH" -lt 400 ]; then
+            echo "Server is awake via /health!"
+            exit 0
+          fi
+
+          echo "Failed to reach server (status: ${STATUS_HEALTH})"
+          exit 1
+
