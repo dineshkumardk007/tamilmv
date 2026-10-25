@@ -29,6 +29,7 @@ HOST = os.environ.get("HOST", "0.0.0.0")
 
 # In-memory cache for movie metadata (plot, ratings, genres, posters)
 _META_CACHE: dict[str, dict] = {}
+_STREAMER_STATUS: str = "stopped"
 
 
 def fetch_cinemeta_poster(title: str) -> str | None:
@@ -157,22 +158,39 @@ async def lifespan(app: FastAPI):
     # Start scheduled periodic auto-sync cron
     sync_task = asyncio.create_task(_background_auto_sync())
 
+    global _STREAMER_STATUS
     # Spawn background node streamer if node is installed and not yet running on port 8778
     streamer_proc = None
     node_bin = shutil.which("node")
+    npm_bin = shutil.which("npm")
     streamer_file = BASE_DIR / "streamer.js"
+    node_modules_dir = BASE_DIR / "node_modules"
+
     if node_bin and streamer_file.exists():
         try:
-            # Check if an existing streamer instance is already answering
             requests.get("http://127.0.0.1:8778/health", timeout=0.6)
+            _STREAMER_STATUS = "running (pre-existing)"
         except Exception:
+            if not node_modules_dir.exists() and npm_bin:
+                try:
+                    print("[Lifespan] Installing npm dependencies for streamer...")
+                    subprocess.run([npm_bin, "install", "--omit=dev"], cwd=str(BASE_DIR), timeout=90)
+                except Exception as err:
+                    print(f"[Lifespan] npm install failed: {err}")
+
             try:
+                log_path = BASE_DIR / "streamer.log"
+                log_file = open(log_path, "w", encoding="utf-8")
                 streamer_proc = subprocess.Popen(
                     [node_bin, str(streamer_file)],
                     cwd=str(BASE_DIR),
+                    stdout=log_file,
+                    stderr=subprocess.STDOUT,
                 )
+                _STREAMER_STATUS = f"running (pid {streamer_proc.pid})"
                 print(f"[Lifespan] Spawned background streamer.js (PID: {streamer_proc.pid})")
             except Exception as proc_err:
+                _STREAMER_STATUS = f"spawn error: {proc_err}"
                 print(f"[Lifespan] Could not spawn streamer.js: {proc_err}")
 
     yield
@@ -498,6 +516,15 @@ async def api_set_domain(payload: dict = Body(...)):
 @app.get("/api/stats")
 async def api_stats():
     node_bin = shutil.which("node")
+    npm_bin = shutil.which("npm")
+    log_content = ""
+    log_path = BASE_DIR / "streamer.log"
+    if log_path.exists():
+        try:
+            with open(log_path, "r", encoding="utf-8", errors="ignore") as f:
+                log_content = f.read()[-500:]
+        except Exception:
+            pass
     return {
         "cached": db.count_movies(),
         "domain": scraper.get_base_host(),
@@ -506,6 +533,10 @@ async def api_stats():
         "last_sync_added": _LAST_SYNC_ADDED,
         "auto_sync_interval_seconds": AUTO_SYNC_INTERVAL_SECONDS,
         "node_installed": bool(node_bin),
+        "npm_installed": bool(npm_bin),
+        "node_modules_present": (BASE_DIR / "node_modules").exists(),
+        "streamer_status": _STREAMER_STATUS,
+        "streamer_log": log_content,
     }
 
 @app.api_route("/ping", methods=["GET", "HEAD"])
