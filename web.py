@@ -10,6 +10,8 @@ from contextlib import asynccontextmanager
 import os
 from pathlib import Path
 import re
+import shutil
+import subprocess
 from urllib.parse import quote
 
 from fastapi import FastAPI, HTTPException, Query, Body, Request
@@ -154,8 +156,33 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(_initial_poster_backfill())
     # Start scheduled periodic auto-sync cron
     sync_task = asyncio.create_task(_background_auto_sync())
+
+    # Spawn background node streamer if node is installed and not yet running on port 8778
+    streamer_proc = None
+    node_bin = shutil.which("node")
+    streamer_file = BASE_DIR / "streamer.js"
+    if node_bin and streamer_file.exists():
+        try:
+            # Check if an existing streamer instance is already answering
+            requests.get("http://127.0.0.1:8778/health", timeout=0.6)
+        except Exception:
+            try:
+                streamer_proc = subprocess.Popen(
+                    [node_bin, str(streamer_file)],
+                    cwd=str(BASE_DIR),
+                )
+                print(f"[Lifespan] Spawned background streamer.js (PID: {streamer_proc.pid})")
+            except Exception as proc_err:
+                print(f"[Lifespan] Could not spawn streamer.js: {proc_err}")
+
     yield
+
     sync_task.cancel()
+    if streamer_proc and streamer_proc.poll() is None:
+        try:
+            streamer_proc.terminate()
+        except Exception:
+            pass
 
 
 app = FastAPI(title="SDK Movies", lifespan=lifespan)
@@ -470,6 +497,7 @@ async def api_set_domain(payload: dict = Body(...)):
 
 @app.get("/api/stats")
 async def api_stats():
+    node_bin = shutil.which("node")
     return {
         "cached": db.count_movies(),
         "domain": scraper.get_base_host(),
@@ -477,6 +505,7 @@ async def api_stats():
         "last_sync_status": _LAST_SYNC_STATUS,
         "last_sync_added": _LAST_SYNC_ADDED,
         "auto_sync_interval_seconds": AUTO_SYNC_INTERVAL_SECONDS,
+        "node_installed": bool(node_bin),
     }
 
 @app.api_route("/ping", methods=["GET", "HEAD"])
