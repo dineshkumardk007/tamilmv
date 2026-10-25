@@ -28,8 +28,8 @@ COPY . .
 # Ensure executable permissions for start script
 RUN chmod +x /app/start.sh
 
-# Koyeb default port is 8000
-ENV PORT=8000
-EXPOSE 8000
+# Cloud port (7860 for Hugging Face Spaces / default)
+ENV PORT=7860
+EXPOSE 7860
 
 CMD ["/app/start.sh"]

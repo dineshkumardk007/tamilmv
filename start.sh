@@ -6,5 +6,5 @@ node streamer.js &
 
 sleep 2
 
-echo "[Startup] Starting FastAPI web application on port ${PORT:-8000}..."
-exec uvicorn web:app --host 0.0.0.0 --port "${PORT:-8000}"
+echo "[Startup] Starting FastAPI web application on port ${PORT:-7860}..."
+exec uvicorn web:app --host 0.0.0.0 --port "${PORT:-7860}"
