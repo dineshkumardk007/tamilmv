@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SDK Movies">
   <meta name="theme-color" content="#090a0f">
-  <title>SDK Movies — Mobile</title>
+  <title>SDK Movies — Mobile Streaming</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="manifest" href="/manifest.json">
 
@@ -68,15 +68,9 @@
       touch-action: manipulation;
     }
 
-    /* Scrollbars */
-    ::-webkit-scrollbar {
-      display: none;
-    }
-    * {
-      scrollbar-width: none;
-    }
+    ::-webkit-scrollbar { display: none; }
+    * { scrollbar-width: none; }
 
-    /* Ambient background glow */
     .mobile-ambient {
       position: fixed;
       top: 0;
@@ -88,9 +82,7 @@
       z-index: 0;
     }
 
-    /* ==========================================================================
-       TOP APP BAR
-       ========================================================================== */
+    /* TOP APP BAR */
     .mobile-header {
       position: fixed;
       top: 0;
@@ -115,6 +107,7 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
+      cursor: pointer;
     }
 
     .brand-mark {
@@ -181,9 +174,7 @@
       box-shadow: 0 0 8px #ef4444;
     }
 
-    /* ==========================================================================
-       SOURCE FILTER CHIPS (Horizontal Scroll)
-       ========================================================================== */
+    /* SOURCE FILTER CHIPS */
     .filter-chips-bar {
       padding: 12px 16px 6px;
       display: flex;
@@ -209,9 +200,7 @@
       transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
       flex-shrink: 0;
     }
-    .chip-btn:active {
-      transform: scale(0.95);
-    }
+    .chip-btn:active { transform: scale(0.95); }
     .chip-btn.active {
       background: linear-gradient(135deg, rgba(124, 92, 255, 0.3), rgba(18, 216, 180, 0.25));
       border-color: var(--primary);
@@ -219,9 +208,7 @@
       box-shadow: 0 0 14px rgba(124, 92, 255, 0.35);
     }
 
-    /* ==========================================================================
-       HERO SPOTLIGHT BANNER
-       ========================================================================== */
+    /* HERO SPOTLIGHT BANNER */
     .spotlight-card {
       position: relative;
       margin: 8px 16px 18px;
@@ -271,10 +258,7 @@
       text-transform: uppercase;
       letter-spacing: 0.4px;
     }
-    .badge-tag.primary {
-      background: var(--primary);
-      color: #fff;
-    }
+    .badge-tag.primary { background: var(--primary); color: #fff; }
     .badge-tag.rating {
       background: rgba(255, 179, 64, 0.25);
       color: var(--accent-gold);
@@ -321,9 +305,7 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .btn-play-primary:active {
-      transform: scale(0.96);
-    }
+    .btn-play-primary:active { transform: scale(0.96); }
 
     .btn-details-secondary {
       width: 42px;
@@ -339,16 +321,10 @@
       font-size: 16px;
       transition: transform 0.15s;
     }
-    .btn-details-secondary:active {
-      transform: scale(0.92);
-    }
+    .btn-details-secondary:active { transform: scale(0.92); }
 
-    /* ==========================================================================
-       HORIZONTAL SHELVES (Trending, Continue Watching, etc.)
-       ========================================================================== */
-    .shelf-section {
-      margin-bottom: 22px;
-    }
+    /* SHELVES & CAROUSELS */
+    .shelf-section { margin-bottom: 22px; }
 
     .shelf-header {
       padding: 0 16px 10px;
@@ -362,9 +338,7 @@
       align-items: center;
       gap: 7px;
     }
-    .shelf-icon {
-      font-size: 16px;
-    }
+    .shelf-icon { font-size: 16px; }
     .shelf-title {
       font-size: 16px;
       font-weight: 700;
@@ -389,16 +363,14 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Poster Card (Horizontal Track) */
+    /* POSTER CARDS */
     .poster-card {
       flex: 0 0 120px;
       scroll-snap-align: start;
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .poster-card:active {
-      transform: scale(0.96);
-    }
+    .poster-card:active { transform: scale(0.96); }
 
     .poster-img-wrap {
       position: relative;
@@ -420,6 +392,17 @@
       transition: opacity 0.3s;
     }
 
+    .poster-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      color: #a5b4fc;
+      font-weight: 800;
+    }
+
     .card-badge {
       position: absolute;
       top: 6px;
@@ -431,23 +414,12 @@
       text-transform: uppercase;
       backdrop-filter: blur(6px);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+      z-index: 2;
     }
-    .card-badge.direct {
-      background: rgba(18, 216, 180, 0.85);
-      color: #042520;
-    }
-    .card-badge.dubbed {
-      background: rgba(255, 77, 141, 0.85);
-      color: #fff;
-    }
-    .card-badge.anime {
-      background: rgba(168, 85, 247, 0.85);
-      color: #fff;
-    }
-    .card-badge.torrent {
-      background: rgba(255, 179, 64, 0.85);
-      color: #3f2200;
-    }
+    .card-badge.direct { background: rgba(18, 216, 180, 0.85); color: #042520; }
+    .card-badge.dubbed { background: rgba(255, 77, 141, 0.85); color: #fff; }
+    .card-badge.anime { background: rgba(168, 85, 247, 0.85); color: #fff; }
+    .card-badge.torrent { background: rgba(255, 179, 64, 0.85); color: #3f2200; }
 
     .card-rating-pill {
       position: absolute;
@@ -463,11 +435,10 @@
       display: flex;
       align-items: center;
       gap: 2px;
+      z-index: 2;
     }
 
-    .poster-info {
-      margin-top: 6px;
-    }
+    .poster-info { margin-top: 6px; }
 
     .poster-title {
       font-size: 12.5px;
@@ -489,7 +460,7 @@
       gap: 5px;
     }
 
-    /* Continue Watching Card */
+    /* CONTINUE WATCHING */
     .cw-card {
       flex: 0 0 160px;
       scroll-snap-align: start;
@@ -531,10 +502,7 @@
       height: 3px;
       background: rgba(255, 255, 255, 0.2);
     }
-    .cw-progress-fill {
-      height: 100%;
-      background: var(--primary);
-    }
+    .cw-progress-fill { height: 100%; background: var(--primary); }
     .cw-title {
       font-size: 12px;
       font-weight: 600;
@@ -545,12 +513,8 @@
       text-overflow: ellipsis;
     }
 
-    /* ==========================================================================
-       2-COLUMN CATALOG GRID (Browse / Search Results)
-       ========================================================================== */
-    .catalog-section {
-      padding: 0 16px;
-    }
+    /* 2-COLUMN CATALOG GRID */
+    .catalog-section { padding: 0 16px; }
 
     .catalog-header {
       display: flex;
@@ -559,11 +523,7 @@
       margin-bottom: 12px;
     }
 
-    .catalog-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-    }
+    .catalog-title { font-size: 16px; font-weight: 700; color: #fff; }
 
     .catalog-grid {
       display: grid;
@@ -575,14 +535,12 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .grid-card:active {
-      transform: scale(0.97);
-    }
+    .grid-card:active { transform: scale(0.97); }
 
     .grid-img-wrap {
       position: relative;
       width: 100%;
-      padding-top: 145%; /* 2:3 aspect ratio */
+      padding-top: 145%;
       border-radius: var(--radius-md);
       overflow: hidden;
       background: var(--bg-card);
@@ -596,16 +554,9 @@
       object-fit: cover;
     }
 
-    /* ==========================================================================
-       SEARCH VIEW
-       ========================================================================== */
-    .search-view {
-      display: none;
-      padding: 10px 16px;
-    }
-    .search-view.active {
-      display: block;
-    }
+    /* SEARCH VIEW */
+    .search-view { display: none; padding: 10px 16px; }
+    .search-view.active { display: block; }
 
     .search-input-box {
       position: relative;
@@ -669,20 +620,11 @@
       white-space: nowrap;
       cursor: pointer;
     }
-    .quick-tag:active {
-      background: rgba(124, 92, 255, 0.2);
-    }
+    .quick-tag:active { background: rgba(124, 92, 255, 0.2); }
 
-    /* ==========================================================================
-       WATCHLIST VIEW & SETTINGS VIEW
-       ========================================================================== */
-    .tab-view {
-      display: none;
-      padding: 10px 16px;
-    }
-    .tab-view.active {
-      display: block;
-    }
+    /* TAB VIEWS */
+    .tab-view { display: none; padding: 10px 16px; }
+    .tab-view.active { display: block; }
 
     .view-heading {
       font-size: 20px;
@@ -699,16 +641,8 @@
       padding: 60px 20px;
       color: var(--text-dim);
     }
-    .empty-icon {
-      font-size: 44px;
-      margin-bottom: 10px;
-    }
-    .empty-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
+    .empty-icon { font-size: 44px; margin-bottom: 10px; }
+    .empty-title { font-size: 16px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
 
     .settings-list {
       display: flex;
@@ -724,15 +658,8 @@
       align-items: center;
       justify-content: space-between;
     }
-    .settings-info h4 {
-      font-size: 14px;
-      color: #fff;
-      margin-bottom: 2px;
-    }
-    .settings-info p {
-      font-size: 12px;
-      color: var(--text-dim);
-    }
+    .settings-info h4 { font-size: 14px; color: #fff; margin-bottom: 2px; }
+    .settings-info p { font-size: 12px; color: var(--text-dim); }
     .settings-btn {
       padding: 6px 14px;
       border-radius: var(--radius-pill);
@@ -742,14 +669,14 @@
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
     }
-    .settings-btn:active {
-      transform: scale(0.95);
-    }
+    .settings-btn:active { transform: scale(0.95); }
 
-    /* ==========================================================================
-       FIXED BOTTOM NAVIGATION BAR
-       ========================================================================== */
+    /* FIXED BOTTOM NAVIGATION BAR */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -782,16 +709,9 @@
       position: relative;
       transition: color 0.2s, transform 0.15s;
     }
-    .nav-tab-btn:active {
-      transform: scale(0.92);
-    }
-    .nav-tab-btn.active {
-      color: #fff;
-    }
-    .nav-tab-btn.active .nav-icon {
-      color: var(--primary);
-      transform: translateY(-1px);
-    }
+    .nav-tab-btn:active { transform: scale(0.92); }
+    .nav-tab-btn.active { color: #fff; }
+    .nav-tab-btn.active .nav-icon { color: var(--primary); transform: translateY(-1px); }
     .nav-tab-btn.active::after {
       content: "";
       position: absolute;
@@ -803,19 +723,10 @@
       box-shadow: 0 0 10px var(--primary);
     }
 
-    .nav-icon {
-      font-size: 20px;
-      transition: transform 0.2s;
-    }
-    .nav-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-    }
+    .nav-icon { font-size: 20px; transition: transform 0.2s; }
+    .nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2px; }
 
-    /* ==========================================================================
-       MOVIE DETAILS BOTTOM SHEET
-       ========================================================================== */
+    /* MOVIE DETAILS BOTTOM SHEET */
     .sheet-backdrop {
       position: fixed;
       inset: 0;
@@ -827,10 +738,7 @@
       pointer-events: none;
       transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    .sheet-backdrop.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .sheet-backdrop.active { opacity: 1; pointer-events: auto; }
 
     .bottom-sheet {
       position: fixed;
@@ -850,9 +758,7 @@
       flex-direction: column;
       padding-bottom: max(16px, var(--safe-bottom));
     }
-    .bottom-sheet.active {
-      transform: translateY(0);
-    }
+    .bottom-sheet.active { transform: translateY(0); }
 
     .sheet-drag-handle {
       width: 36px;
@@ -874,14 +780,21 @@
       gap: 14px;
       margin-bottom: 14px;
     }
-    .sheet-poster {
+    .sheet-poster-wrap {
+      position: relative;
       width: 85px;
       height: 125px;
       border-radius: var(--radius-md);
-      object-fit: cover;
+      overflow: hidden;
       background: #1e202e;
       border: 1px solid var(--border);
       flex-shrink: 0;
+    }
+    .sheet-poster {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
     .sheet-hero-info {
       flex: 1;
@@ -924,9 +837,7 @@
       cursor: pointer;
       box-shadow: 0 4px 14px var(--primary-glow);
     }
-    .btn-sheet-stream:active {
-      transform: scale(0.96);
-    }
+    .btn-sheet-stream:active { transform: scale(0.96); }
     .btn-sheet-fav {
       width: 44px;
       height: 44px;
@@ -939,9 +850,7 @@
       cursor: pointer;
       font-size: 18px;
     }
-    .btn-sheet-fav:active {
-      transform: scale(0.92);
-    }
+    .btn-sheet-fav:active { transform: scale(0.92); }
 
     .sheet-section-title {
       font-size: 13px;
@@ -972,18 +881,9 @@
       background: rgba(124, 92, 255, 0.18);
       border-color: var(--primary);
     }
-    .stream-opt-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-    }
-    .stream-opt-sub {
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 2px;
-    }
+    .stream-opt-title { font-size: 13px; font-weight: 600; color: #fff; }
+    .stream-opt-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 
-    /* Episodes Horizontal Carousel in Bottom Sheet */
     .episodes-track {
       display: flex;
       gap: 8px;
@@ -1007,9 +907,7 @@
       border-color: var(--primary);
     }
 
-    /* ==========================================================================
-       THE TOUCH-FIRST MOBILE VIDEO PLAYER (FULLSCREEN OVERLAY)
-       ========================================================================== */
+    /* THE TOUCH-FIRST MOBILE VIDEO PLAYER */
     .mobile-player-overlay {
       position: fixed;
       inset: 0;
@@ -1020,9 +918,7 @@
       justify-content: space-between;
       touch-action: none;
     }
-    .mobile-player-overlay.active {
-      display: flex;
-    }
+    .mobile-player-overlay.active { display: flex; }
 
     .player-video-container {
       position: absolute;
@@ -1040,7 +936,6 @@
       background: #000;
     }
 
-    /* Gestures overlay */
     .touch-gesture-layer {
       position: absolute;
       inset: 0;
@@ -1053,7 +948,6 @@
       position: relative;
     }
 
-    /* Seek animation ripple */
     .seek-ripple {
       position: absolute;
       top: 50%;
@@ -1073,18 +967,13 @@
       pointer-events: none;
       transition: opacity 0.25s, transform 0.25s;
     }
-    .seek-ripple.left {
-      left: 20%;
-    }
-    .seek-ripple.right {
-      right: 20%;
-    }
+    .seek-ripple.left { left: 20%; }
+    .seek-ripple.right { right: 20%; }
     .seek-ripple.show {
       opacity: 1;
       transform: translateY(-50%) scale(1.15);
     }
 
-    /* Player Controls Skin */
     .player-controls-scrim {
       position: absolute;
       inset: 0;
@@ -1102,7 +991,6 @@
       pointer-events: none;
     }
 
-    /* Player Top Bar */
     .player-top-bar {
       padding: max(12px, var(--safe-top)) 16px 10px;
       display: flex;
@@ -1141,10 +1029,7 @@
       color: var(--accent-teal);
       margin-top: 1px;
     }
-    .player-top-tools {
-      display: flex;
-      gap: 8px;
-    }
+    .player-top-tools { display: flex; gap: 8px; }
     .player-tool-btn {
       width: 36px;
       height: 36px;
@@ -1158,7 +1043,6 @@
       cursor: pointer;
     }
 
-    /* Player Center Play/Pause & Buffering */
     .player-center-controls {
       display: flex;
       align-items: center;
@@ -1181,9 +1065,7 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .center-seek-btn:active {
-      transform: scale(0.92);
-    }
+    .center-seek-btn:active { transform: scale(0.92); }
     .center-play-btn {
       width: 66px;
       height: 66px;
@@ -1197,14 +1079,8 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .center-play-btn:active {
-      transform: scale(0.92);
-    }
-    .center-play-btn svg {
-      width: 28px;
-      height: 28px;
-      fill: #fff;
-    }
+    .center-play-btn:active { transform: scale(0.92); }
+    .center-play-btn svg { width: 28px; height: 28px; fill: #fff; }
 
     .player-spinner {
       position: absolute;
@@ -1216,11 +1092,18 @@
       animation: spin 0.8s linear infinite;
       display: none;
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .spinner-sm {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
     }
 
-    /* Player Bottom Bar */
     .player-bottom-bar {
       padding: 10px 16px max(14px, var(--safe-bottom));
       display: flex;
@@ -1240,9 +1123,7 @@
       font-variant-numeric: tabular-nums;
       min-width: 45px;
     }
-    .time-label.right {
-      text-align: right;
-    }
+    .time-label.right { text-align: right; }
 
     .scrubber-track {
       flex: 1;
@@ -1296,7 +1177,6 @@
       cursor: pointer;
     }
 
-    /* Toast Notification */
     .mobile-toast {
       position: fixed;
       top: calc(var(--header-h) + var(--safe-top) + 12px);
@@ -1310,7 +1190,7 @@
       border-radius: var(--radius-pill);
       font-size: 12.5px;
       font-weight: 600;
-      z-index: 9999;
+      z-index: 99999;
       opacity: 0;
       pointer-events: none;
       transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -1389,10 +1269,8 @@
         <div class="shelf-track" id="m-cw-track"></div>
       </section>
 
-      <!-- Category Horizontal Shelves (Populated dynamically) -->
-      <div id="m-shelves-container">
-        <!-- Rendered from /api/tv/shelves -->
-      </div>
+      <!-- Category Horizontal Shelves -->
+      <div id="m-shelves-container"></div>
 
       <!-- Catalog 2-Column Grid -->
       <section class="catalog-section">
@@ -1534,7 +1412,9 @@
     <div class="sheet-drag-handle"></div>
     <div class="sheet-body">
       <div class="sheet-hero-row">
-        <img class="sheet-poster" id="sheet-poster-img" src="" alt="Poster">
+        <div class="sheet-poster-wrap">
+          <img class="sheet-poster" id="sheet-poster-img" src="" alt="Poster" referrerpolicy="no-referrer">
+        </div>
         <div class="sheet-hero-info">
           <h3 class="sheet-title" id="sheet-title">Movie Title</h3>
           <div class="sheet-meta-tags" id="sheet-tags">
@@ -1548,7 +1428,7 @@
       <div class="sheet-actions-row">
         <button class="btn-sheet-stream" id="sheet-btn-stream">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          <span id="sheet-stream-label">Stream Now (1080p)</span>
+          <span id="sheet-stream-label">Stream Now</span>
         </button>
         <button class="btn-sheet-fav" id="sheet-btn-fav" title="Save to Watchlist">♥</button>
       </div>
@@ -1562,11 +1442,7 @@
       <!-- Stream Options / Files List -->
       <div id="sheet-streams-wrap">
         <h4 class="sheet-section-title">Streaming &amp; Download Qualities</h4>
-        <div class="stream-options-list" id="sheet-options-list">
-          <div class="stream-opt-card">
-            <div class="stream-opt-title">Loading available links…</div>
-          </div>
-        </div>
+        <div class="stream-options-list" id="sheet-options-list"></div>
       </div>
     </div>
   </div>
@@ -1641,7 +1517,6 @@
 
         <div class="player-sub-tools">
           <button class="sub-tool-pill" id="m-btn-speed">1.0x Speed</button>
-          <button class="sub-tool-pill" id="m-btn-episodes" style="display:none;">Episodes 📺</button>
           <button class="sub-tool-pill" id="m-btn-quality">1080p FHD</button>
         </div>
       </div>
@@ -1652,10 +1527,9 @@
   <div class="mobile-toast" id="m-toast">Message</div>
 
   <!-- ==========================================================================
-       MOBILE APPLICATION SCRIPT
+       MOBILE APPLICATION SCRIPT (PRODUCTION ENGINE)
        ========================================================================== -->
   <script>
-    // State Store
     const state = {
       shelves: [],
       recent: [],
@@ -1663,18 +1537,17 @@
       activeTab: 'tab-home',
       currentMovie: null,
       currentStreamUrl: null,
-      currentEpisodeId: null,
-      episodes: [],
+      currentDirectUrl: null,
+      currentMagnet: null,
       watchlist: JSON.parse(localStorage.getItem('sdk_watchlist') || '[]'),
       continueWatching: JSON.parse(localStorage.getItem('sdk_cw') || '[]'),
       playbackSpeed: 1.0,
-      controlsTimeout: null,
-      isScrubbing: false
+      controlsTimeout: null
     };
 
-    // DOM Helpers
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     function showToast(msg) {
       const t = $('#m-toast');
@@ -1683,8 +1556,74 @@
       setTimeout(() => t.classList.remove('show'), 2600);
     }
 
+    // Helper to get poster URL from any object structure
+    function getPosterUrl(m) {
+      if (!m) return '';
+      return m.poster_url || m.poster || m.image || m.thumbnail || '';
+    }
+
+    // Helper to get canonical topic URL
+    function getTopicUrl(m) {
+      if (!m) return '';
+      return m.topic_url || m.url || m.link || '';
+    }
+
+    // Comprehensive Poster Error Recovery (Same 4-step algorithm as PC version)
+    function handlePosterError(imgEl, title) {
+      if (!imgEl) return;
+      title = title || imgEl.dataset.title || imgEl.alt || '';
+
+      // Step 0: Strip suffix -tamil-movie.jpg / -web-series.jpg
+      if (!imgEl.dataset.triedClean && imgEl.src && /-(?:tamil-dubbed-web-series|tamil-web-series|web-series|tamil-dubbed-movie|tamil-movie)\.jpg/i.test(imgEl.src)) {
+        imgEl.dataset.triedClean = '1';
+        imgEl.src = imgEl.src.replace(/-(?:tamil-dubbed-web-series|tamil-web-series|web-series|tamil-dubbed-movie|tamil-movie)\.jpg/i, '.jpg');
+        return;
+      }
+
+      // Step 1: Route through local proxy
+      if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
+        imgEl.dataset.triedProxy = '1';
+        imgEl.src = '/api/poster-proxy?url=' + encodeURIComponent(imgEl.src);
+        return;
+      }
+
+      // Step 2: Query Cinemeta/IMDb metadata
+      if (!imgEl.dataset.triedMeta && title) {
+        imgEl.dataset.triedMeta = '1';
+        const yr = imgEl.dataset.year || (title.match(/\b(19\d\d|20\d\d)\b/) || [])[1] || '';
+        const yrParam = yr ? `&year=${encodeURIComponent(yr)}` : '';
+        fetch(`/api/metadata?title=${encodeURIComponent(title)}${yrParam}`)
+          .then(r => r.json())
+          .then(d => {
+            if (d && d.poster && d.poster !== imgEl.src) {
+              imgEl.dataset.triedProxy = '';
+              imgEl.src = d.poster;
+            } else {
+              showFallbackPlaceholder(imgEl, title);
+            }
+          })
+          .catch(() => showFallbackPlaceholder(imgEl, title));
+        return;
+      }
+
+      showFallbackPlaceholder(imgEl, title);
+    }
+
+    function showFallbackPlaceholder(imgEl, title) {
+      imgEl.style.display = 'none';
+      const parent = imgEl.parentElement;
+      if (parent && !parent.querySelector('.poster-placeholder')) {
+        const ph = document.createElement('div');
+        ph.className = 'poster-placeholder';
+        const cleanT = (title || 'Movie').replace(/[^\w\s]/g, '').trim();
+        const initials = cleanT.split(' ').filter(Boolean).map(w => w[0]).join('').slice(0, 3).toUpperCase() || 'MOV';
+        ph.innerHTML = `<span style="font-size:18px;font-weight:800;letter-spacing:1px;color:#a5b4fc;">${esc(initials)}</span>`;
+        parent.appendChild(ph);
+      }
+    }
+
     // ==========================================================================
-    // INITIALIZATION & DATA FETCHING
+    // APP INITIALIZATION
     // ==========================================================================
     async function initApp() {
       setupNavigation();
@@ -1702,7 +1641,6 @@
       ]);
     }
 
-    // Check server domain health
     async function checkServerHealth() {
       try {
         const res = await fetch('/api/domain');
@@ -1718,7 +1656,6 @@
       }
     }
 
-    // Fetch Shelves from /api/tv/shelves
     async function fetchShelves() {
       try {
         const res = await fetch('/api/tv/shelves');
@@ -1734,34 +1671,43 @@
       }
     }
 
-    // Fetch Recent Releases for 2-column catalog
     async function fetchRecentReleases() {
       try {
-        const res = await fetch('/api/recent?limit=24');
-        if (!res.ok) return;
+        const res = await fetch('/api/recent?limit=40');
+        if (!res.ok) throw new Error('Recent fetch failed');
         state.recent = await res.json();
         renderCatalog(state.recent);
+        if (!state.currentMovie && state.recent.length > 0) {
+          renderSpotlight(state.recent[0]);
+        }
       } catch (err) {
         console.error('Error loading recent:', err);
+        $('#m-catalog-grid').innerHTML = `
+          <div style="grid-column: span 2; text-align:center; padding:30px; color:#94a3b8;">
+            <p>Connecting to catalog…</p>
+            <button class="settings-btn" style="margin-top:10px;" onclick="fetchRecentReleases()">🔄 Retry</button>
+          </div>`;
       }
     }
 
     // ==========================================================================
-    // RENDERING LOGIC
+    // RENDERING
     // ==========================================================================
-
     function renderSpotlight(item) {
       if (!item) return;
       $('#m-spotlight').style.display = 'flex';
-      const bg = item.backdrop || item.poster || '';
+      const bg = item.background || item.backdrop || getPosterUrl(item) || '';
       $('#m-spotlight-bg').style.backgroundImage = `url('${bg}')`;
       $('#m-spotlight-title').textContent = item.title || 'Featured Release';
       $('#m-spotlight-rating').textContent = item.rating ? `⭐ ${item.rating}` : '⭐ 8.4';
       $('#m-spotlight-quality').textContent = item.quality || '1080p FHD';
 
-      const srcLabel = item.source === 'isaidub' ? '🎙️ TamDub' :
-                       item.source === 'toonplay' ? '🎌 Anime' :
-                       item.source === 'tamilmv' ? '🧲 Torrents' : '⚡ Direct MP4';
+      const src = (item.source || '').toLowerCase();
+      const isDubbed = src === 'isaidub' || (item.topic_url && item.topic_url.includes('isaidub'));
+      const isAnime = item.is_toonplay || src === 'toonplay';
+      const isTorrent = src === 'tamilmv';
+
+      const srcLabel = isDubbed ? '🎙️ TamDub' : (isAnime ? '🎌 Anime' : (isTorrent ? '🧲 Torrents' : '⚡ Direct MP4'));
       $('#m-spotlight-source').textContent = srcLabel;
 
       $('#m-spotlight-play').onclick = () => openDetails(item, true);
@@ -1775,7 +1721,6 @@
       state.shelves.forEach(shelf => {
         if (!shelf.items || shelf.items.length === 0) return;
 
-        // Filter based on active chip
         if (state.activeSource !== 'all') {
           if (state.activeSource === 'direct_tamil' && shelf.id !== 'direct_tamil') return;
           if (state.activeSource === 'dubbed' && shelf.id !== 'dubbed') return;
@@ -1809,25 +1754,31 @@
       const card = document.createElement('div');
       card.className = 'poster-card';
 
-      const poster = movie.poster || '/favicon.svg';
-      const badgeCls = movie.source === 'isaidub' ? 'dubbed' :
-                       movie.source === 'toonplay' ? 'anime' :
-                       movie.source === 'tamilmv' ? 'torrent' : 'direct';
-      const badgeText = movie.source === 'isaidub' ? 'TamDub' :
-                        movie.source === 'toonplay' ? 'Anime' :
-                        movie.source === 'tamilmv' ? 'Torrent' : 'Direct';
+      const poster = getPosterUrl(movie);
+      const src = (movie.source || '').toLowerCase();
+      const isDirect = movie.is_direct || src === 'isaimini' || src === 'moviesda';
+      const isDubbed = src === 'isaidub' || (movie.topic_url && movie.topic_url.includes('isaidub'));
+      const isAnime = movie.is_toonplay || src === 'toonplay';
+      const isTorrent = src === 'tamilmv' || (!isDirect && !isDubbed && !isAnime);
+
+      const badgeCls = isDubbed ? 'dubbed' : (isAnime ? 'anime' : (isTorrent ? 'torrent' : 'direct'));
+      const badgeText = isDubbed ? 'TamDub' : (isAnime ? 'Anime' : (isTorrent ? 'Torrent' : 'Direct'));
 
       card.innerHTML = `
         <div class="poster-img-wrap">
-          <img class="poster-img" src="${poster}" alt="${movie.title}" loading="lazy" onerror="this.src='/favicon.svg'">
+          ${poster ? `
+            <img class="poster-img" src="${esc(poster)}" alt="${esc(movie.title)}" data-title="${esc(movie.title)}" data-year="${movie.year || ''}" referrerpolicy="no-referrer" loading="lazy" onerror="handlePosterError(this)">
+          ` : `
+            <div class="poster-placeholder"><span style="font-size:18px;font-weight:800;color:#a5b4fc;">${esc((movie.title || 'M').slice(0, 3).toUpperCase())}</span></div>
+          `}
           <span class="card-badge ${badgeCls}">${badgeText}</span>
           ${movie.rating ? `<div class="card-rating-pill">⭐ ${movie.rating}</div>` : ''}
         </div>
         <div class="poster-info">
-          <div class="poster-title">${movie.title}</div>
+          <div class="poster-title">${esc(movie.title)}</div>
           <div class="poster-meta">
             <span>${movie.year || '2024'}</span>
-            ${movie.quality ? `<span>• ${movie.quality}</span>` : ''}
+            ${movie.quality ? `<span>• ${esc(movie.quality.split(' ')[0])}</span>` : ''}
           </div>
         </div>
       `;
@@ -1840,7 +1791,7 @@
       const grid = $('#m-catalog-grid');
       grid.innerHTML = '';
       if (!items || items.length === 0) {
-        grid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding:30px; color:#64748b;">No releases loaded</div>';
+        grid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding:30px; color:#64748b;">No releases available</div>';
         return;
       }
       items.forEach(movie => {
@@ -1851,18 +1802,22 @@
     function createGridCard(movie) {
       const card = document.createElement('div');
       card.className = 'grid-card';
-      const poster = movie.poster || '/favicon.svg';
+      const poster = getPosterUrl(movie);
 
       card.innerHTML = `
         <div class="grid-img-wrap">
-          <img class="grid-img" src="${poster}" alt="${movie.title}" loading="lazy" onerror="this.src='/favicon.svg'">
+          ${poster ? `
+            <img class="grid-img" src="${esc(poster)}" alt="${esc(movie.title)}" data-title="${esc(movie.title)}" data-year="${movie.year || ''}" referrerpolicy="no-referrer" loading="lazy" onerror="handlePosterError(this)">
+          ` : `
+            <div class="poster-placeholder"><span style="font-size:18px;font-weight:800;color:#a5b4fc;">${esc((movie.title || 'M').slice(0, 3).toUpperCase())}</span></div>
+          `}
           ${movie.rating ? `<div class="card-rating-pill">⭐ ${movie.rating}</div>` : ''}
         </div>
         <div class="poster-info">
-          <div class="poster-title">${movie.title}</div>
+          <div class="poster-title">${esc(movie.title)}</div>
           <div class="poster-meta">
             <span>${movie.year || '2024'}</span>
-            <span>• ${movie.source || 'Tamil'}</span>
+            <span>• ${esc(movie.source_label || movie.source || 'Tamil')}</span>
           </div>
         </div>
       `;
@@ -1871,7 +1826,6 @@
       return card;
     }
 
-    // Continue Watching
     function renderContinueWatching() {
       const section = $('#m-cw-section');
       const track = $('#m-cw-track');
@@ -1887,10 +1841,11 @@
         const card = document.createElement('div');
         card.className = 'cw-card';
         const progressPct = item.duration ? Math.min(100, Math.round((item.position / item.duration) * 100)) : 25;
+        const poster = getPosterUrl(item);
 
         card.innerHTML = `
           <div class="cw-thumb-wrap">
-            <img class="cw-thumb" src="${item.poster || '/favicon.svg'}" alt="${item.title}">
+            <img class="cw-thumb" src="${esc(poster)}" alt="${esc(item.title)}" referrerpolicy="no-referrer" onerror="handlePosterError(this)">
             <div class="cw-play-circle">
               <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
@@ -1898,12 +1853,12 @@
               <div class="cw-progress-fill" style="width: ${progressPct}%;"></div>
             </div>
           </div>
-          <div class="cw-title">${item.title}</div>
+          <div class="cw-title">${esc(item.title)}</div>
         `;
 
         card.onclick = () => {
           if (item.streamUrl) {
-            playVideoStream(item.streamUrl, item.title, item.position);
+            playVideoStream(item.streamUrl, item.title, 'Resume', item.directUrl, item.magnet, item.position);
           } else {
             openDetails(item, true);
           }
@@ -1914,27 +1869,50 @@
     }
 
     // ==========================================================================
-    // MOVIE DETAILS BOTTOM SHEET
+    // MOVIE DETAILS BOTTOM SHEET & STREAM RESOLUTION
     // ==========================================================================
     async function openDetails(movie, autoPlay = false) {
       state.currentMovie = movie;
       const sheet = $('#m-details-sheet');
       const backdrop = $('#m-sheet-backdrop');
 
-      $('#sheet-poster-img').src = movie.poster || '/favicon.svg';
-      $('#sheet-title').textContent = movie.title;
+      const poster = getPosterUrl(movie);
+      const posterImg = $('#sheet-poster-img');
+      posterImg.style.display = 'block';
+      posterImg.src = poster || '';
+      posterImg.dataset.title = movie.title;
+      posterImg.dataset.year = movie.year || '';
+      posterImg.onerror = () => handlePosterError(posterImg);
+
+      $('#sheet-title').textContent = movie.title + (movie.year ? ` (${movie.year})` : '');
       $('#sheet-rating-badge').textContent = movie.rating ? `⭐ ${movie.rating}` : '⭐ 8.0';
       $('#sheet-year-badge').textContent = movie.year || '2024';
+
+      const src = (movie.source || '').toLowerCase();
+      const isDirect = movie.is_direct || src === 'isaimini' || src === 'moviesda';
+      const isDubbed = src === 'isaidub' || (movie.topic_url && movie.topic_url.includes('isaidub'));
+      const isAnime = movie.is_toonplay || src === 'toonplay';
+
+      const srcLabel = isDubbed ? '🎙️ TamDub' : (isAnime ? '🎌 Anime' : (isDirect ? '⚡ Direct MP4' : '🧲 Torrents'));
+      $('#sheet-source-badge').textContent = srcLabel;
 
       const isFav = state.watchlist.some(w => w.title === movie.title);
       $('#sheet-btn-fav').textContent = isFav ? '♥' : '♡';
       $('#sheet-btn-fav').style.color = isFav ? '#ff4d8d' : '#fff';
 
-      // Reset options
-      $('#sheet-options-list').innerHTML = '<div class="stream-opt-card"><div class="stream-opt-title">Resolving streams…</div></div>';
+      $('#sheet-options-list').innerHTML = `
+        <div class="stream-opt-card">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="spinner-sm"></div>
+            <div>
+              <div class="stream-opt-title">Loading available links &amp; files…</div>
+              <div class="stream-opt-sub">Connecting to stream gateway</div>
+            </div>
+          </div>
+        </div>
+      `;
       $('#sheet-episodes-wrap').style.display = 'none';
 
-      // Open Sheet
       sheet.classList.add('active');
       backdrop.classList.add('active');
 
@@ -1948,13 +1926,12 @@
         $('#sheet-btn-fav').style.color = favNow ? '#ff4d8d' : '#fff';
       };
 
-      // Handle based on media source
-      if (movie.source === 'toonplay' || movie.anime_id) {
+      if (isAnime) {
         await loadAnimeDetails(movie, autoPlay);
-      } else if (movie.source === 'tamilmv') {
-        await loadTorrentDetails(movie, autoPlay);
-      } else {
+      } else if (isDirect || isDubbed) {
         await loadDirectMovieDetails(movie, autoPlay);
+      } else {
+        await loadTorrentDetails(movie, autoPlay);
       }
     }
 
@@ -1965,9 +1942,15 @@
 
     // Direct MP4 (TamilMov / TamDub)
     async function loadDirectMovieDetails(movie, autoPlay) {
-      const url = movie.url || movie.link || '';
+      const topicUrl = getTopicUrl(movie);
+      if (!topicUrl) {
+        $('#sheet-options-list').innerHTML = '<div class="stream-opt-card"><div class="stream-opt-title">Missing movie URL</div></div>';
+        return;
+      }
+
       try {
-        const res = await fetch(`/api/isaimini/files?url=${encodeURIComponent(url)}`);
+        const res = await fetch(`/api/isaimini/files?url=${encodeURIComponent(topicUrl)}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         const files = data.files || [];
 
@@ -1975,19 +1958,33 @@
         list.innerHTML = '';
 
         if (files.length === 0) {
-          list.innerHTML = '<div class="stream-opt-card"><div class="stream-opt-title">No direct files available</div></div>';
+          list.innerHTML = `
+            <div class="stream-opt-card">
+              <div>
+                <div class="stream-opt-title">No direct files returned</div>
+                <div class="stream-opt-sub">Check source website directly</div>
+              </div>
+              <a class="settings-btn" href="${esc(topicUrl)}" target="_blank" rel="noopener noreferrer">Open ↗</a>
+            </div>`;
           return;
         }
 
         files.forEach((file, idx) => {
           const card = document.createElement('div');
           card.className = 'stream-opt-card';
+
+          const qLabel = file.quality_label || (file.file_name.match(/1080p|720p|480p|HQ|HD/i) || [])[0] || '1080p HD';
+          const sizeLabel = file.file_size || file.size || 'Direct Stream';
+          const cleanName = file.file_name || `${movie.title} [${qLabel}]`;
+
           card.innerHTML = `
-            <div>
-              <div class="stream-opt-title">${file.name || 'Movie File (HD)'}</div>
-              <div class="stream-opt-sub">${file.size || 'Direct MP4 Stream'}</div>
+            <div style="flex:1;overflow:hidden;padding-right:10px;">
+              <div class="stream-opt-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(cleanName)}</div>
+              <div class="stream-opt-sub">${esc(sizeLabel)} • ${esc(file.resolution || qLabel)}</div>
             </div>
-            <button class="settings-btn">▶ Play</button>
+            <div style="display:flex;gap:6px;">
+              <button class="settings-btn" style="background:linear-gradient(135deg,#7c5cff,#9061f9);border:none;">▶ Play</button>
+            </div>
           `;
 
           card.onclick = async () => {
@@ -1996,45 +1993,173 @@
           };
 
           list.appendChild(card);
-
-          if (autoPlay && idx === 0) {
-            closeDetails();
-            playDirectFile(file, movie.title);
-          }
         });
 
-        // Set primary play button action
         $('#sheet-btn-stream').onclick = async () => {
           closeDetails();
           await playDirectFile(files[0], movie.title);
         };
+
+        if (autoPlay && files.length > 0) {
+          closeDetails();
+          await playDirectFile(files[0], movie.title);
+        }
       } catch (err) {
-        console.error('Error fetching direct files:', err);
+        $('#sheet-options-list').innerHTML = `
+          <div class="stream-opt-card">
+            <div>
+              <div class="stream-opt-title">Failed to load files</div>
+              <div class="stream-opt-sub">${esc(err.message)}</div>
+            </div>
+            <button class="settings-btn" onclick="openDetails(state.currentMovie)">🔄 Retry</button>
+          </div>`;
       }
     }
 
     async function playDirectFile(file, title) {
       showToast('Resolving high-speed stream…');
       try {
-        const res = await fetch(`/api/isaimini/resolve?url=${encodeURIComponent(file.url)}`);
-        const data = await res.json();
-        const direct = data.download_url || data.direct_url;
-        if (!direct) throw new Error('Could not resolve link');
+        let directUrl = file.direct_url;
+        if (!directUrl) {
+          const pageUrl = file.download_page_url || file.url || file.link;
+          const res = await fetch(`/api/isaimini/resolve?download_page_url=${encodeURIComponent(pageUrl)}`);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          directUrl = data.direct_url || data.download_url;
+        }
 
-        const streamUrl = `/api/direct-stream?url=${encodeURIComponent(direct)}`;
-        playVideoStream(streamUrl, title);
+        if (!directUrl) throw new Error('Could not resolve direct streaming link');
+
+        const streamUrl = `/api/direct-stream?url=${encodeURIComponent(directUrl)}`;
+        playVideoStream(streamUrl, title, file.quality_label || '1080p FHD', directUrl);
       } catch (err) {
-        showToast('Stream failed: ' + err.message);
+        showToast('Stream error: ' + err.message);
       }
     }
 
-    // ToonPlay Anime
-    async function loadAnimeDetails(movie, autoPlay) {
-      const slug = movie.slug || movie.anime_id || movie.id;
+    // Torrents (1TamilMV)
+    async function loadTorrentDetails(movie, autoPlay) {
+      const topicUrl = getTopicUrl(movie);
+      if (!topicUrl) {
+        $('#sheet-options-list').innerHTML = '<div class="stream-opt-card"><div class="stream-opt-title">Missing topic URL</div></div>';
+        return;
+      }
+
       try {
-        const res = await fetch(`/api/toonplay/info?slug=${encodeURIComponent(slug)}`);
+        const res = await fetch(`/api/downloads?url=${encodeURIComponent(topicUrl)}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        const episodes = data.episodes || [];
+        const options = Array.isArray(data) ? data : (data.options || []);
+
+        const list = $('#sheet-options-list');
+        list.innerHTML = '';
+
+        if (options.length === 0) {
+          list.innerHTML = `
+            <div class="stream-opt-card">
+              <div>
+                <div class="stream-opt-title">No torrent magnets found</div>
+                <div class="stream-opt-sub">Check topic page directly</div>
+              </div>
+              <a class="settings-btn" href="${esc(topicUrl)}" target="_blank" rel="noopener noreferrer">Open ↗</a>
+            </div>`;
+          return;
+        }
+
+        // 1080p priority sort
+        options.sort((a, b) => {
+          const sA = (a.quality || '') + ' ' + (a.label || '');
+          const sB = (b.quality || '') + ' ' + (b.label || '');
+          return (sB.includes('1080') ? 1000 : 0) - (sA.includes('1080') ? 1000 : 0);
+        });
+
+        options.forEach((opt, idx) => {
+          const card = document.createElement('div');
+          card.className = 'stream-opt-card';
+
+          const qLabel = opt.quality || (opt.label.match(/1080p|720p|480p|UHD|4K/i) || [])[0] || '1080p';
+          const cleanLabel = opt.label || `${movie.title} [${qLabel}]`;
+
+          card.innerHTML = `
+            <div style="flex:1;overflow:hidden;padding-right:10px;">
+              <div class="stream-opt-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(cleanLabel)}</div>
+              <div class="stream-opt-sub">${esc(opt.size || 'Torrent')} • Seeds: ${opt.seeders || 'High'}</div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              ${opt.magnet ? `<button class="settings-btn play-torrent-btn" style="background:linear-gradient(135deg,#7c5cff,#9061f9);border:none;">▶ Stream</button>` : ''}
+              ${opt.magnet ? `<button class="settings-btn copy-magnet-btn">🧲 Magnet</button>` : ''}
+            </div>
+          `;
+
+          const playBtn = card.querySelector('.play-torrent-btn');
+          if (playBtn) {
+            playBtn.onclick = (e) => {
+              e.stopPropagation();
+              closeDetails();
+              playTorrentStream(opt, movie.title);
+            };
+          }
+
+          const magBtn = card.querySelector('.copy-magnet-btn');
+          if (magBtn) {
+            magBtn.onclick = (e) => {
+              e.stopPropagation();
+              navigator.clipboard?.writeText(opt.magnet);
+              showToast('Magnet link copied!');
+            };
+          }
+
+          card.onclick = () => {
+            closeDetails();
+            playTorrentStream(opt, movie.title);
+          };
+
+          list.appendChild(card);
+        });
+
+        $('#sheet-btn-stream').onclick = () => {
+          closeDetails();
+          playTorrentStream(options[0], movie.title);
+        };
+
+        if (autoPlay && options.length > 0) {
+          closeDetails();
+          playTorrentStream(options[0], movie.title);
+        }
+      } catch (err) {
+        $('#sheet-options-list').innerHTML = `
+          <div class="stream-opt-card">
+            <div>
+              <div class="stream-opt-title">Failed to load torrent options</div>
+              <div class="stream-opt-sub">${esc(err.message)}</div>
+            </div>
+            <button class="settings-btn" onclick="openDetails(state.currentMovie)">🔄 Retry</button>
+          </div>`;
+      }
+    }
+
+    function playTorrentStream(opt, title) {
+      if (!opt || !opt.magnet) {
+        showToast('No magnet link available');
+        return;
+      }
+      const streamUrl = `/stream?magnet=${encodeURIComponent(opt.magnet)}`;
+      playVideoStream(streamUrl, title, opt.quality || '1080p FHD', null, opt.magnet);
+    }
+
+    // Anime (ToonPlay)
+    async function loadAnimeDetails(movie, autoPlay) {
+      const itemId = movie.toon_id || (movie.id && String(movie.id).replace(/^toon_/, '')) || (movie.topic_url && movie.topic_url.replace('/api/toonplay/info?id=', '')) || movie.title;
+
+      try {
+        const res = await fetch(`/api/toonplay/info?id=${encodeURIComponent(itemId)}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const item = data.item || movie;
+        const episodes = data.episodes || item.episodes || [];
+
+        const list = $('#sheet-options-list');
+        list.innerHTML = '';
 
         if (episodes.length > 0) {
           $('#sheet-episodes-wrap').style.display = 'block';
@@ -2049,74 +2174,60 @@
               $$('.ep-chip').forEach(c => c.classList.remove('active'));
               chip.classList.add('active');
               closeDetails();
-              await playAnimeEpisode(ep, movie.title);
+              await playAnimeEpisode(itemId, ep, movie.title);
             };
             track.appendChild(chip);
           });
+        }
 
-          $('#sheet-btn-stream').onclick = async () => {
-            closeDetails();
-            await playAnimeEpisode(episodes[0], movie.title);
-          };
+        const card = document.createElement('div');
+        card.className = 'stream-opt-card';
+        card.innerHTML = `
+          <div>
+            <div class="stream-opt-title">High Speed Anime Stream</div>
+            <div class="stream-opt-sub">Multi-Audio Dubbed • 1080p FHD</div>
+          </div>
+          <button class="settings-btn" style="background:linear-gradient(135deg,#7c5cff,#9061f9);border:none;">▶ Play</button>
+        `;
+        card.onclick = async () => {
+          closeDetails();
+          await playAnimeEpisode(itemId, episodes[0] || { episode_number: 1 }, movie.title);
+        };
+        list.appendChild(card);
 
-          if (autoPlay) {
-            closeDetails();
-            playAnimeEpisode(episodes[0], movie.title);
-          }
+        $('#sheet-btn-stream').onclick = async () => {
+          closeDetails();
+          await playAnimeEpisode(itemId, episodes[0] || { episode_number: 1 }, movie.title);
+        };
+
+        if (autoPlay) {
+          closeDetails();
+          await playAnimeEpisode(itemId, episodes[0] || { episode_number: 1 }, movie.title);
         }
       } catch (err) {
-        console.error('Error loading anime details:', err);
+        $('#sheet-options-list').innerHTML = `
+          <div class="stream-opt-card">
+            <div>
+              <div class="stream-opt-title">Failed to load anime</div>
+              <div class="stream-opt-sub">${esc(err.message)}</div>
+            </div>
+          </div>`;
       }
     }
 
-    async function playAnimeEpisode(ep, animeTitle) {
-      showToast('Buffering episode…');
+    async function playAnimeEpisode(itemId, ep, title) {
+      showToast('Resolving anime stream…');
       try {
-        const res = await fetch(`/api/toonplay/resolve?episode_id=${encodeURIComponent(ep.id || ep.episode_id)}`);
+        const epNum = ep.episode_number || ep.ep || 1;
+        const season = ep.season || 1;
+        const res = await fetch(`/api/toonplay/resolve?id=${encodeURIComponent(itemId)}&s=${season}&ep=${epNum}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         const streamUrl = data.stream_url || data.hls_url || data.embed_url;
-        playVideoStream(streamUrl, `${animeTitle} - ${ep.title || 'Ep'}`);
+        if (!streamUrl) throw new Error('No stream URL returned');
+        playVideoStream(streamUrl, `${title} - Ep ${epNum}`, '1080p FHD');
       } catch (err) {
         showToast('Anime stream error: ' + err.message);
-      }
-    }
-
-    // Torrents
-    async function loadTorrentDetails(movie, autoPlay) {
-      const url = movie.url || movie.link || '';
-      try {
-        const res = await fetch(`/api/downloads?url=${encodeURIComponent(url)}`);
-        const data = await res.json();
-        const options = data.options || [];
-
-        const list = $('#sheet-options-list');
-        list.innerHTML = '';
-
-        if (options.length === 0) {
-          list.innerHTML = '<div class="stream-opt-card"><div class="stream-opt-title">No torrent streams found</div></div>';
-          return;
-        }
-
-        options.forEach(opt => {
-          const card = document.createElement('div');
-          card.className = 'stream-opt-card';
-          card.innerHTML = `
-            <div>
-              <div class="stream-opt-title">${opt.title || 'Torrent Release'}</div>
-              <div class="stream-opt-sub">${opt.size || ''} • Seeds: ${opt.seeders || 'High'}</div>
-            </div>
-            <button class="settings-btn">🧲 Magnet</button>
-          `;
-          card.onclick = () => {
-            if (opt.magnet) {
-              navigator.clipboard?.writeText(opt.magnet);
-              showToast('Magnet link copied to clipboard!');
-            }
-          };
-          list.appendChild(card);
-        });
-      } catch (err) {
-        console.error('Error loading torrents:', err);
       }
     }
 
@@ -2124,28 +2235,19 @@
     // DEDICATED MOBILE VIDEO PLAYER
     // ==========================================================================
     function setupPlayer() {
-      const player = $('#m-player-overlay');
       const video = $('#m-video');
-      const scrim = $('#m-controls-scrim');
 
-      // Close player
       $('#m-player-close').onclick = closePlayer;
-
-      // Play/Pause Center Button
       $('#m-btn-playpause').onclick = togglePlayPause;
-
-      // Rewind / Forward 10s buttons
       $('#m-btn-rewind').onclick = () => seekRelative(-10);
       $('#m-btn-forward').onclick = () => seekRelative(10);
 
-      // Double-Tap Left & Right Gestures
       let lastTapLeft = 0;
       let lastTapRight = 0;
 
-      $('#m-touch-left').addEventListener('click', e => {
+      $('#m-touch-left').addEventListener('click', () => {
         const now = Date.now();
         if (now - lastTapLeft < 320) {
-          // Double Tap Left
           seekRelative(-10);
           showRipple('left');
           lastTapLeft = 0;
@@ -2155,10 +2257,9 @@
         }
       });
 
-      $('#m-touch-right').addEventListener('click', e => {
+      $('#m-touch-right').addEventListener('click', () => {
         const now = Date.now();
         if (now - lastTapRight < 320) {
-          // Double Tap Right
           seekRelative(10);
           showRipple('right');
           lastTapRight = 0;
@@ -2168,7 +2269,6 @@
         }
       });
 
-      // Video Events
       video.addEventListener('timeupdate', onTimeUpdate);
       video.addEventListener('waiting', () => $('#m-player-spinner').style.display = 'block');
       video.addEventListener('playing', () => {
@@ -2182,16 +2282,10 @@
       });
       video.addEventListener('ended', onVideoEnded);
 
-      // Fullscreen
       $('#m-player-fs').onclick = toggleFullscreen;
-
-      // Speed selector
       $('#m-btn-speed').onclick = cyclePlaybackSpeed;
-
-      // External Player (VLC / MX)
       $('#m-player-ext').onclick = launchExternalPlayer;
 
-      // Scrubber Touch & Drag
       const track = $('#m-scrubber-track');
       track.addEventListener('click', e => {
         const rect = track.getBoundingClientRect();
@@ -2202,12 +2296,16 @@
       });
     }
 
-    function playVideoStream(streamUrl, title, startTime = 0) {
+    function playVideoStream(streamUrl, title, quality = '1080p FHD', rawDirectUrl = null, magnet = null, startTime = 0) {
       const player = $('#m-player-overlay');
       const video = $('#m-video');
 
       state.currentStreamUrl = streamUrl;
-      $('#m-player-title').textContent = title || 'Movie Stream';
+      state.currentDirectUrl = rawDirectUrl;
+      state.currentMagnet = magnet;
+
+      $('#m-player-title').textContent = title || 'Now Playing';
+      $('#m-player-sub').textContent = quality;
 
       video.src = streamUrl;
       player.classList.add('active');
@@ -2220,16 +2318,15 @@
       }
 
       video.play().catch(e => {
-        console.warn('Auto-play blocked, tap to play', e);
+        console.warn('Playback notice:', e);
       });
 
       showControls();
 
-      // Media Session API for mobile lockscreen controls
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: title || 'SDK Movie',
-          artist: 'SDK Movies Mobile',
+          artist: 'SDK Movies',
           artwork: [{ src: '/icon-512.png', sizes: '512x512', type: 'image/png' }]
         });
       }
@@ -2237,7 +2334,6 @@
 
     function closePlayer() {
       const video = $('#m-video');
-      // Save Continue Watching
       if (video.currentTime > 15 && state.currentMovie) {
         saveProgress(state.currentMovie, video.currentTime, video.duration);
       }
@@ -2263,9 +2359,9 @@
     function updatePlayIcon(isPlaying) {
       const icon = $('#m-play-icon');
       if (isPlaying) {
-        icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'; // Pause icon
+        icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
       } else {
-        icon.innerHTML = '<path d="M8 5v14l11-7z"/>'; // Play icon
+        icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
       }
     }
 
@@ -2353,8 +2449,17 @@
     }
 
     function launchExternalPlayer() {
-      if (!state.currentStreamUrl) return;
-      const full = new URL(state.currentStreamUrl, window.location.origin).href;
+      const full = state.currentDirectUrl || (state.currentStreamUrl ? (new URL(state.currentStreamUrl, window.location.origin).href) : '');
+      if (!full) {
+        if (state.currentMagnet) {
+          window.location.href = state.currentMagnet;
+          showToast('Opening torrent app…');
+          return;
+        }
+        showToast('No stream URL available');
+        return;
+      }
+
       const vlcUrl = `vlc://${full}`;
       const intentUrl = `intent:${full}#Intent;package=org.videolan.vlc;type=video/*;end`;
 
@@ -2362,7 +2467,7 @@
       window.location.href = vlcUrl;
       setTimeout(() => {
         window.location.href = intentUrl;
-      }, 500);
+      }, 400);
     }
 
     function onVideoEnded() {
@@ -2374,9 +2479,12 @@
       const idx = state.continueWatching.findIndex(c => c.title === movie.title);
       const entry = {
         title: movie.title,
-        poster: movie.poster,
-        url: movie.url,
+        poster: getPosterUrl(movie),
+        poster_url: getPosterUrl(movie),
+        topic_url: getTopicUrl(movie),
         streamUrl: state.currentStreamUrl,
+        directUrl: state.currentDirectUrl,
+        magnet: state.currentMagnet,
         position,
         duration,
         timestamp: Date.now()
@@ -2393,7 +2501,6 @@
     // NAVIGATION & TABS
     // ==========================================================================
     function setupNavigation() {
-      // Bottom Tabs
       $$('.nav-tab-btn').forEach(btn => {
         btn.onclick = () => {
           const tabId = btn.getAttribute('data-tab');
@@ -2401,16 +2508,13 @@
         };
       });
 
-      // Quick Search in header
       $('#btn-quick-search').onclick = () => {
         switchTab('tab-search');
         setTimeout(() => $('#m-search-input').focus(), 150);
       };
 
-      // Brand mark to Home
       $('#brand-home-btn').onclick = () => switchTab('tab-home');
 
-      // Filter Chips
       $$('#source-chips .chip-btn').forEach(chip => {
         chip.onclick = () => {
           $$('#source-chips .chip-btn').forEach(c => c.classList.remove('active'));
@@ -2485,13 +2589,14 @@
     async function executeSearch(query) {
       const resultsGrid = $('#m-search-results');
       const emptyState = $('#m-search-empty');
-      resultsGrid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding:30px; color:#94a3b8;">Searching…</div>';
+      resultsGrid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding:30px; color:#94a3b8;"><div class="spinner-sm" style="margin:0 auto 10px;"></div>Searching releases…</div>';
       emptyState.style.display = 'none';
 
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&source=all`);
+        if (!res.ok) throw new Error('Search failed');
         const data = await res.json();
-        const items = data.items || data.results || [];
+        const items = Array.isArray(data) ? data : (data.items || data.results || []);
 
         resultsGrid.innerHTML = '';
         if (items.length === 0) {
@@ -2503,7 +2608,7 @@
           resultsGrid.appendChild(createGridCard(movie));
         });
       } catch (err) {
-        resultsGrid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding:30px; color:#ef4444;">Search failed</div>';
+        resultsGrid.innerHTML = `<div style="grid-column: span 2; text-align:center; padding:30px; color:#ef4444;">Search failed: ${esc(err.message)}</div>`;
       }
     }
 
@@ -2518,10 +2623,10 @@
       } else {
         state.watchlist.unshift({
           title: movie.title,
-          poster: movie.poster,
+          poster_url: getPosterUrl(movie),
           rating: movie.rating,
           year: movie.year,
-          url: movie.url,
+          topic_url: getTopicUrl(movie),
           source: movie.source
         });
         showToast('Added to Watchlist ♥');
@@ -2572,7 +2677,6 @@
       window.location.href = '/?view=desktop';
     }
 
-    // Launch
     window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
