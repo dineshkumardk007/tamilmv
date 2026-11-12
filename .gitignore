@@ -9,6 +9,8 @@ node_modules/
 *.log
 scratch/
 android/app/build/
+android/build/
 android/.gradle/
+.vscode/
 
 
