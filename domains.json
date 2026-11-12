@@ -4,6 +4,8 @@
     "protocol": "https",
     "label": "Tamil(Torrents)",
     "mirrors": [
+      "www.1tamilmv.io",
+      "1tamilmv.io",
       "www.1tamilmv.solar",
       "www.1tamilmv.insure",
       "1tamilmv.insure",
@@ -25,7 +27,7 @@
     ]
   },
   "isaidub": {
-    "active_host": "isaidub.net",
+    "active_host": "isaidub.green",
     "protocol": "https",
     "label": "TamDub (Dubbed)",
     "mirrors": [

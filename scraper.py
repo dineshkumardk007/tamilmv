@@ -57,7 +57,7 @@ from urllib.parse import quote_plus, unquote
 import requests
 from bs4 import BeautifulSoup
 
-BASE_HOST = "1tamilmv.win"
+BASE_HOST = "www.1tamilmv.io"
 try:
     import domain_manager
     _h = domain_manager.get_active_host("tamilmv")
