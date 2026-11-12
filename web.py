@@ -2341,11 +2341,108 @@ async def api_toonplay_resolve(
     return JSONResponse(resolved)
 
 
+def sanitize_toonplay_player_html(raw_html: str, target_url: str) -> str:
+    """
+    Sanitize third-party player HTML before serving:
+    - Injects <base href="..."> so assets and stream chunks resolve to upstream host
+    - Strips all known popup, popunder, redirect, and tracker scripts
+    - Injects ad-block script that freezes window.open and neutralizes clickjack overlays
+    """
+    parsed = urlparse(target_url)
+    base_origin = f"{parsed.scheme}://{parsed.netloc}"
+
+    html = raw_html
+
+    # Ensure base tag so relative assets load correctly from the source host
+    if "<base " not in html:
+        if "<head>" in html:
+            html = html.replace("<head>", f'<head><base href="{base_origin}/">', 1)
+        elif "<head " in html:
+            html = re.sub(r'(<head[^>]*>)', rf'\1<base href="{base_origin}/">', html, count=1)
+
+    # Strip external ad scripts, popunder scripts, and redirects
+    ad_script_patterns = [
+        r'<script[^>]*src=["\'][^"\']*(?:labraskulmet|redirect|ro_redirect|decafeligiblyhad|googlesyndication|cloudflareinsights|beacon\.min\.js|track|analytics)[^"\']*["\'][^>]*>.*?</script>',
+        r'<script[^>]*>.*?(?:labraskulmet|ro_redirect|decafeligiblyhad|watchanimeworld|animesalt\.ro).*?</script>',
+    ]
+    for pat in ad_script_patterns:
+        html = re.sub(pat, '<!-- [AdBlock] Filtered ad script -->', html, flags=re.IGNORECASE | re.DOTALL)
+
+    # Neutralize popups, clickjack transparent overlays, and window navigation
+    adblock_header = """
+<script>
+(function() {
+  'use strict';
+  // 1. Permanently neuter window.open to block popups, popunders, and new tabs
+  try {
+    window.open = function(url, target, features) {
+      console.warn('[SDK AdBlock] Blocked popup/tab attempt:', url);
+      return null;
+    };
+    Object.freeze(window.open);
+  } catch(e) {}
+
+  window.alert = function() {};
+  window.confirm = function() { return false; };
+  window.prompt = function() { return null; };
+
+  // 2. Prevent top/parent frame navigation and beforeunload traps
+  try {
+    window.onbeforeunload = null;
+    Object.defineProperty(window, 'onbeforeunload', { get: function() { return null; }, set: function() {} });
+  } catch(e) {}
+
+  // 3. Continuously neutralize transparent clickjack anchors and ad overlays
+  function stripAdOverlays() {
+    try {
+      // Clean links that attempt to open third-party websites in a new tab
+      document.querySelectorAll('a[target="_blank"], a[href^="http"]').forEach(function(a) {
+        var h = (a.href || '').toLowerCase();
+        if (!h.includes('.m3u8') && !h.includes('.mp4') && !h.includes('blob:')) {
+          a.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          };
+          a.removeAttribute('href');
+          a.removeAttribute('target');
+        }
+      });
+
+      // Remove popup overlay containers and ad banners
+      document.querySelectorAll('[id*="pop"], [class*="pop"], [id*="redirect"], [class*="redirect"], [id*="ad-"], [class*="ad-"]').forEach(function(el) {
+        if (el.tagName !== 'VIDEO' && !el.classList.contains('jw-controlbar') && !el.classList.contains('plyr__controls')) {
+          el.remove();
+        }
+      });
+    } catch(err) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', stripAdOverlays);
+  } else {
+    stripAdOverlays();
+  }
+  setInterval(stripAdOverlays, 800);
+})();
+</script>
+"""
+
+    if "</head>" in html:
+        html = html.replace("</head>", f"{adblock_header}</head>", 1)
+    elif "<body" in html:
+        html = re.sub(r'(<body[^>]*>)', rf'{adblock_header}\1', html, count=1)
+    else:
+        html = adblock_header + html
+
+    return html
+
+
 @app.get("/api/toonplay/embed")
 async def api_toonplay_embed(url: str = Query(...)):
     """
     Clean sandboxed player page that hides third-party gateways, strips intrusive popups,
-    and provides smooth fullscreen playback for Web & Smart TV.
+    and provides smooth fullscreen playback with zero ads.
     """
     raw_url = url.strip()
     if not raw_url.startswith("http"):
@@ -2357,6 +2454,33 @@ async def api_toonplay_embed(url: str = Query(...)):
     else:
         player_target = raw_url
 
+    # Attempt to fetch and sanitize the player HTML server-side
+    try:
+        def _fetch_player():
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                "Referer": "https://toonplay.in/",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            }
+            resp = requests.get(player_target, headers=headers, timeout=8)
+            if resp.status_code == 200 and "<html" in resp.text.lower():
+                return sanitize_toonplay_player_html(resp.text, player_target)
+            return None
+
+        clean_html = await asyncio.to_thread(_fetch_player)
+        if clean_html:
+            return Response(
+                content=clean_html,
+                media_type="text/html",
+                headers={
+                    "Cache-Control": "public, max-age=3600",
+                    "X-Content-Type-Options": "nosniff",
+                }
+            )
+    except Exception as exc:
+        logger.warning(f"Server-side sanitize player fallback: {exc}")
+
+    # Fallback to strict sandboxed iframe
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2373,6 +2497,7 @@ async def api_toonplay_embed(url: str = Query(...)):
   <iframe
     id="inner-player-iframe"
     src="{player_target}"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
     allowfullscreen="true"
     webkitallowfullscreen="true"
     mozallowfullscreen="true"
