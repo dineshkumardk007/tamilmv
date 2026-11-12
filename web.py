@@ -826,20 +826,57 @@ async def _background_auto_sync():
 async def lifespan(app: FastAPI):
     import time
     db.init_db()
+    try:
+        isaimini_db.init_db()
+    except Exception as e:
+        logger.error(f"Failed to init isaimini db: {e}")
+    try:
+        toonplay_db.init_db()
+    except Exception as e:
+        logger.error(f"Failed to init toonplay db: {e}")
 
-    # Auto-refresh cache on cold start if DB is empty
-    if db.count_movies() == 0:
-        try:
-            entries = await asyncio.to_thread(scraper.fetch_homepage)
-            with db.get_conn() as conn:
-                for e in entries:
-                    db.upsert_movie(conn, e)
-            global _LAST_SYNC_TIME, _LAST_SYNC_STATUS, _LAST_SYNC_ADDED
-            _LAST_SYNC_TIME = time.time()
-            _LAST_SYNC_STATUS = "ok"
-            _LAST_SYNC_ADDED = len(entries)
-        except Exception:
-            pass  # fail silently, user can still search live
+    # Seed databases from seed_movies.json if DB is empty on fresh container boot
+    try:
+        seed_path = BASE_DIR / "seed_movies.json"
+        if seed_path.exists():
+            with open(seed_path, "r", encoding="utf-8") as sf:
+                seed_data = json.load(sf)
+            if db.count_movies() == 0:
+                tmv_seeds = seed_data.get("tmv", [])
+                if tmv_seeds:
+                    with db.get_conn() as conn:
+                        for m in tmv_seeds:
+                            db.upsert_movie(conn, m)
+                    print(f"[Lifespan] Bootstrapped {len(tmv_seeds)} movies into movies.db from seed")
+
+            with isaimini_db.get_conn() as conn:
+                isai_count = conn.execute("SELECT COUNT(*) FROM movies").fetchone()[0]
+            if isai_count == 0:
+                isai_seeds = seed_data.get("isaimini", [])
+                if isai_seeds:
+                    with isaimini_db.get_conn() as conn:
+                        isaimini_db.upsert_movies_batch(conn, isai_seeds)
+                    print(f"[Lifespan] Bootstrapped {len(isai_seeds)} movies into isaimini.db from seed")
+    except Exception as seed_err:
+        print(f"[Lifespan] Seed bootstrap note: {seed_err}")
+
+    # Auto-refresh cache asynchronously in background on cold start if DB has few items
+    if db.count_movies() < 10:
+        async def _cold_start_sync():
+            try:
+                entries = await asyncio.to_thread(scraper.fetch_homepage)
+                if entries:
+                    with db.get_conn() as conn:
+                        for e in entries:
+                            db.upsert_movie(conn, e)
+                    global _LAST_SYNC_TIME, _LAST_SYNC_STATUS, _LAST_SYNC_ADDED
+                    _LAST_SYNC_TIME = time.time()
+                    _LAST_SYNC_STATUS = "ok"
+                    _LAST_SYNC_ADDED = len(entries)
+                    print(f"[Lifespan] Cold start sync completed: {len(entries)} items added")
+            except Exception as sync_exc:
+                print(f"[Lifespan] Cold start sync skipped: {sync_exc}")
+        asyncio.create_task(_cold_start_sync())
 
     # Background backfill of posters for already stored records
     asyncio.create_task(_initial_poster_backfill())
@@ -881,9 +918,10 @@ async def lifespan(app: FastAPI):
                 _STREAMER_STATUS = f"spawn error: {proc_err}"
                 print(f"[Lifespan] Could not spawn streamer.js: {proc_err}")
 
-        # Initialize and auto-sync active live domains
+    # Initialize and auto-sync active live domains (runs regardless of node status)
+    domain_task = None
+    try:
         domain_manager.init_domains()
-
         async def _periodic_domain_resolver():
             await asyncio.sleep(6)
             while True:
@@ -894,11 +932,14 @@ async def lifespan(app: FastAPI):
                 await asyncio.sleep(1800)
 
         domain_task = asyncio.create_task(_periodic_domain_resolver())
+    except Exception as d_err:
+        print(f"[Lifespan] Domain manager init error: {d_err}")
 
     yield
 
     sync_task.cancel()
-    domain_task.cancel()
+    if domain_task:
+        domain_task.cancel()
     if streamer_proc and streamer_proc.poll() is None:
         try:
             streamer_proc.terminate()
@@ -956,36 +997,48 @@ async def api_recent(
     results = []
 
     if source == "tamilmv":
-        results = db.get_recent_movies(
-            limit=limit,
-            offset=offset,
-            language=clean_lang,
-            quality=clean_quality,
-            sort_by=sort_by,
-            content_type=clean_ctype,
-            year=parsed_year,
-            start_year=start_year,
-            end_year=end_year,
-        )
-        for m in results:
-            format_tmv_card(m)
+        try:
+            results = db.get_recent_movies(
+                limit=limit,
+                offset=offset,
+                language=clean_lang,
+                quality=clean_quality,
+                sort_by=sort_by,
+                content_type=clean_ctype,
+                year=parsed_year,
+                start_year=start_year,
+                end_year=end_year,
+            )
+            for m in results:
+                format_tmv_card(m)
+        except Exception as exc:
+            logger.error(f"Error in tamilmv recent: {exc}")
+            results = []
     elif source in ("isaimini", "isaidub"):
         site_filter = "isaidub" if source == "isaidub" else "isaimini"
-        raw = isaimini_db.get_recent_movies(
-            limit=limit,
-            offset=offset,
-            content_type=clean_ctype,
-            language=clean_lang,
-            quality=clean_quality,
-            site=site_filter,
-            year=parsed_year,
-            start_year=start_year,
-            end_year=end_year,
-        )
-        results = [format_isaimini_card(m) for m in raw]
+        try:
+            raw = isaimini_db.get_recent_movies(
+                limit=limit,
+                offset=offset,
+                content_type=clean_ctype,
+                language=clean_lang,
+                quality=clean_quality,
+                site=site_filter,
+                year=parsed_year,
+                start_year=start_year,
+                end_year=end_year,
+            )
+            results = [format_isaimini_card(m) for m in raw]
+        except Exception as exc:
+            logger.error(f"Error in isaimini recent: {exc}")
+            results = []
     elif source == "toonplay":
-        raw = toonplay_db.get_recent_items(limit=limit, offset=offset, content_type=clean_ctype)
-        results = [format_toonplay_card(item) for item in raw]
+        try:
+            raw = toonplay_db.get_recent_items(limit=limit, offset=offset, content_type=clean_ctype)
+            results = [format_toonplay_card(item) for item in raw]
+        except Exception as exc:
+            logger.error(f"Error in toonplay recent: {exc}")
+            results = []
     else:  # source == "all"
         half_limit = max(limit // 2, 1)
         half_offset = offset // 2
@@ -998,35 +1051,43 @@ async def api_recent(
             tmv_total = 250
 
         tmv_offset = min(half_offset, tmv_total)
-        tmv_res = db.get_recent_movies(
-            limit=half_limit,
-            offset=tmv_offset,
-            language=clean_lang,
-            quality=clean_quality,
-            sort_by=sort_by,
-            content_type=clean_ctype,
-            year=parsed_year,
-            start_year=start_year,
-            end_year=end_year,
-        )
-        for m in tmv_res:
-            format_tmv_card(m)
-
-        needed_isai = limit - len(tmv_res)
-        isai_offset = max(0, offset - tmv_offset)
-        isai_raw = [
-            m for m in isaimini_db.get_recent_movies(
-                limit=needed_isai + 4,
-                offset=isai_offset,
-                content_type=clean_ctype,
+        try:
+            tmv_res = db.get_recent_movies(
+                limit=half_limit,
+                offset=tmv_offset,
                 language=clean_lang,
                 quality=clean_quality,
+                sort_by=sort_by,
+                content_type=clean_ctype,
                 year=parsed_year,
                 start_year=start_year,
                 end_year=end_year,
-            ) if not re.match(r"^Tamil \d{4} Movies$", m.get("title", ""), flags=re.I)
-        ][:needed_isai]
-        isai_res = [format_isaimini_card(m) for m in isai_raw]
+            )
+            for m in tmv_res:
+                format_tmv_card(m)
+        except Exception as exc:
+            logger.error(f"Error in tmv recent in all: {exc}")
+            tmv_res = []
+
+        needed_isai = limit - len(tmv_res)
+        isai_offset = max(0, offset - tmv_offset)
+        try:
+            isai_raw = [
+                m for m in isaimini_db.get_recent_movies(
+                    limit=needed_isai + 4,
+                    offset=isai_offset,
+                    content_type=clean_ctype,
+                    language=clean_lang,
+                    quality=clean_quality,
+                    year=parsed_year,
+                    start_year=start_year,
+                    end_year=end_year,
+                ) if not re.match(r"^Tamil \d{4} Movies$", m.get("title", ""), flags=re.I)
+            ][:needed_isai]
+            isai_res = [format_isaimini_card(m) for m in isai_raw]
+        except Exception as exc:
+            logger.error(f"Error in isaimini recent in all: {exc}")
+            isai_res = []
 
         if tv:
             # On TV app, prioritize instant playable direct MP4s ahead of torrents
@@ -1043,24 +1104,43 @@ async def api_recent(
                     j += 1
         results = combined[:limit]
 
-    if not results and offset == 0 and source in ("all", "tamilmv") and not (parsed_year or start_year):
+    # If empty on initial load, instantly bootstrap from seed_movies.json so feed never breaks
+    if not results and offset == 0:
         try:
-            entries = await asyncio.to_thread(scraper.fetch_homepage)
-            with db.get_conn() as conn:
-                for e in entries:
-                    db.upsert_movie(conn, e)
-            results = db.get_recent_movies(
-                limit=limit,
-                offset=offset,
-                language=language,
-                quality=quality,
-                sort_by=sort_by,
-                content_type=content_type,
-            )
-            for m in results:
-                format_tmv_card(m)
-        except Exception:
-            pass
+            seed_path = BASE_DIR / "seed_movies.json"
+            if seed_path.exists():
+                with open(seed_path, "r", encoding="utf-8") as sf:
+                    seed_data = json.load(sf)
+                if source in ("all", "tamilmv"):
+                    for m in seed_data.get("tmv", [])[:limit]:
+                        format_tmv_card(m)
+                        results.append(m)
+                if source in ("all", "isaimini", "isaidub"):
+                    for m in seed_data.get("isaimini", [])[:limit]:
+                        results.append(format_isaimini_card(m))
+        except Exception as seed_err:
+            logger.debug(f"Seed fallback note: {seed_err}")
+
+        # Trigger background scrape if still empty
+        if not results and source in ("all", "tamilmv") and not (parsed_year or start_year):
+            try:
+                entries = await asyncio.to_thread(scraper.fetch_homepage)
+                if entries:
+                    with db.get_conn() as conn:
+                        for e in entries:
+                            db.upsert_movie(conn, e)
+                    results = db.get_recent_movies(
+                        limit=limit,
+                        offset=offset,
+                        language=language,
+                        quality=quality,
+                        sort_by=sort_by,
+                        content_type=content_type,
+                    )
+                    for m in results:
+                        format_tmv_card(m)
+            except Exception:
+                pass
 
     if results:
         asyncio.create_task(_background_fetch_posters(results))
@@ -1250,37 +1330,54 @@ async def api_tv_shelves():
 
     def _load():
         # 0. My Cloud Vault (Personal Google Drive, Pixeldrain, Dropbox streams)
-        vault_raw = db.get_vault_movies()
-        vault_movies = [format_vault_card(m) for m in vault_raw]
-        for m in vault_movies:
-            m["title"] = clean_tv_movie_title(m.get("title"))
-            m["quality"] = clean_tv_quality_tag(m.get("quality"))
+        try:
+            vault_raw = db.get_vault_movies()
+            vault_movies = [format_vault_card(m) for m in vault_raw]
+            for m in vault_movies:
+                m["title"] = clean_tv_movie_title(m.get("title"))
+                m["quality"] = clean_tv_quality_tag(m.get("quality"))
+        except Exception:
+            vault_movies = []
 
         # 1. Tamil Movies (Direct MP4) - High Priority on TV
-        direct_raw = [m for m in isaimini_db.get_recent_movies(limit=24, site="isaimini", content_type="movie") if not re.match(r"^Tamil \d{4} Movies$", m.get("title", ""), flags=re.I)]
-        direct_movies = [format_isaimini_card(m) for m in direct_raw]
-        for m in direct_movies:
-            m["title"] = clean_tv_movie_title(m.get("title"))
-            m["quality"] = clean_tv_quality_tag(m.get("quality"))
-            if not m.get("poster_url") or "isaidub" in m.get("poster_url", ""):
-                meta = get_movie_meta(m.get("title"), m.get("year"), allow_remote=False)
-                if meta and meta.get("poster") and "live.metahub.space" not in meta.get("poster", ""):
-                    m["poster_url"] = meta["poster"]
+        try:
+            direct_raw = [m for m in isaimini_db.get_recent_movies(limit=24, site="isaimini", content_type="movie") if not re.match(r"^Tamil \d{4} Movies$", m.get("title", ""), flags=re.I)]
+            direct_movies = [format_isaimini_card(m) for m in direct_raw]
+            for m in direct_movies:
+                m["title"] = clean_tv_movie_title(m.get("title"))
+                m["quality"] = clean_tv_quality_tag(m.get("quality"))
+                if not m.get("poster_url") or "isaidub" in m.get("poster_url", ""):
+                    meta = get_movie_meta(m.get("title"), m.get("year"), allow_remote=False)
+                    if meta and meta.get("poster") and "live.metahub.space" not in meta.get("poster", ""):
+                        m["poster_url"] = meta["poster"]
+        except Exception:
+            direct_movies = []
 
         # 2. Tamil Dubbed Blockbusters - High Priority on TV
-        dub_raw = [m for m in isaimini_db.get_recent_movies(limit=24, site="isaidub", content_type="movie") if not re.match(r"^Tamil \d{4} Movies$", m.get("title", ""), flags=re.I)]
-        dubbed_movies = [format_isaimini_card(m) for m in dub_raw]
-        for m in dubbed_movies:
-            m["title"] = clean_tv_movie_title(m.get("title"))
-            m["quality"] = clean_tv_quality_tag(m.get("quality"))
-            if not m.get("poster_url") or "isaidub" in m.get("poster_url", ""):
-                meta = get_movie_meta(m.get("title"), m.get("year"), allow_remote=False)
-                if meta and meta.get("poster") and "live.metahub.space" not in meta.get("poster", ""):
-                    m["poster_url"] = meta["poster"]
+        try:
+            dub_raw = [m for m in isaimini_db.get_recent_movies(limit=24, site="isaidub", content_type="movie") if not re.match(r"^Tamil \d{4} Movies$", m.get("title", ""), flags=re.I)]
+            dubbed_movies = [format_isaimini_card(m) for m in dub_raw]
+            for m in dubbed_movies:
+                m["title"] = clean_tv_movie_title(m.get("title"))
+                m["quality"] = clean_tv_quality_tag(m.get("quality"))
+                if not m.get("poster_url") or "isaidub" in m.get("poster_url", ""):
+                    meta = get_movie_meta(m.get("title"), m.get("year"), allow_remote=False)
+                    if meta and meta.get("poster") and "live.metahub.space" not in meta.get("poster", ""):
+                        m["poster_url"] = meta["poster"]
+        except Exception:
+            dubbed_movies = []
 
         # 3. Web Series & Shows
-        series_isai = [format_isaimini_card(m) for m in isaimini_db.get_recent_movies(limit=14, content_type="series")]
-        series_tmv = db.get_recent_movies(limit=10, content_type="series")
+        series_isai = []
+        series_tmv = []
+        try:
+            series_isai = [format_isaimini_card(m) for m in isaimini_db.get_recent_movies(limit=14, content_type="series")]
+        except Exception:
+            series_isai = []
+        try:
+            series_tmv = db.get_recent_movies(limit=10, content_type="series")
+        except Exception:
+            series_tmv = []
         for m in series_tmv:
             m["source"] = "tamilmv"
             m["source_label"] = "Tamil(Torrents)"
@@ -1305,37 +1402,46 @@ async def api_tv_shelves():
                 st += 1
 
         # 4. ToonPlay Anime & Cartoons
-        toon_raw = toonplay_db.get_recent_items(limit=24)
-        if not toon_raw:
-            try:
-                home_data = toonplay_scraper.fetch_home()
-                toon_raw = (home_data.get("latest_releases") or []) + (home_data.get("popular_series") or [])
-            except Exception:
-                toon_raw = []
-        toon_movies = [format_toonplay_card(m) for m in toon_raw]
-        for m in toon_movies:
-            m["title"] = clean_tv_movie_title(m.get("title"))
-            m["quality"] = clean_tv_quality_tag(m.get("quality"))
+        try:
+            toon_raw = toonplay_db.get_recent_items(limit=24)
+            if not toon_raw:
+                try:
+                    home_data = toonplay_scraper.fetch_home()
+                    toon_raw = (home_data.get("latest_releases") or []) + (home_data.get("popular_series") or [])
+                except Exception:
+                    toon_raw = []
+            toon_movies = [format_toonplay_card(m) for m in toon_raw]
+            for m in toon_movies:
+                m["title"] = clean_tv_movie_title(m.get("title"))
+                m["quality"] = clean_tv_quality_tag(m.get("quality"))
+        except Exception:
+            toon_movies = []
 
         # 5. Trending / Top This Week (Torrents - Deprioritized after Direct Playable)
-        trending_tmv = db.get_recent_movies(limit=18, sort_by="top_week")
-        for m in trending_tmv:
-            m["source"] = "tamilmv"
-            m["source_label"] = "Tamil(Torrents)"
-            m["is_direct"] = False
-            m["title"] = clean_tv_movie_title(m.get("title"))
-            m["quality"] = clean_tv_quality_tag(m.get("quality"))
+        try:
+            trending_tmv = db.get_recent_movies(limit=18, sort_by="top_week")
+            for m in trending_tmv:
+                m["source"] = "tamilmv"
+                m["source_label"] = "Tamil(Torrents)"
+                m["is_direct"] = False
+                m["title"] = clean_tv_movie_title(m.get("title"))
+                m["quality"] = clean_tv_quality_tag(m.get("quality"))
+        except Exception:
+            trending_tmv = []
 
         # 6. Multi-Audio / 4K Swarms (Torrents - Lowest priority on TV)
-        torrents_raw = db.get_recent_movies(limit=18, quality="1080p")
-        if not torrents_raw:
-            torrents_raw = db.get_recent_movies(limit=18)
-        for m in torrents_raw:
-            m["source"] = "tamilmv"
-            m["source_label"] = "Tamil(Torrents)"
-            m["is_direct"] = False
-            m["title"] = clean_tv_movie_title(m.get("title"))
-            m["quality"] = clean_tv_quality_tag(m.get("quality"))
+        try:
+            torrents_raw = db.get_recent_movies(limit=18, quality="1080p")
+            if not torrents_raw:
+                torrents_raw = db.get_recent_movies(limit=18)
+            for m in torrents_raw:
+                m["source"] = "tamilmv"
+                m["source_label"] = "Tamil(Torrents)"
+                m["is_direct"] = False
+                m["title"] = clean_tv_movie_title(m.get("title"))
+                m["quality"] = clean_tv_quality_tag(m.get("quality"))
+        except Exception:
+            torrents_raw = []
 
         # Featured Spotlight candidates (Vault movies and Direct MP4 prioritized over torrents)
         spotlight = []

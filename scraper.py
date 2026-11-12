@@ -57,7 +57,14 @@ from urllib.parse import quote_plus, unquote
 import requests
 from bs4 import BeautifulSoup
 
-BASE_HOST = "www.1tamilmv.solar"
+BASE_HOST = "1tamilmv.win"
+try:
+    import domain_manager
+    _h = domain_manager.get_active_host("tamilmv")
+    if _h:
+        BASE_HOST = _h
+except Exception:
+    pass
 BASE_URL = f"https://{BASE_HOST}"
 SEARCH_URL = BASE_URL + "/search/?q={query}"
 # The search page itself now renders results client-side: it fetches this
@@ -431,20 +438,22 @@ def _fetch_search_api(
 def fetch_homepage_html() -> str:
     """Fetch homepage HTML using persistent session or fallback to curl."""
     try:
-        resp = _SESSION.get(BASE_URL, timeout=12)
+        resp = _SESSION.get(BASE_URL, timeout=10)
         if resp.status_code == 200 and "banger-container" in resp.text:
             return resp.text
     except Exception:
         pass
     try:
+        import shutil
         import subprocess
+        curl_bin = "curl" if shutil.which("curl") else "curl.exe"
         res = subprocess.run(
-            ["curl.exe", "-s", "-L", "-A", HEADERS["User-Agent"], BASE_URL],
+            [curl_bin, "-s", "-L", "-A", HEADERS["User-Agent"], BASE_URL],
             capture_output=True,
             text=True,
             encoding="utf-8",
             errors="ignore",
-            timeout=15,
+            timeout=12,
         )
         if res.stdout and "banger-container" in res.stdout:
             return res.stdout

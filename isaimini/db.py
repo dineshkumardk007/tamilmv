@@ -409,59 +409,68 @@ def search_movies(query: str, limit: int = 50, site: str | None = None) -> list[
     clean_q = re.sub(r"[^\w\s]", "", q).strip()
     words = clean_q.split()
 
-    with get_conn() as conn:
-        results = []
-        site_clause = ""
-        site_params = []
-        if site == "isaidub":
-            site_clause = " AND m.url LIKE ?"
-            site_params.append("%isaidub%")
-        elif site in ("isaimini", "moviesda"):
-            site_clause = " AND m.url LIKE ?"
-            site_params.append("%moviesda%")
-
-        if words:
-            fts_query = " ".join(f'"{w}"*' for w in words)
-            try:
-                cur = conn.execute(f"""
-                    SELECT m.*, rank
-                    FROM movies_fts f
-                    JOIN movies m ON m.id = f.rowid
-                    WHERE movies_fts MATCH ? {site_clause}
-                    ORDER BY rank
-                    LIMIT ?
-                """, (fts_query, *site_params, limit))
-                results = [dict(r) for r in cur.fetchall()]
-            except Exception:
-                results = []
-
-        # Fallback to standard LIKE if FTS produced 0 results
-        if not results:
-            like_site_clause = ""
-            like_params = [f"%{q}%", f"%{q}%", f"%{q}%"]
+    try:
+        with get_conn() as conn:
+            results = []
+            site_clause = ""
+            site_params = []
             if site == "isaidub":
-                like_site_clause = " AND url LIKE ?"
-                like_params.append("%isaidub%")
+                site_clause = " AND m.url LIKE ?"
+                site_params.append("%isaidub%")
             elif site in ("isaimini", "moviesda"):
-                like_site_clause = " AND url LIKE ?"
-                like_params.append("%moviesda%")
+                site_clause = " AND m.url LIKE ?"
+                site_params.append("%moviesda%")
 
-            cur = conn.execute(f"""
-                SELECT * FROM movies
-                WHERE (title LIKE ? OR starring LIKE ? OR clean_title LIKE ?) {like_site_clause}
-                ORDER BY year DESC, id DESC
-                LIMIT ?
-            """, (*like_params, limit))
-            results = [dict(r) for r in cur.fetchall()]
+            if words:
+                fts_query = " ".join(f'"{w}"*' for w in words)
+                try:
+                    cur = conn.execute(f"""
+                        SELECT m.*, rank
+                        FROM movies_fts f
+                        JOIN movies m ON m.id = f.rowid
+                        WHERE movies_fts MATCH ? {site_clause}
+                        ORDER BY rank
+                        LIMIT ?
+                    """, (fts_query, *site_params, limit))
+                    results = [dict(r) for r in cur.fetchall()]
+                except Exception:
+                    results = []
 
-        # Attach source metadata tags
-        for m in results:
-            url_str = m.get("url") or ""
-            m["source"] = "isaidub" if "isaidub" in url_str else "isaimini"
-            m["source_label"] = "TamDub (Dubbed)" if m["source"] == "isaidub" else "TamilMov (Original)"
-            m["is_direct"] = True
+            # Fallback to standard LIKE if FTS produced 0 results
+            if not results:
+                like_site_clause = ""
+                like_params = [f"%{q}%", f"%{q}%", f"%{q}%"]
+                if site == "isaidub":
+                    like_site_clause = " AND url LIKE ?"
+                    like_params.append("%isaidub%")
+                elif site in ("isaimini", "moviesda"):
+                    like_site_clause = " AND url LIKE ?"
+                    like_params.append("%moviesda%")
 
-        return results
+                cur = conn.execute(f"""
+                    SELECT * FROM movies
+                    WHERE (title LIKE ? OR starring LIKE ? OR clean_title LIKE ?) {like_site_clause}
+                    ORDER BY year DESC, id DESC
+                    LIMIT ?
+                """, (*like_params, limit))
+                results = [dict(r) for r in cur.fetchall()]
+
+            # Attach source metadata tags
+            for m in results:
+                url_str = m.get("url") or ""
+                m["source"] = "isaidub" if "isaidub" in url_str else "isaimini"
+                m["source_label"] = "TamDub (Dubbed)" if m["source"] == "isaidub" else "TamilMov (Original)"
+                m["is_direct"] = True
+
+            return results
+    except sqlite3.OperationalError:
+        try:
+            init_db()
+        except Exception:
+            pass
+        return []
+    except Exception:
+        return []
 
 
 def get_recent_movies(
@@ -504,17 +513,26 @@ def get_recent_movies(
     query += " ORDER BY year DESC, COALESCE(last_updated, scraped_at) DESC, id DESC LIMIT ? OFFSET ?"
     params.extend([limit, offset])
 
-    with get_conn() as conn:
-        cur = conn.execute(query, params)
-        results = []
-        for r in cur.fetchall():
-            m = dict(r)
-            url_str = m.get("url") or ""
-            m["source"] = "isaidub" if "isaidub" in url_str else "isaimini"
-            m["source_label"] = "TamDub (Dubbed)" if m["source"] == "isaidub" else "TamilMov (Original)"
-            m["is_direct"] = True
-            results.append(m)
-        return results
+    try:
+        with get_conn() as conn:
+            cur = conn.execute(query, params)
+            results = []
+            for r in cur.fetchall():
+                m = dict(r)
+                url_str = m.get("url") or ""
+                m["source"] = "isaidub" if "isaidub" in url_str else "isaimini"
+                m["source_label"] = "TamDub (Dubbed)" if m["source"] == "isaidub" else "TamilMov (Original)"
+                m["is_direct"] = True
+                results.append(m)
+            return results
+    except sqlite3.OperationalError:
+        try:
+            init_db()
+        except Exception:
+            pass
+        return []
+    except Exception:
+        return []
 
 
 def get_movie(movie_id_or_url: int | str) -> dict | None:
@@ -537,18 +555,27 @@ def get_movie_files(movie_id: int) -> list[dict]:
 
 def get_stats() -> dict:
     """Return summary counts of cached movies and files."""
-    with get_conn() as conn:
-        total_movies = conn.execute("SELECT COUNT(*) FROM movies").fetchone()[0]
-        total_files = conn.execute("SELECT COUNT(*) FROM movie_files").fetchone()[0]
-        resolved_files = conn.execute("SELECT COUNT(*) FROM movie_files WHERE direct_url IS NOT NULL").fetchone()[0]
-        series_count = conn.execute("SELECT COUNT(*) FROM movies WHERE content_type = 'series'").fetchone()[0]
-        years = [r[0] for r in conn.execute("SELECT DISTINCT year FROM movies WHERE year IS NOT NULL ORDER BY year DESC").fetchall()]
+    try:
+        with get_conn() as conn:
+            total_movies = conn.execute("SELECT COUNT(*) FROM movies").fetchone()[0]
+            total_files = conn.execute("SELECT COUNT(*) FROM movie_files").fetchone()[0]
+            resolved_files = conn.execute("SELECT COUNT(*) FROM movie_files WHERE direct_url IS NOT NULL").fetchone()[0]
+            series_count = conn.execute("SELECT COUNT(*) FROM movies WHERE content_type = 'series'").fetchone()[0]
+            years = [r[0] for r in conn.execute("SELECT DISTINCT year FROM movies WHERE year IS NOT NULL ORDER BY year DESC").fetchall()]
+            return {
+                "total_movies": total_movies,
+                "total_files": total_files,
+                "resolved_direct_links": resolved_files,
+                "web_series_count": series_count,
+                "years": years,
+            }
+    except Exception:
         return {
-            "total_movies": total_movies,
-            "total_files": total_files,
-            "resolved_direct_links": resolved_files,
-            "web_series_count": series_count,
-            "years": years,
+            "total_movies": 0,
+            "total_files": 0,
+            "resolved_direct_links": 0,
+            "web_series_count": 0,
+            "years": [],
         }
 
 

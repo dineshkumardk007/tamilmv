@@ -12773,7 +12773,23 @@
           scrollEnd.classList.remove('hidden');
         }
       } catch (err) {
-        out.innerHTML = `<div class="state"><div class="ico">⚠️</div><h3>Could not load feed</h3><p>${esc(err.message)}</p></div>`;
+        console.warn('[Feed] Error loading releases:', err);
+        out.innerHTML = `
+          <div class="state">
+            <div class="ico">⚠️</div>
+            <h3>Could not load feed</h3>
+            <p>${esc(err.message || 'Connecting to server...')}</p>
+            <button class="seg-btn on" style="margin-top:14px;padding:8px 22px;border-radius:10px;cursor:pointer;" onclick="loadRecent(true)">🔄 Try Again</button>
+          </div>`;
+        // Automatic retry after 2.5s in case container is waking up from sleep
+        if (!window._feedRetryTimer) {
+          window._feedRetryTimer = setTimeout(() => {
+            window._feedRetryTimer = null;
+            if (currentMode === 'recent' && (!allMovies || !allMovies.length)) {
+              loadRecent(true);
+            }
+          }, 2500);
+        }
       }
     }
 

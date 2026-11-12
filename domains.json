@@ -42,14 +42,14 @@
     "protocol": "https",
     "label": "TamilMov (Direct)",
     "mirrors": [
-      "moviezda.co",
       "moviezda.me",
       "moviesda.ski",
       "isaimini.com.co",
       "moviesda.net",
       "isaimini.io",
       "isaimini.co",
-      "isaiminimob.com"
+      "isaiminimob.com",
+      "moviezda.co"
     ]
   },
   "toonplay": {
