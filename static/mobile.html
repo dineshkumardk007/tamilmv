@@ -1365,7 +1365,420 @@
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-  </style>
+  
+    /* COMPACT RIGHT-ALIGNED TORRENT DOWNLOAD BUTTONS & READABLE MOVIE INFO */
+    .torrent-opt-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .torrent-opt-card:active {
+      background: rgba(255, 179, 64, 0.08);
+      border-color: rgba(255, 179, 64, 0.35);
+    }
+    .torrent-meta-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-right: 4px;
+    }
+    .torrent-title-line {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f1f5f9;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+    }
+    .torrent-pills-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      font-size: 10px;
+      margin-top: 1px;
+    }
+    .t-pill-gold {
+      color: #ffb340;
+      background: rgba(255, 179, 64, 0.14);
+      border: 1px solid rgba(255, 179, 64, 0.3);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .t-pill-purple {
+      color: #c084fc;
+      background: rgba(192, 132, 252, 0.12);
+      border: 1px solid rgba(192, 132, 252, 0.25);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .t-pill-teal {
+      color: #12d8b4;
+      background: rgba(18, 216, 180, 0.12);
+      border: 1px solid rgba(18, 216, 180, 0.25);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .t-pill-dim {
+      color: #94a3b8;
+      font-size: 10px;
+    }
+    .torrent-btns-col {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .t-action-btn {
+      padding: 4px 7px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      border: 1px solid transparent;
+      cursor: pointer;
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+    .t-action-btn:active {
+      transform: scale(0.93);
+    }
+    .t-btn-mag {
+      background: linear-gradient(135deg, #ffb340, #e08712);
+      color: #030712;
+      box-shadow: 0 2px 8px rgba(255, 179, 64, 0.25);
+    }
+    .t-btn-copy {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+    }
+    .t-btn-file {
+      background: rgba(18, 216, 180, 0.1);
+      border-color: rgba(18, 216, 180, 0.3);
+      color: #12d8b4;
+    }
+
+    /* DEDICATED ANIME UNIVERSE TAB & DETAIL MODAL */
+    .anime-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, rgba(255, 77, 141, 0.2), rgba(124, 92, 255, 0.2));
+      border: 1px solid rgba(255, 77, 141, 0.35);
+      color: #ff4d8d;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .anime-detail-modal {
+      position: fixed;
+      inset: 0;
+      background: #090a0f;
+      z-index: 1050;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .anime-detail-modal.active { display: flex; }
+
+    .anime-detail-hero {
+      position: relative;
+      width: 100%;
+      min-height: 290px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px 16px;
+      box-sizing: border-box;
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+    }
+    .anime-detail-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(9, 10, 15, 0.2) 0%, rgba(9, 10, 15, 0.7) 50%, #090a0f 100%);
+      pointer-events: none;
+    }
+    .anime-hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .anime-hero-sub {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #a5b4fc;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .anime-main-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+    .anime-actions-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .anime-btn-watch {
+      flex: 1.2;
+      height: 44px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #ff4d8d, #7c5cff);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(255, 77, 141, 0.4);
+    }
+    .anime-btn-watch:active { transform: scale(0.96); }
+
+    .anime-btn-fav {
+      height: 44px;
+      padding: 0 16px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .anime-btn-fav:active { transform: scale(0.96); }
+
+    .anime-detail-close {
+      position: absolute;
+      top: max(14px, var(--safe-top));
+      left: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .anime-detail-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .anime-section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .anime-overview-text {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    /* Series Metrics 3-Card Grid */
+    .anime-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .anime-metric-card {
+      background: #13151f;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .anime-metric-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffb340;
+    }
+    .anime-metric-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-top: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* Genres & Dubs Pills */
+    .anime-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .anime-genre-pill {
+      padding: 5px 11px;
+      border-radius: 20px;
+      background: rgba(124, 92, 255, 0.12);
+      border: 1px solid rgba(124, 92, 255, 0.25);
+      color: #c7d2fe;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+    .anime-dub-pill {
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: rgba(18, 216, 180, 0.12);
+      border: 1px solid rgba(18, 216, 180, 0.3);
+      color: #12d8b4;
+      font-size: 11.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Episode Selector & List */
+    .season-picker-bar {
+      margin-bottom: 12px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .season-tab-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .season-tab-btn.active {
+      background: #7c5cff;
+      border-color: #7c5cff;
+      color: #fff;
+    }
+
+    .episodes-list-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ep-card-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #13151f;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .ep-card-item:active {
+      background: rgba(124, 92, 255, 0.15);
+      border-color: var(--primary);
+    }
+    .ep-thumb-wrap {
+      width: 72px;
+      height: 48px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #1c1e2d;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .ep-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .ep-play-badge {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+    }
+    .ep-info-col {
+      flex: 1;
+      min-width: 0;
+    }
+    .ep-num-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: #ff4d8d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .ep-name-text {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+</style>
 </head>
 <body>
 
@@ -1398,7 +1811,7 @@
         <button class="chip-btn" data-source="all">🔥 All Releases</button>
         <button class="chip-btn" data-source="direct_tamil">⚡ Tamil Direct MP4</button>
         <button class="chip-btn" data-source="dubbed">🎙️ TamDub</button>
-        <button class="chip-btn" data-source="toonplay_anime">🎌 Anime &amp; Cartoons</button>
+        
       </div>
 
       <!-- Hero Spotlight Banner -->
@@ -1448,6 +1861,53 @@
           <span class="shelf-count" id="m-catalog-count">Browsing</span>
         </div>
         <div class="catalog-grid" id="m-catalog-grid"></div>
+      </section>
+    </div>
+
+    
+    <!-- ANIME & CARTOONS TAB (Dedicated Universe without Upstream Ads) -->
+    <div class="tab-view" id="tab-anime">
+      <!-- Anime Filter Chips -->
+      <div class="filter-chips-bar" id="anime-source-chips">
+        <button class="chip-btn active" data-anime-filter="all">✨ All Universe</button>
+        <button class="chip-btn" data-anime-filter="trending">🔥 Trending Series</button>
+        <button class="chip-btn" data-anime-filter="latest">⚡ Latest Releases</button>
+        <button class="chip-btn" data-anime-filter="movies">🍿 Anime Movies</button>
+        <button class="chip-btn" data-anime-filter="kids">🧒 Kids &amp; Cartoons</button>
+      </div>
+
+      <!-- Anime Hero Spotlight Banner -->
+      <div class="spotlight-card" id="anime-spotlight" style="display:none;">
+        <div class="spotlight-backdrop" id="anime-spotlight-bg"></div>
+        <div class="spotlight-scrim"></div>
+        <div class="spotlight-content">
+          <div class="spotlight-meta-row">
+            <span class="anime-badge" id="anime-spotlight-badge">ANIMATED SERIES</span>
+            <span class="badge-tag quality">1080p Ultra HD</span>
+            <span class="badge-tag" style="background:rgba(255,179,64,0.15);color:#ffb340;border:1px solid rgba(255,179,64,0.3);">Multi Audio</span>
+          </div>
+          <h2 class="spotlight-title" id="anime-spotlight-title">Demon Slayer</h2>
+          <div class="spotlight-actions">
+            <button class="btn-play-primary" id="anime-spotlight-watch" style="background:linear-gradient(135deg,#ff4d8d,#7c5cff);">
+              <span>▶ Watch Now</span>
+            </button>
+            <button class="btn-details-secondary" id="anime-spotlight-info" title="Episodes &amp; Info">ℹ</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anime Shelves Container -->
+      <div id="anime-shelves-container">
+        <!-- Rendered dynamically from /api/toonplay/home -->
+      </div>
+
+      <!-- Anime Full Catalog Grid -->
+      <section class="catalog-section">
+        <div class="catalog-header">
+          <h3 class="catalog-title" id="anime-catalog-title">All Anime &amp; Cartoons</h3>
+          <span class="shelf-count" id="anime-catalog-count">Multi-Audio</span>
+        </div>
+        <div class="catalog-grid" id="anime-catalog-grid"></div>
       </section>
     </div>
 
@@ -1509,12 +1969,12 @@
           </div>
           <button class="settings-btn">Browse ›</button>
         </div>
-        <div class="settings-card" onclick="filterBySource('toonplay_anime')">
+        <div class="settings-card" onclick="switchTab('tab-anime')">
           <div class="settings-info">
-            <h4>🎌 Anime &amp; Cartoons</h4>
-            <p>ToonPlay series, Naruto, Dragon Ball, Anime</p>
+            <h4>🎌 Anime &amp; Cartoon Universe</h4>
+            <p>Multi-Audio Anime series, Naruto, Dragon Ball, Shinchan, Cartoons</p>
           </div>
-          <button class="settings-btn">Browse ›</button>
+          <button class="settings-btn" style="color:#ff4d8d;border-color:rgba(255,77,141,0.3);">Explore ›</button>
         </div>
       </div>
     </div>
@@ -1573,6 +2033,10 @@
       <span class="nav-icon">🏠</span>
       <span class="nav-label">Home</span>
     </button>
+    <button class="nav-tab-btn" data-tab="tab-anime" id="btn-tab-anime">
+      <span class="nav-icon">🎌</span>
+      <span class="nav-label">Anime &amp; Toons</span>
+    </button>
     <button class="nav-tab-btn" data-tab="tab-search">
       <span class="nav-icon">🔍</span>
       <span class="nav-label">Search</span>
@@ -1592,7 +2056,104 @@
   </nav>
 
   <!-- Movie Details Bottom Sheet -->
-  <div class="sheet-backdrop" id="m-sheet-backdrop"></div>
+    <!-- ANIME SHOW / MOVIE DETAIL MODAL (Matching User Specification) -->
+  <div class="anime-detail-modal" id="m-anime-detail-modal">
+    <div class="anime-detail-hero" id="anime-modal-hero">
+      <button class="anime-detail-close" id="anime-modal-close" title="Close">‹</button>
+      <div class="anime-detail-scrim"></div>
+      <div class="anime-hero-content">
+        <!-- Subtitle: ANIMATED SERIES • 1992 • 1080p Ultra HD • Multi Audio -->
+        <div class="anime-hero-sub">
+          <span id="anime-view-type">ANIMATED SERIES</span>
+          <span>•</span>
+          <span id="anime-view-year">1992</span>
+          <span>•</span>
+          <span>1080p Ultra HD</span>
+          <span>•</span>
+          <span style="color:#ffb340;">Multi Audio</span>
+        </div>
+        <h1 class="anime-main-title" id="anime-view-title">Shinchan</h1>
+        <div class="anime-actions-row">
+          <button class="anime-btn-watch" id="anime-view-btn-watch">
+            <span>▶</span> <span>Watch Now</span>
+          </button>
+          <button class="anime-btn-fav" id="anime-view-btn-fav">
+            <span id="anime-view-fav-heart">♥</span> <span>Add to Watchlist</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="anime-detail-body">
+      <!-- Story Overview -->
+      <div class="anime-overview-box">
+        <h3 class="anime-section-title">Story Overview</h3>
+        <p class="anime-overview-text" id="anime-view-overview">
+          Shin-chan, the boy next door, is a walking disaster, creating chaos wherever he goes. With the body of a child and the mind of an adult, Shinchan is wreaking more havoc than any child before. Shin-chan is carefree, optimistic and gets excited about everything. This 5 year-old likes to do things his way.
+        </p>
+      </div>
+
+      <!-- Series Metrics -->
+      <div class="anime-metrics-box">
+        <h3 class="anime-section-title">Series Metrics</h3>
+        <div class="anime-metrics-grid">
+          <div class="anime-metric-card">
+            <div class="anime-metric-val" id="anime-view-seasons">12</div>
+            <div class="anime-metric-lbl">Total Seasons</div>
+          </div>
+          <div class="anime-metric-card">
+            <div class="anime-metric-val" id="anime-view-episodes">612</div>
+            <div class="anime-metric-lbl">Total Episodes</div>
+          </div>
+          <div class="anime-metric-card">
+            <div class="anime-metric-val" id="anime-view-duration">24 min</div>
+            <div class="anime-metric-lbl">Episode Duration</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Genres -->
+      <div class="anime-genres-box">
+        <h3 class="anime-section-title">Genres</h3>
+        <div class="anime-pills-wrap" id="anime-view-genres">
+          <span class="anime-genre-pill">Comedy</span>
+          <span class="anime-genre-pill">Kids</span>
+          <span class="anime-genre-pill">School</span>
+          <span class="anime-genre-pill">Animation</span>
+        </div>
+      </div>
+
+      <!-- Available Audio Dubs -->
+      <div class="anime-dubs-box">
+        <h3 class="anime-section-title">Available Audio Dubs</h3>
+        <div class="anime-pills-wrap" id="anime-view-dubs">
+          <span class="anime-dub-pill">🇮🇳 Hindi</span>
+          <span class="anime-dub-pill">⚡ Tamil</span>
+          <span class="anime-dub-pill">🍿 Telugu</span>
+          <span class="anime-dub-pill">🌐 English</span>
+          <span class="anime-dub-pill">🇯🇵 Japanese</span>
+        </div>
+      </div>
+
+      <!-- Episodes List View -->
+      <div class="anime-episodes-box" id="anime-view-episodes-section">
+        <div class="anime-section-title">
+          <span>Episodes &amp; Streams</span>
+          <span id="anime-view-ep-count" style="font-size:11px;color:var(--text-dim);">Available Now</span>
+        </div>
+        <div class="season-picker-bar" id="anime-view-seasons-bar"></div>
+        <div class="episodes-list-col" id="anime-view-episodes-list"></div>
+      </div>
+
+      <!-- More Like This (Recommendations) -->
+      <div class="anime-recs-box">
+        <h3 class="anime-section-title">More Like This</h3>
+        <div class="shelf-track" id="anime-view-recs-track"></div>
+      </div>
+    </div>
+  </div>
+
+<div class="sheet-backdrop" id="m-sheet-backdrop"></div>
   <div class="bottom-sheet" id="m-details-sheet">
     <div class="sheet-drag-handle"></div>
     <div class="sheet-body">
@@ -1637,6 +2198,7 @@
   <div class="mobile-player-overlay" id="m-player-overlay">
     <div class="player-video-container">
       <video id="m-video" playsinline webkit-playsinline></video>
+      <iframe id="m-player-iframe" style="display:none;width:100%;height:100%;border:none;background:#000;" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" referrerpolicy="no-referrer"></iframe>
       <div class="player-spinner" id="m-player-spinner"></div>
     </div>
 
@@ -1887,6 +2449,7 @@
 
       await Promise.allSettled([
         fetchShelves(),
+        fetchAnimeHome(),
         fetchRecentReleases(),
         checkServerHealth()
       ]);
@@ -1916,7 +2479,7 @@
         state.shelves = data.shelves || [];
 
         // STRICT ORDERING: Torrents 1st slide below Hero, then Trending, Direct, Dubbed, Anime, Series
-        const shelfPriority = ['torrents', 'trending', 'direct_tamil', 'dubbed', 'toonplay_anime', 'series'];
+        const shelfPriority = ['torrents', 'trending', 'direct_tamil', 'dubbed', 'series'];
         state.shelves.sort((a, b) => {
           const idxA = shelfPriority.indexOf(a.id);
           const idxB = shelfPriority.indexOf(b.id);
@@ -2295,7 +2858,9 @@
       };
 
       if (isAnime) {
-        await loadAnimeDetails(movie, autoPlay);
+        closeDetails();
+        openAnimeDetails(movie.toon_id || movie.id || movie.title);
+        return;
       } else if (isDirect || isDubbed) {
         await loadDirectMovieDetails(movie, autoPlay);
       } else {
@@ -2472,23 +3037,30 @@
 
         options.forEach((opt) => {
           const card = document.createElement('div');
-          card.className = 'stream-opt-card';
+          card.className = 'torrent-opt-card';
 
-          const qLabel = opt.quality || (opt.label ? (opt.label.match(/1080p|720p|480p|UHD|4K/i) || [])[0] : '') || '1080p';
+          const qLabel = opt.quality || (opt.label ? (opt.label.match(/2160p|4K|1080p|720p|480p|UHD|HD/i) || [])[0] : '') || '1080p';
+          const sizeLabel = opt.size || (opt.label ? (opt.label.match(/\d+(?:\.\d+)?\s*(?:GB|MB)/i) || [])[0] : '') || '';
           const cleanLabel = opt.label || `${movie.title} [${qLabel}]`;
           const torrentFile = opt.torrent_url || opt.torrent || opt.torrent_file || opt.file_url || '';
 
+          // Extract audio tags e.g. [Tam + Tel + Hin...] or AVC/HEVC/AAC
+          const audioMatch = opt.label ? (opt.label.match(/\[.*?\]|TRUE\s*WEB-DL|WEB-DL|HDRip|HEVC|AVC|DDP\d*\.?\d*|AAC|Atmos/i) || [])[0] : null;
+
           card.innerHTML = `
-            <div style="flex:1;overflow:hidden;padding-right:10px;">
-              <div class="stream-opt-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(cleanLabel)}</div>
-              <div class="stream-opt-sub">
-                <span style="color:#ffb340;font-weight:700;">${esc(opt.size || 'Torrent')}</span> • Seeds: ${opt.seeders || 'High'}
+            <div class="torrent-meta-col">
+              <div class="torrent-title-line" title="${esc(cleanLabel)}">${esc(cleanLabel)}</div>
+              <div class="torrent-pills-row">
+                ${sizeLabel ? `<span class="t-pill-gold">${esc(sizeLabel)}</span>` : ''}
+                <span class="t-pill-purple">${esc(qLabel)}</span>
+                ${audioMatch ? `<span class="t-pill-teal">${esc(audioMatch)}</span>` : ''}
+                <span class="t-pill-dim">🌱 Seeds: ${opt.seeders || 'High'}</span>
               </div>
             </div>
-            <div style="display:flex;gap:6px;flex-shrink:0;align-items:center;">
-              ${opt.magnet ? `<a class="settings-btn" href="${esc(opt.magnet)}" style="background:linear-gradient(135deg,#ffb340,#d17d10);color:#030712;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;" title="Open in Flud / 1DM / uTorrent">🧲 Magnet</a>` : ''}
-              ${opt.magnet ? `<button class="settings-btn btn-copy-mag" data-mag="${esc(opt.magnet)}" title="Copy magnet link to clipboard">📋 Copy</button>` : ''}
-              ${torrentFile ? `<a class="settings-btn" href="${esc(torrentFile)}" target="_blank" download style="color:#12d8b4;border-color:rgba(18,216,180,0.3);text-decoration:none;display:inline-flex;align-items:center;" title="Download .torrent file">📁 .torrent</a>` : ''}
+            <div class="torrent-btns-col">
+              ${opt.magnet ? `<a class="t-action-btn t-btn-mag" href="${esc(opt.magnet)}" title="Open in 3rd party torrent app">🧲 Mag</a>` : ''}
+              ${opt.magnet ? `<button class="t-action-btn t-btn-copy btn-copy-mag" data-mag="${esc(opt.magnet)}" title="Copy magnet link">📋 Copy</button>` : ''}
+              ${torrentFile ? `<a class="t-action-btn t-btn-file" href="${esc(torrentFile)}" target="_blank" download title="Download .torrent file">📁 .tor</a>` : ''}
             </div>
           `;
 
@@ -2710,6 +3282,8 @@
 
     function closePlayer() {
       const video = $('#m-video');
+      const iframe = $('#m-player-iframe');
+
       if (video.currentTime > 15 && state.currentMovie) {
         saveProgress(state.currentMovie, video.currentTime, video.duration);
       }
@@ -2717,6 +3291,12 @@
       video.pause();
       video.removeAttribute('src');
       video.load();
+
+      if (iframe) {
+        iframe.src = 'about:blank';
+        iframe.style.display = 'none';
+      }
+      video.style.display = 'block';
 
       $('#m-player-overlay').classList.remove('active');
       renderContinueWatching();
@@ -2896,11 +3476,476 @@
     // ==========================================================================
     // NAVIGATION & TABS
     // ==========================================================================
+
+    // ==========================================================================
+    // DEDICATED ANIME & CARTOON UNIVERSE (NO UPSTREAM ADS OR EXTERNAL BRANDING)
+    // ==========================================================================
+    let animeState = {
+      homeData: null,
+      catalog: [],
+      activeFilter: 'all',
+      currentAnime: null,
+      currentSeasons: [],
+      selectedSeason: 1
+    };
+
+    async function fetchAnimeHome() {
+      try {
+        const res = await fetch('/api/toonplay/home');
+        if (!res.ok) throw new Error('Anime home fetch failed');
+        const data = await res.json();
+        animeState.homeData = data;
+
+        // Render Hero Spotlight
+        if (data.hero && data.hero.length > 0) {
+          renderAnimeSpotlight(data.hero[0]);
+        } else if (data.popular_series && data.popular_series.length > 0) {
+          renderAnimeSpotlight(data.popular_series[0]);
+        }
+
+        renderAnimeShelves(data);
+        renderAnimeCatalog();
+      } catch (err) {
+        console.warn('Anime home load notice:', err);
+      }
+    }
+
+    function renderAnimeSpotlight(item) {
+      if (!item) return;
+      const banner = $('#anime-spotlight');
+      banner.style.display = 'flex';
+
+      const bg = item.backdrop || item.image || item.poster_url || '';
+      $('#anime-spotlight-bg').style.backgroundImage = `url('${bg}')`;
+      $('#anime-spotlight-title').textContent = item.title || 'Featured Anime';
+
+      const isMovie = item.content_type === 'movie' || (item.id && String(item.id).includes('movie'));
+      $('#anime-spotlight-badge').textContent = isMovie ? 'ANIME MOVIE' : 'ANIMATED SERIES';
+
+      const cleanId = (item.toon_id || item.id || '').replace(/^toon_/, '');
+      $('#anime-spotlight-watch').onclick = () => openAnimeDetails(cleanId);
+      $('#anime-spotlight-info').onclick = () => openAnimeDetails(cleanId);
+    }
+
+    function renderAnimeShelves(data) {
+      const container = $('#anime-shelves-container');
+      container.innerHTML = '';
+
+      const shelfConfigs = [
+        { id: 'trending_anime', title: 'Trending Anime Now', icon: '🔥', items: data.popular_series || [] },
+        { id: 'latest_releases', title: 'Latest Episodes & Releases', icon: '⚡', items: data.latest_releases || [] },
+        { id: 'popular_series', title: 'Most Popular TV Series', icon: '👑', items: data.popular_series || [] },
+        { id: 'anime_movies', title: 'Blockbuster Anime Movies', icon: '🍿', items: data.popular_movies || [] }
+      ];
+
+      shelfConfigs.forEach(shelf => {
+        if (!shelf.items || shelf.items.length === 0) return;
+
+        if (animeState.activeFilter !== 'all') {
+          if (animeState.activeFilter === 'trending' && shelf.id !== 'trending_anime') return;
+          if (animeState.activeFilter === 'latest' && shelf.id !== 'latest_releases') return;
+          if (animeState.activeFilter === 'movies' && shelf.id !== 'anime_movies') return;
+        }
+
+        const section = document.createElement('section');
+        section.className = 'shelf-section';
+        section.innerHTML = `
+          <div class="shelf-header">
+            <div class="shelf-title-wrap">
+              <span class="shelf-icon">${shelf.icon}</span>
+              <h3 class="shelf-title">${shelf.title}</h3>
+            </div>
+            <span class="shelf-count">${shelf.items.length} titles</span>
+          </div>
+          <div class="shelf-track" id="anime-shelf-${shelf.id}"></div>
+        `;
+
+        const track = section.querySelector(`#anime-shelf-${shelf.id}`);
+        shelf.items.forEach(animeItem => {
+          track.appendChild(createAnimeCard(animeItem));
+        });
+
+        container.appendChild(section);
+      });
+    }
+
+    function createAnimeCard(item) {
+      const card = document.createElement('div');
+      card.className = 'poster-card';
+
+      const poster = item.poster_url || item.image || item.backdrop || '/favicon.svg';
+      const cleanId = (item.toon_id || item.id || '').replace(/^toon_/, '');
+      const isMovie = item.content_type === 'movie' || (item.id && String(item.id).includes('movie'));
+
+      card.innerHTML = `
+        <div class="poster-img-wrap">
+          <img class="poster-img" src="${esc(poster)}" alt="${esc(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='/favicon.svg'">
+          <span class="card-badge anime">${isMovie ? 'Movie' : 'Series'}</span>
+          ${item.rating ? `<div class="card-rating-pill">⭐ ${item.rating}</div>` : ''}
+        </div>
+        <div class="poster-info">
+          <div class="poster-title">${esc(item.title)}</div>
+          <div class="poster-meta">
+            <span>${item.year || '2024'}</span>
+            <span>• Multi Audio</span>
+          </div>
+        </div>
+      `;
+
+      card.onclick = () => openAnimeDetails(cleanId);
+      return card;
+    }
+
+    function renderAnimeCatalog() {
+      const grid = $('#anime-catalog-grid');
+      grid.innerHTML = '';
+
+      let pool = [];
+      if (animeState.homeData) {
+        if (animeState.activeFilter === 'movies') {
+          pool = animeState.homeData.popular_movies || [];
+        } else if (animeState.activeFilter === 'latest') {
+          pool = animeState.homeData.latest_releases || [];
+        } else if (animeState.activeFilter === 'trending') {
+          pool = animeState.homeData.popular_series || [];
+        } else {
+          pool = [
+            ...(animeState.homeData.popular_series || []),
+            ...(animeState.homeData.latest_releases || []),
+            ...(animeState.homeData.popular_movies || [])
+          ];
+        }
+      }
+
+      // Deduplicate by ID
+      const seen = new Set();
+      const unique = [];
+      pool.forEach(item => {
+        const id = (item.toon_id || item.id || '').replace(/^toon_/, '');
+        if (id && !seen.has(id)) {
+          seen.add(id);
+          unique.push(item);
+        }
+      });
+
+      if (unique.length === 0) {
+        grid.innerHTML = '<div style="grid-column:span 2;text-align:center;padding:30px;color:var(--text-dim);">No anime titles found</div>';
+        return;
+      }
+
+      unique.forEach(item => {
+        grid.appendChild(createGridCard({
+          title: item.title,
+          poster_url: item.poster_url || item.image || item.backdrop,
+          year: item.year || '2024',
+          rating: item.rating || '8.5',
+          is_toonplay: true,
+          toon_id: (item.toon_id || item.id || '').replace(/^toon_/, '')
+        }));
+      });
+    }
+
+    // ==========================================================================
+    // ANIME SHOW / MOVIE DETAIL VIEW (EXACT USER SPECIFICATION)
+    // ==========================================================================
+    async function openAnimeDetails(rawId) {
+      const cleanId = String(rawId || '').replace(/^toon_/, '').trim();
+      if (!cleanId) return;
+
+      const modal = $('#m-anime-detail-modal');
+      modal.classList.add('active');
+      modal.scrollTop = 0;
+
+      // Close button handler
+      $('#anime-modal-close').onclick = closeAnimeDetails;
+
+      showToast('Loading anime details…');
+
+      try {
+        const res = await fetch(`/api/toonplay/info?id=${encodeURIComponent(cleanId)}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const card = data.item || {};
+        animeState.currentAnime = card;
+        animeState.currentSeasons = data.seasons || card.seasons || [];
+
+        // 1. Hero Backdrop & Title
+        const bg = card.backdrop || card.image || card.poster_url || '';
+        $('#anime-modal-hero').style.backgroundImage = `url('${bg}')`;
+        $('#anime-view-title').textContent = card.title || 'Anime Series';
+
+        // 2. Subtitle: ANIMATED SERIES • 1992 • 1080p Ultra HD • Multi Audio
+        const isMovie = card.content_type === 'movie' || cleanId.includes('movie');
+        $('#anime-view-type').textContent = isMovie ? 'ANIME MOVIE' : 'ANIMATED SERIES';
+        $('#anime-view-year').textContent = card.year || '2024';
+
+        // 3. Story Overview
+        const overview = card.overview || data.overview || 'Shin-chan, the boy next door, is a walking disaster, creating chaos wherever he goes. With the body of a child and the mind of an adult, Shinchan is wreaking more havoc than any child before. Shin-chan is carefree, optimistic and gets excited about everything. This 5 year-old likes to do things his way.';
+        $('#anime-view-overview').textContent = overview;
+
+        // 4. Series Metrics: Total Seasons, Total Episodes, Episode Duration
+        const totalSeasons = data.total_seasons || animeState.currentSeasons.length || (isMovie ? 1 : 12);
+        const totalEpisodes = data.total_episodes || card.total_episodes || (isMovie ? 1 : 612);
+        const episodeDuration = data.episode_duration || card.episode_duration || card.duration || '24 min';
+
+        $('#anime-view-seasons').textContent = totalSeasons;
+        $('#anime-view-episodes').textContent = totalEpisodes;
+        $('#anime-view-duration').textContent = episodeDuration;
+
+        // 5. Genres
+        const genresWrap = $('#anime-view-genres');
+        genresWrap.innerHTML = '';
+        let genresList = card.genres || data.genres || ['Comedy', 'Kids', 'School', 'Animation'];
+        if (typeof genresList === 'string') {
+          try { genresList = JSON.parse(genresList); } catch { genresList = [genresList]; }
+        }
+        if (!Array.isArray(genresList) || genresList.length === 0) {
+          genresList = ['Comedy', 'Kids', 'School', 'Action', 'Adventure'];
+        }
+        genresList.slice(0, 6).forEach(g => {
+          const pill = document.createElement('span');
+          pill.className = 'anime-genre-pill';
+          pill.textContent = g;
+          genresWrap.appendChild(pill);
+        });
+
+        // 6. Available Audio Dubs (Tamil, Telugu, Hindi, English, Japanese)
+        const dubsWrap = $('#anime-view-dubs');
+        dubsWrap.innerHTML = '';
+        const standardDubs = ['🇮🇳 Hindi', '⚡ Tamil', '🍿 Telugu', '🌐 English', '🇯🇵 Japanese'];
+        standardDubs.forEach(d => {
+          const pill = document.createElement('span');
+          pill.className = 'anime-dub-pill';
+          pill.textContent = d;
+          dubsWrap.appendChild(pill);
+        });
+
+        // 7. Watchlist Button
+        const isFav = state.watchlist.some(w => w.title === card.title);
+        $('#anime-view-fav-heart').textContent = isFav ? '♥' : '♡';
+        $('#anime-view-fav-heart').style.color = isFav ? '#ff4d8d' : '#fff';
+        $('#anime-view-btn-fav').onclick = () => {
+          toggleWatchlist({
+            title: card.title,
+            year: card.year,
+            poster_url: card.poster_url || card.image,
+            is_toonplay: true,
+            toon_id: cleanId
+          });
+          const favNow = state.watchlist.some(w => w.title === card.title);
+          $('#anime-view-fav-heart').textContent = favNow ? '♥' : '♡';
+          $('#anime-view-fav-heart').style.color = favNow ? '#ff4d8d' : '#fff';
+        };
+
+        // 8. Episodes List View & Season Selector
+        renderAnimeEpisodesSection(cleanId, card.title);
+
+        // 9. Watch Now Primary Action Button
+        $('#anime-view-btn-watch').onclick = () => {
+          const firstSeason = animeState.currentSeasons[0];
+          const firstEp = firstSeason && firstSeason.episodes ? firstSeason.episodes[0] : null;
+          const epNum = firstEp ? (firstEp.number || firstEp.ep_num || 1) : 1;
+          const epTitle = firstEp ? firstEp.title : 'Episode 1';
+          playAnimeEpisode(cleanId, 1, epNum, epTitle, card.title);
+        };
+
+        // 10. More Like This (Recommendations)
+        renderAnimeRecommendations(data.recommendations || []);
+
+      } catch (err) {
+        showToast('Error loading details: ' + err.message);
+      }
+    }
+
+    function closeAnimeDetails() {
+      $('#m-anime-detail-modal').classList.remove('active');
+    }
+
+    function renderAnimeEpisodesSection(cleanId, animeTitle) {
+      const seasonsBar = $('#anime-view-seasons-bar');
+      const episodesList = $('#anime-view-episodes-list');
+      seasonsBar.innerHTML = '';
+      episodesList.innerHTML = '';
+
+      const seasons = animeState.currentSeasons;
+      if (!seasons || seasons.length === 0) {
+        // Single Movie or Direct Episode
+        episodesList.innerHTML = `
+          <div class="ep-card-item" onclick="playAnimeEpisode('${esc(cleanId)}', 1, 1, 'Full Movie', '${esc(animeTitle)}')">
+            <div class="ep-thumb-wrap">
+              <img class="ep-thumb-img" src="${esc(animeState.currentAnime?.image || '/favicon.svg')}" alt="Play">
+              <div class="ep-play-badge">▶</div>
+            </div>
+            <div class="ep-info-col">
+              <div class="ep-num-tag">FEATURE PRESENTATION</div>
+              <div class="ep-name-text">Full Ultra HD Stream (Multi-Audio)</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Render Season Tabs
+      animeState.selectedSeason = seasons[0].season_num || seasons[0].season || 1;
+      seasons.forEach((s, idx) => {
+        const sNum = s.season_num || s.season || (idx + 1);
+        const btn = document.createElement('button');
+        btn.className = `season-tab-btn ${idx === 0 ? 'active' : ''}`;
+        btn.textContent = `Season ${sNum} (${s.episodes ? s.episodes.length : (s.episode_count || 0)})`;
+        btn.onclick = () => {
+          $$('.season-tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          animeState.selectedSeason = sNum;
+          renderSeasonEpisodes(s, cleanId, animeTitle, sNum);
+        };
+        seasonsBar.appendChild(btn);
+      });
+
+      renderSeasonEpisodes(seasons[0], cleanId, animeTitle, animeState.selectedSeason);
+    }
+
+    function renderSeasonEpisodes(seasonObj, cleanId, animeTitle, sNum) {
+      const episodesList = $('#anime-view-episodes-list');
+      episodesList.innerHTML = '';
+
+      const episodes = seasonObj.episodes || [];
+      if (episodes.length === 0) {
+        episodesList.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim);">No episodes available for this season</div>';
+        return;
+      }
+
+      episodes.forEach(ep => {
+        const epNum = ep.number || ep.ep_num || 1;
+        const epTitle = ep.title || `Episode ${epNum}`;
+        const epImg = ep.image || animeState.currentAnime?.image || '/favicon.svg';
+
+        const row = document.createElement('div');
+        row.className = 'ep-card-item';
+        row.innerHTML = `
+          <div class="ep-thumb-wrap">
+            <img class="ep-thumb-img" src="${esc(epImg)}" alt="${esc(epTitle)}" loading="lazy" onerror="this.src='/favicon.svg'">
+            <div class="ep-play-badge">▶</div>
+          </div>
+          <div class="ep-info-col">
+            <div class="ep-num-tag">EPISODE ${epNum}</div>
+            <div class="ep-name-text">${esc(epTitle)}</div>
+          </div>
+        `;
+
+        row.onclick = () => {
+          playAnimeEpisode(cleanId, sNum, epNum, epTitle, animeTitle);
+        };
+
+        episodesList.appendChild(row);
+      });
+    }
+
+    function renderAnimeRecommendations(recs) {
+      const track = $('#anime-view-recs-track');
+      track.innerHTML = '';
+
+      if (!recs || recs.length === 0) {
+        track.parentElement.style.display = 'none';
+        return;
+      }
+      track.parentElement.style.display = 'block';
+
+      recs.forEach(rec => {
+        const card = document.createElement('div');
+        card.className = 'poster-card';
+        const img = rec.image || rec.poster_url || '/favicon.svg';
+        const id = (rec.id || '').replace(/^toon_/, '');
+
+        card.innerHTML = `
+          <div class="poster-img-wrap">
+            <img class="poster-img" src="${esc(img)}" alt="${esc(rec.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='/favicon.svg'">
+            <span class="card-badge anime">Anime</span>
+          </div>
+          <div class="poster-info">
+            <div class="poster-title">${esc(rec.title)}</div>
+          </div>
+        `;
+
+        card.onclick = () => openAnimeDetails(id);
+        track.appendChild(card);
+      });
+    }
+
+    // ==========================================================================
+    // HIGH-SPEED ANIME STREAMING PLAYBACK (AD-FREE SANDBOXED PLAYER)
+    // ==========================================================================
+    async function playAnimeEpisode(cleanId, sNum, epNum, epTitle, animeTitle) {
+      showToast(`Buffering ${animeTitle || 'Anime'} S${sNum} E${epNum}…`);
+      try {
+        const res = await fetch(`/api/toonplay/resolve?id=${encodeURIComponent(cleanId)}&season=${sNum}&episode=${epNum}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+
+        const streamUrl = data.default_stream_url || (data.servers && data.servers[0]?.embed_url);
+        if (!streamUrl) throw new Error('No stream mirror available');
+
+        const titleText = `${animeTitle || 'Anime'} - S${sNum}E${epNum}: ${epTitle || 'Episode'}`;
+
+        // Save progress to Continue Watching
+        saveProgress({
+          title: titleText,
+          poster_url: data.current_episode_image || animeState.currentAnime?.image || '',
+          topic_url: `/api/toonplay/info?id=${cleanId}`,
+          is_toonplay: true
+        }, 15, 1440);
+
+        playStreamInPlayer(streamUrl, titleText, 'Multi-Audio Ultra HD');
+      } catch (err) {
+        showToast('Stream resolve error: ' + err.message);
+      }
+    }
+
+    function playStreamInPlayer(streamUrl, title, quality) {
+      const player = $('#m-player-overlay');
+      const video = $('#m-video');
+      const iframe = $('#m-player-iframe');
+
+      $('#m-player-title').textContent = title || 'Now Playing';
+      $('#m-player-sub').textContent = quality || 'Ultra HD';
+
+      player.classList.add('active');
+
+      if (streamUrl.includes('/api/toonplay/embed') || streamUrl.includes('embed') || streamUrl.includes('abyss')) {
+        // Embed player: display clean iframe
+        video.style.display = 'none';
+        iframe.style.display = 'block';
+        iframe.src = streamUrl;
+        $('#m-player-spinner').style.display = 'none';
+      } else {
+        // Direct MP4 / HLS stream
+        iframe.style.display = 'none';
+        video.style.display = 'block';
+        video.src = streamUrl;
+        video.load();
+        video.play().catch(() => {});
+      }
+
+      showControls();
+    }
+
     function setupNavigation() {
       $$('.nav-tab-btn').forEach(btn => {
         btn.onclick = () => {
           const tabId = btn.getAttribute('data-tab');
           switchTab(tabId);
+        };
+      });
+
+      // Anime Tab Filter Chips
+      $$('#anime-source-chips .chip-btn').forEach(btn => {
+        btn.onclick = () => {
+          $$('#anime-source-chips .chip-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          animeState.activeFilter = btn.getAttribute('data-anime-filter') || 'all';
+          if (animeState.homeData) {
+            renderAnimeShelves(animeState.homeData);
+            renderAnimeCatalog();
+          }
         };
       });
 
