@@ -1778,6 +1778,105 @@
       text-overflow: ellipsis;
       margin-top: 1px;
     }
+
+    /* ANIME QUICK SEARCH BAR IN ANIME TAB */
+    .anime-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-pill);
+      padding: 9px 14px;
+      margin: 4px 16px 12px 16px;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s;
+      touch-action: manipulation;
+    }
+    .anime-search-bar:active {
+      background: rgba(255, 77, 141, 0.12);
+      border-color: rgba(255, 77, 141, 0.35);
+    }
+    .anime-search-icon { font-size: 14px; color: #ff4d8d; }
+    .anime-search-text { font-size: 13px; color: var(--text-dim); flex: 1; }
+    .anime-search-pill {
+      font-size: 10px;
+      font-weight: 700;
+      color: #ff4d8d;
+      background: rgba(255, 77, 141, 0.12);
+      border: 1px solid rgba(255, 77, 141, 0.3);
+      padding: 2px 7px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* FULL NATIVE ANIME EMBED VIDEO PLAYER MODE (UNOBSTRUCTED TOUCH & CONTROLS) */
+    .mobile-player-overlay.anime-embed-mode .touch-gesture-layer {
+      display: none !important;
+      pointer-events: none !important;
+    }
+    .mobile-player-overlay.anime-embed-mode .player-center-controls,
+    .mobile-player-overlay.anime-embed-mode .player-bottom-bar {
+      display: none !important;
+      pointer-events: none !important;
+    }
+    .mobile-player-overlay.anime-embed-mode .player-controls-scrim {
+      background: none !important;
+      pointer-events: none !important;
+    }
+    .mobile-player-overlay.anime-embed-mode .player-top-bar {
+      pointer-events: auto !important;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0) 100%);
+      padding: 10px 14px;
+      z-index: 50;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .mobile-player-overlay.anime-embed-mode.ui-hidden .player-top-bar {
+      opacity: 0;
+      transform: translateY(-20px);
+      pointer-events: none !important;
+    }
+    .mobile-player-overlay.anime-embed-mode #m-player-iframe {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      pointer-events: auto !important;
+      z-index: 1;
+      background: #000;
+    }
+    .anime-srv-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      max-width: 65%;
+      pointer-events: auto;
+    }
+    .anime-srv-chip {
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .anime-srv-chip.active {
+      background: #ff4d8d;
+      border-color: #ff4d8d;
+    }
 </style>
 </head>
 <body>
@@ -1867,6 +1966,13 @@
     
     <!-- ANIME & CARTOONS TAB (Dedicated Universe without Upstream Ads) -->
     <div class="tab-view" id="tab-anime">
+      <!-- Anime Dedicated Quick Search Bar -->
+      <div class="anime-search-bar" id="anime-quick-search-bar" onclick="goToAnimeSearch()">
+        <span class="anime-search-icon">🔍</span>
+        <span class="anime-search-text">Search anime, cartoons, series…</span>
+        <span class="anime-search-pill">Anime</span>
+      </div>
+
       <!-- Anime Filter Chips -->
       <div class="filter-chips-bar" id="anime-source-chips">
         <button class="chip-btn active" data-anime-filter="all">✨ All Universe</button>
@@ -2224,6 +2330,7 @@
           <div class="player-m-title" id="m-player-title">Now Playing</div>
           <div class="player-m-sub" id="m-player-sub">Direct MP4 • 1080p FHD</div>
         </div>
+        <div class="anime-srv-chips-row" id="m-anime-srv-row" style="display:none;"></div>
         <div class="player-top-tools">
           <button class="player-tool-btn" id="m-player-ext" title="Open in VLC / MX Player">🚀</button>
           <button class="player-tool-btn" id="m-player-fs" title="Fullscreen">⛶</button>
@@ -3299,6 +3406,9 @@
       video.style.display = 'block';
 
       $('#m-player-overlay').classList.remove('active');
+      $('#m-player-overlay').classList.remove('anime-embed-mode');
+      $('#m-player-overlay').classList.remove('ui-hidden');
+      clearTimeout(animeTopBarTimer);
       renderContinueWatching();
     }
 
@@ -3894,44 +4004,93 @@
           is_toonplay: true
         }, 15, 1440);
 
-        playStreamInPlayer(streamUrl, titleText, 'Multi-Audio Ultra HD');
+        playStreamInPlayer(streamUrl, titleText, 'Multi-Audio Ultra HD', data.servers || []);
       } catch (err) {
         showToast('Stream resolve error: ' + err.message);
       }
     }
 
-    function playStreamInPlayer(streamUrl, title, quality) {
+    let animeTopBarTimer = null;
+
+    function resetAnimeTopBarTimer() {
+      const player = $('#m-player-overlay');
+      player.classList.remove('ui-hidden');
+      clearTimeout(animeTopBarTimer);
+      animeTopBarTimer = setTimeout(() => {
+        if (player.classList.contains('anime-embed-mode')) {
+          player.classList.add('ui-hidden');
+        }
+      }, 4500);
+    }
+
+    function playStreamInPlayer(streamUrl, title, quality, servers = []) {
       const player = $('#m-player-overlay');
       const video = $('#m-video');
       const iframe = $('#m-player-iframe');
+      const srvRow = $('#m-anime-srv-row');
 
       $('#m-player-title').textContent = title || 'Now Playing';
       $('#m-player-sub').textContent = quality || 'Ultra HD';
 
       player.classList.add('active');
 
-      if (streamUrl.includes('/api/toonplay/embed') || streamUrl.includes('embed') || streamUrl.includes('abyss')) {
-        // Embed player: display clean iframe
+      const isEmbed = streamUrl.includes('/api/toonplay/embed') || streamUrl.includes('embed') || streamUrl.includes('abyss');
+
+      if (isEmbed) {
+        // FULL DEFAULT NATIVE ANIME VIDEO PLAYER MODE
+        // Unobstructed touch: gestures and controls scrim disabled so 100% of touches reach the default player!
+        player.classList.add('anime-embed-mode');
         video.style.display = 'none';
         iframe.style.display = 'block';
         iframe.src = streamUrl;
         $('#m-player-spinner').style.display = 'none';
+
+        // Render Server switcher chips if multiple mirrors exist
+        if (srvRow && servers && servers.length > 1) {
+          srvRow.style.display = 'flex';
+          srvRow.innerHTML = '';
+          servers.slice(0, 4).forEach((srv, sIdx) => {
+            const chip = document.createElement('span');
+            chip.className = `anime-srv-chip ${sIdx === 0 ? 'active' : ''}`;
+            chip.textContent = srv.name || `Server ${sIdx + 1}`;
+            chip.onclick = () => {
+              $$('.anime-srv-chip').forEach(c => c.classList.remove('active'));
+              chip.classList.add('active');
+              const newUrl = srv.embed_url || srv.url || `/api/toonplay/embed?url=${encodeURIComponent(srv.url)}`;
+              iframe.src = newUrl;
+              resetAnimeTopBarTimer();
+            };
+            srvRow.appendChild(chip);
+          });
+        } else if (srvRow) {
+          srvRow.style.display = 'none';
+        }
+
+        resetAnimeTopBarTimer();
       } else {
-        // Direct MP4 / HLS stream
+        // Direct MP4 / HLS Stream
+        player.classList.remove('anime-embed-mode');
+        if (srvRow) srvRow.style.display = 'none';
         iframe.style.display = 'none';
         video.style.display = 'block';
         video.src = streamUrl;
         video.load();
         video.play().catch(() => {});
+        showControls();
       }
-
-      showControls();
     }
 
     function setupNavigation() {
       $$('.nav-tab-btn').forEach(btn => {
         btn.onclick = () => {
           const tabId = btn.getAttribute('data-tab');
+          if (tabId === 'tab-search' && state.activeTab === 'tab-anime') {
+            goToAnimeSearch();
+            return;
+          }
+          if (tabId === 'tab-search' && state.activeTab !== 'tab-anime' && searchFilterSource === 'toonplay_anime') {
+            setSearchSourceFilter('all');
+          }
           switchTab(tabId);
         };
       });
@@ -3950,8 +4109,15 @@
       });
 
       $('#btn-quick-search').onclick = () => {
-        switchTab('tab-search');
-        setTimeout(() => $('#m-search-input').focus(), 150);
+        if (state.activeTab === 'tab-anime') {
+          goToAnimeSearch();
+        } else {
+          if (searchFilterSource === 'toonplay_anime') {
+            setSearchSourceFilter('all');
+          }
+          switchTab('tab-search');
+          setTimeout(() => $('#m-search-input').focus(), 150);
+        }
       };
 
       $$('#source-chips .chip-btn').forEach(chip => {
@@ -3992,6 +4158,29 @@
     // SEARCH
     // ==========================================================================
     let searchFilterSource = 'all';
+
+    
+    function goToAnimeSearch() {
+      setSearchSourceFilter('toonplay_anime');
+      switchTab('tab-search');
+      setTimeout(() => $('#m-search-input').focus(), 150);
+    }
+
+    function setSearchSourceFilter(source) {
+      searchFilterSource = source;
+      $$('#search-source-chips .chip-btn').forEach(btn => {
+        const bSrc = btn.getAttribute('data-search-source') || 'all';
+        btn.classList.toggle('active', bSrc === source);
+      });
+      const input = $('#m-search-input');
+      if (input) {
+        if (source === 'toonplay_anime') {
+          input.placeholder = 'Search anime, cartoons, series…';
+        } else {
+          input.placeholder = 'Search movies, dubs, anime…';
+        }
+      }
+    }
 
     function setupSearch() {
       const input = $('#m-search-input');
@@ -4053,6 +4242,32 @@
       const emptyState = $('#m-search-empty');
       resultsGrid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding:30px; color:#94a3b8;"><div class="spinner-sm" style="margin:0 auto 10px;"></div>Searching releases…</div>';
       emptyState.style.display = 'none';
+
+      // Specialized high-coverage search when Anime filter is active
+      if (searchFilterSource === 'toonplay_anime') {
+        try {
+          const toonRes = await fetch(`/api/toonplay/search?q=${encodeURIComponent(query)}`);
+          if (toonRes.ok) {
+            const toonItems = await toonRes.json();
+            if (Array.isArray(toonItems) && toonItems.length > 0) {
+              resultsGrid.innerHTML = '';
+              toonItems.forEach(item => {
+                resultsGrid.appendChild(createGridCard({
+                  title: item.title,
+                  poster_url: item.poster_url || item.image,
+                  year: item.year || '2024',
+                  rating: item.rating || '8.5',
+                  is_toonplay: true,
+                  toon_id: (item.toon_id || item.id || '').replace(/^toon_/, '')
+                }));
+              });
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('Anime search fallback to general search', e);
+        }
+      }
 
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&source=all`);
