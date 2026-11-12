@@ -188,11 +188,20 @@ def get_recent_movies(
     quality: str | None = None,
     sort_by: str = "recent",
     content_type: str | None = None,
+    year: int | None = None,
+    start_year: int | None = None,
+    end_year: int | None = None,
 ) -> list[dict]:
     """Retrieve recently scraped or popular movies with optional filtering and sorting."""
     with get_conn() as conn:
         conditions = ["substr(title, 1, 1) != '['"]
         params = []
+        if start_year and end_year:
+            conditions.append("year >= ? AND year <= ?")
+            params.extend([int(start_year), int(end_year)])
+        elif year:
+            conditions.append("year = ?")
+            params.append(int(year))
         if language and language.lower() != "all":
             conditions.append("(language LIKE ? OR title LIKE ?)")
             params.extend([f"%{language}%", f"%{language}%"])
@@ -248,5 +257,137 @@ def update_poster_url(conn, topic_url: str, poster_url: str):
         "UPDATE movies SET poster_url = ? WHERE topic_url = ?",
         (poster_url, topic_url),
     )
+
+
+# ==============================================================================
+# Custom Cloud Vault (Google Drive, Pixeldrain, Dropbox, Direct Links)
+# ==============================================================================
+
+def init_vault_table():
+    with get_conn() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS custom_vault (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                year INTEGER,
+                original_url TEXT NOT NULL,
+                stream_url TEXT NOT NULL,
+                poster TEXT,
+                backdrop TEXT,
+                overview TEXT,
+                rating TEXT,
+                quality TEXT DEFAULT '1080p',
+                source_type TEXT DEFAULT 'cloud',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+
+def add_vault_movie(
+    title: str,
+    year: int | None,
+    original_url: str,
+    stream_url: str,
+    poster: str = "",
+    backdrop: str = "",
+    overview: str = "",
+    rating: str = "",
+    quality: str = "1080p",
+    source_type: str = "cloud"
+) -> int:
+    init_vault_table()
+    with get_conn() as conn:
+        cursor = conn.execute("""
+            INSERT INTO custom_vault (title, year, original_url, stream_url, poster, backdrop, overview, rating, quality, source_type)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (title, year, original_url, stream_url, poster, backdrop, overview, rating, quality, source_type))
+        return cursor.lastrowid
+
+
+def get_vault_movies() -> list[dict]:
+    init_vault_table()
+    with get_conn() as conn:
+        rows = conn.execute("SELECT * FROM custom_vault ORDER BY id DESC").fetchall()
+        return [dict(r) for r in rows]
+
+
+def get_vault_movie_by_id(vault_id: int) -> dict | None:
+    init_vault_table()
+    with get_conn() as conn:
+        row = conn.execute("SELECT * FROM custom_vault WHERE id = ?", (vault_id,)).fetchone()
+        return dict(row) if row else None
+
+
+def delete_vault_movie(vault_id: int):
+    init_vault_table()
+    with get_conn() as conn:
+        conn.execute("DELETE FROM custom_vault WHERE id = ?", (vault_id,))
+
+
+def init_continue_watching_table():
+    with get_conn() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS continue_watching (
+                id TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                year TEXT,
+                poster_url TEXT,
+                content_type TEXT,
+                series_id TEXT,
+                season_num INTEGER,
+                episode_num INTEGER,
+                episode_title TEXT,
+                stream_url TEXT,
+                source TEXT,
+                current_time REAL DEFAULT 0,
+                duration REAL DEFAULT 0,
+                progress_pct REAL DEFAULT 0,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+
+def save_continue_watching(entry: dict):
+    init_continue_watching_table()
+    with get_conn() as conn:
+        conn.execute("""
+            INSERT OR REPLACE INTO continue_watching (
+                id, title, year, poster_url, content_type,
+                series_id, season_num, episode_num, episode_title,
+                stream_url, source, current_time, duration,
+                progress_pct, updated_at
+            ) VALUES (
+                :id, :title, :year, :poster_url, :content_type,
+                :series_id, :season_num, :episode_num, :episode_title,
+                :stream_url, :source, :current_time, :duration,
+                :progress_pct, CURRENT_TIMESTAMP
+            )
+        """, entry)
+
+
+def get_continue_watching(limit: int = 24) -> list[dict]:
+    init_continue_watching_table()
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT * FROM continue_watching
+            WHERE progress_pct < 95
+            ORDER BY updated_at DESC
+            LIMIT ?
+        """, (limit,)).fetchall()
+        return [dict(r) for r in rows]
+
+
+def delete_continue_watching(item_id: str):
+    init_continue_watching_table()
+    with get_conn() as conn:
+        conn.execute("DELETE FROM continue_watching WHERE id = ?", (item_id,))
+
+
+def clear_continue_watching():
+    init_continue_watching_table()
+    with get_conn() as conn:
+        conn.execute("DELETE FROM continue_watching")
+
+
 
 

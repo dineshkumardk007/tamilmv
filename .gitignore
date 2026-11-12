@@ -1,7 +1,13 @@
 .venv/
 __pycache__/
 *.pyc
-movies.db
+*.db
+
 node_modules/
 * - Copy*.py
+*.log
+scratch/
+android/app/build/
+android/.gradle/
+
 

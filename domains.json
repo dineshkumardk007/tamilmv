@@ -1,0 +1,65 @@
+{
+  "tamilmv": {
+    "active_host": "1tamilmv.win",
+    "protocol": "https",
+    "label": "Tamil(Torrents)",
+    "mirrors": [
+      "www.1tamilmv.solar",
+      "www.1tamilmv.insure",
+      "1tamilmv.insure",
+      "1tamilmv.win",
+      "www.1tamilmv.win",
+      "www.1tamilmv.capital",
+      "www.1tamilmv.style",
+      "1tamilmv.style",
+      "1tamilmv.fi",
+      "www.1tamilmv.cz",
+      "www.1tamilmv.pm",
+      "www.1tamilmv.reisen",
+      "www.1tamilmv.cards",
+      "www.1tamilmv.wf",
+      "www.1tamilmv.yt",
+      "www.1tamilmv.lat",
+      "www.1tamilmv.biz",
+      "www.1tamilmv.click"
+    ]
+  },
+  "isaidub": {
+    "active_host": "isaidub.net",
+    "protocol": "https",
+    "label": "TamDub (Dubbed)",
+    "mirrors": [
+      "isaidub.green",
+      "www.isaidub.video",
+      "isaidub.co",
+      "isaidub.in",
+      "isaidub.com",
+      "isaidub.net"
+    ]
+  },
+  "moviesda": {
+    "active_host": "moviezda.co",
+    "protocol": "https",
+    "label": "TamilMov (Direct)",
+    "mirrors": [
+      "moviezda.co",
+      "moviezda.me",
+      "moviesda.ski",
+      "isaimini.com.co",
+      "moviesda.net",
+      "isaimini.io",
+      "isaimini.co",
+      "isaiminimob.com"
+    ]
+  },
+  "toonplay": {
+    "active_host": "https://animesalt.streamindia.co.in/api",
+    "protocol": "https",
+    "label": "Anime & Cartoons",
+    "mirrors": [
+      "https://animesalt.streamindia.co.in/api",
+      "https://anime.streamindia.co.in/api",
+      "https://toonplay.in/api"
+    ]
+  }
+}

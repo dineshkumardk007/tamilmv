@@ -253,6 +253,6 @@ app.get('/stream', async (req, res) => {
   }
 });
 
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`[Torrent Streamer] Listening on http://127.0.0.1:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`[Torrent Streamer] Listening on http://0.0.0.0:${PORT}`);
 });

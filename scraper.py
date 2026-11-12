@@ -117,6 +117,38 @@ HEADERS = {
 _SESSION = requests.Session()
 _SESSION.headers.update(HEADERS)
 
+_orig_session_get = _SESSION.get
+
+
+def _wrapped_session_get(url, *args, **kwargs):
+    clean_url = _clean_topic_fetch_url(url) if ("/topic/" in str(url) or "1tamilmv" in str(url)) else str(url)
+    try:
+        r = _orig_session_get(clean_url, *args, **kwargs)
+        if r and hasattr(r, "url"):
+            from urllib.parse import urlparse
+            final_host = urlparse(r.url).netloc.lower()
+            if final_host and "1tamilmv" in final_host and final_host != BASE_HOST.lower():
+                set_base_host(final_host)
+                try:
+                    import domain_manager
+                    domain_manager.set_active_host("tamilmv", final_host)
+                except Exception:
+                    pass
+        return r
+    except (requests.ConnectionError, requests.Timeout) as exc:
+        try:
+            import domain_manager
+            resolved = domain_manager.auto_resolve_source("tamilmv")
+            if resolved.get("online") and resolved.get("active_host"):
+                new_clean = _clean_topic_fetch_url(url)
+                return _orig_session_get(new_clean, *args, **kwargs)
+        except Exception:
+            pass
+        raise exc
+
+
+_SESSION.get = _wrapped_session_get
+
 YEAR_RE = re.compile(r"\((\d{4})\)")
 QUALITY_RE = re.compile(r"\[(.*?)\]")
 # A bracket only counts as the "quality" bracket if it mentions a resolution,
@@ -390,7 +422,7 @@ def _fetch_search_api(
         "page": str(page),
         "per_page": str(per_page),
     }
-    resp = requests.get(SEARCH_API_URL, params=params, headers=HEADERS, timeout=20)
+    resp = requests.get(SEARCH_API_URL, params=params, headers=HEADERS, timeout=1.5)
     resp.raise_for_status()
     data = resp.json()
     return [_entry_from_api_result(r) for r in data.get("results", [])]
@@ -524,6 +556,21 @@ def fetch_homepage() -> list[dict]:
 
     # Sort newest forum topics first
     results.sort(key=lambda x: (x.get("topic_id") or 0), reverse=True)
+
+    # 4. If local ISP completely blocked direct homepage, fall back to cloud bridge
+    if not results:
+        try:
+            for q in ["2026", "2025"]:
+                cloud_url = f"https://tamilmv-4vej.onrender.com/api/search?q={q}"
+                r = requests.get(cloud_url, headers=HEADERS, timeout=4)
+                if r.status_code == 200:
+                    for item in r.json():
+                        if item.get("topic_url") and item["topic_url"] not in seen_urls:
+                            seen_urls.add(item["topic_url"])
+                            results.append(item)
+        except Exception:
+            pass
+
     return results
 
 
@@ -533,20 +580,37 @@ def fetch_search(query: str) -> list[dict]:
         results = _fetch_search_api(query)
         if results:
             return results
-    except (requests.RequestException, ValueError, KeyError):
+    except Exception:
         pass
 
     # Fall back to scraping the static search page in case the API shape
     # changes again — unlikely to find anything since results are normally
     # injected client-side, but cheap to try.
-    url = SEARCH_URL.format(query=quote_plus(query))
-    resp = requests.get(url, headers=HEADERS, timeout=20)
-    resp.raise_for_status()
+    try:
+        url = SEARCH_URL.format(query=quote_plus(query))
+        resp = requests.get(url, headers=HEADERS, timeout=1.5)
+        resp.raise_for_status()
 
-    results = parse_search_results(resp.text)
-    if not results:
-        results = parse_listing_html(resp.text)
-    return results
+        results = parse_search_results(resp.text)
+        if not results:
+            results = parse_listing_html(resp.text)
+        if results:
+            return results
+    except Exception:
+        pass
+
+    # Fallback to cloud bridge if direct local search was blocked by ISP
+    try:
+        cloud_url = f"https://tamilmv-4vej.onrender.com/api/search?q={quote_plus(query)}"
+        r = requests.get(cloud_url, headers=HEADERS, timeout=3.5)
+        if r.status_code == 200:
+            data = r.json()
+            if isinstance(data, list) and data:
+                return data
+    except Exception:
+        pass
+
+    return []
 
 
 # ---------------------------------------------------------------------------
@@ -555,6 +619,20 @@ def fetch_search(query: str) -> list[dict]:
 
 # Resolution + size hints used to build a clean per-quality label.
 RES_RE = re.compile(r"\b(4K|2160p|1080p|720p|480p|360p)\b", re.IGNORECASE)
+
+
+def strip_site_domains(text: str) -> str:
+    """Strip website domains, site branding, and URLs so only clean movie name and specs remain."""
+    if not text:
+        return ""
+    t = re.sub(r'https?://\S+', '', text, flags=re.I)
+    t = re.sub(r'(?:www\d*\.)?(?:1tamilmv|tamilmv|tamilblasters|isaidub|isaimini|moviesda|tamilplay|tamilyogi|kuttymovies|masstamilan|skymovies|bolly4u|cinemavilla)\.[a-z0-9\-]+(?:\.[a-z0-9\-]+)?', '', t, flags=re.I)
+    t = re.sub(r'\b[a-zA-Z0-9_\-]+\.(?:cz|world|solar|capital|reisen|cards|pm|vip|win|net|org|com|co|green|in|to|ch|xyz|me|tv|cc|pw|info|biz|site|live|app|icu|ws|top|pro|club|click|link)\b', '', t, flags=re.I)
+    t = re.sub(r'[\[\(\{]?(?:1tamilmv|tamilmv|tamilblasters|isaidub|isaimini|moviesda|tamilyogi|kuttymovies)[\]\)\}]?', '', t, flags=re.I)
+    t = re.sub(r'\b(?:www|1tamilmv|tamilmv|tamilblasters|isaidub|isaimini|moviesda)\b', '', t, flags=re.I)
+    t = re.sub(r'^[\s\-_:•|–—]+|[\s\-_:•|–—]+$', '', t)
+    t = re.sub(r'\s{2,}', ' ', t).strip()
+    return t
 
 
 def _label_from_magnet_dn(magnet_href: str) -> str | None:
@@ -605,7 +683,8 @@ def parse_download_page(html: str) -> list[dict]:
             continue
 
         if href.startswith("magnet:"):
-            label = _label_from_magnet_dn(href) or a.get_text(strip=True)
+            raw_label = _label_from_magnet_dn(href) or a.get_text(strip=True)
+            label = strip_site_domains(raw_label) or raw_label
             res_match = RES_RE.search(label)
             size_match = SIZE_RE.search(label)
             options.append(
@@ -624,16 +703,32 @@ def parse_download_page(html: str) -> list[dict]:
 
 def extract_poster_url(soup: BeautifulSoup) -> str | None:
     """Extract movie poster image URL from topic page HTML."""
-    # Find the post content area
+    if not soup:
+        return None
+
+    # 1. First check explicit OpenGraph and Twitter card meta tags (often highest quality)
+    og_img = (
+        soup.find("meta", property="og:image")
+        or soup.find("meta", attrs={"name": "twitter:image"})
+        or soup.find("meta", property="og:image:secure_url")
+    )
+    if og_img and og_img.get("content"):
+        c = og_img["content"].strip()
+        if c.startswith("//"):
+            c = "https:" + c
+        if c.startswith("http") and not any(bad in c.lower() for bad in ["logo", "badge", "favicon", "avatar", "reaction", "staff", "default"]):
+            return c
+
+    # 2. Find the post content area
     container = (
         soup.find("div", attrs={"data-role": "commentContent"})
         or soup.find("div", class_=re.compile(r"cPost_contentWrap|ipsType_richText", re.I))
         or soup
     )
 
-    # Walk through all <img> tags in document order within the post
+    # 3. Walk through all <img> tags in document order within the post
     for img in container.find_all("img"):
-        src = img.get("src") or img.get("data-src")
+        src = img.get("src") or img.get("data-src") or img.get("data-original") or img.get("data-lazy-src")
         if not src:
             continue
         if src.startswith("//"):
@@ -643,25 +738,27 @@ def extract_poster_url(soup: BeautifulSoup) -> str | None:
 
         lower = src.lower()
 
-        # Skip UI elements, badges, reaction icons, torrent logos, gifs
+        # Skip UI elements, badges, reaction icons, torrent logos, gifs, smileys
         if (
             lower.endswith(".gif")
-            or "torrborder" in lower
-            or "utorrent" in lower
-            or "reaction" in lower
-            or "badge" in lower
-            or "emoticon" in lower
-            or "staff" in lower
-            or "logo" in lower
+            or any(bad in lower for bad in ["torrborder", "utorrent", "reaction", "badge", "emoticon", "staff", "logo", "smiley", "default_photo", "avatar", "icon"])
         ):
             continue
 
         # Accept any valid movie poster image or CDN URL (including Twitter, ibb, postimg, etc.)
         if (
             any(ext in lower for ext in [".jpg", ".jpeg", ".png", ".webp", "format=jpg", "format=png", "format=webp", "jpg", "jpeg", "png", "webp"])
-            or any(host in lower for host in ["twimg", "pixelbb", "imageride", "cdn", "ibb", "postimg", "imagebam", "media-amazon", "tmdb", "imdb"])
+            or any(host in lower for host in ["twimg", "pixelbb", "imageride", "cdn", "ibb", "postimg", "imagebam", "media-amazon", "tmdb", "imdb", "wp-content", "uploads"])
         ):
             return src
+
+    # 4. Check <a> links in post content pointing directly to image hosting services
+    for a in container.find_all("a", href=True):
+        href = a["href"].strip()
+        lower_href = href.lower()
+        if any(h in lower_href for h in ["imageride.net/images/", "i.postimg.cc/", "i.ibb.co/", "imagebam.com/view/", "m.media-amazon.com/images/"]):
+            if any(ext in lower_href for ext in [".jpg", ".jpeg", ".png", ".webp"]):
+                return href
 
     return None
 
@@ -678,7 +775,7 @@ def fetch_download_details(topic_url: str) -> dict:
     clean_url = _clean_topic_fetch_url(topic_url)
     html = ""
     try:
-        resp = _SESSION.get(clean_url, timeout=12)
+        resp = _SESSION.get(clean_url, timeout=2.5)
         if resp.status_code == 200:
             html = resp.text
     except Exception:
@@ -687,9 +784,46 @@ def fetch_download_details(topic_url: str) -> dict:
     if not html:
         try:
             fallback_url = re.sub(r"^https?://[^/]+", BASE_URL, topic_url.strip())
-            resp = _SESSION.get(fallback_url, timeout=12)
+            resp = _SESSION.get(fallback_url, timeout=2.0)
             if resp.status_code == 200:
                 html = resp.text
+        except Exception:
+            pass
+
+    # High-speed fallback to cloud proxy bridge (Render) if local machine is ISP-blocked
+    if not html:
+        try:
+            cloud_proxy = f"https://tamilmv-4vej.onrender.com/api/downloads?url={quote_plus(clean_url)}"
+            r = requests.get(cloud_proxy, headers=HEADERS, timeout=7)
+            if r.status_code == 200:
+                data = r.json()
+                if data and (data.get("options") or data.get("poster_url")):
+                    return {
+                        "options": data.get("options", []),
+                        "poster_url": data.get("poster_url"),
+                    }
+        except Exception:
+            pass
+
+    # Fallback to alternate mirrors if primary host is blocked/offline
+    if not html:
+        try:
+            import domain_manager
+            cfg = domain_manager.load_config()
+            mirrors = cfg.get("tamilmv", {}).get("mirrors", [])
+            for m in mirrors:
+                if m.lower() in clean_url.lower():
+                    continue
+                mirror_url = re.sub(r"^https?://[^/]+", f"https://{m}", clean_url)
+                try:
+                    resp = _SESSION.get(mirror_url, timeout=2.0)
+                    if resp.status_code == 200 and ("banger" in resp.text.lower() or "magnet" in resp.text.lower() or "topic" in resp.text.lower()):
+                        html = resp.text
+                        set_base_host(m)
+                        domain_manager.set_active_host("tamilmv", m)
+                        break
+                except Exception:
+                    continue
         except Exception:
             pass
 
@@ -703,7 +837,7 @@ def fetch_download_details(topic_url: str) -> dict:
                 text=True,
                 encoding="utf-8",
                 errors="ignore",
-                timeout=15,
+                timeout=5,
             )
             if res.stdout:
                 html = res.stdout
@@ -711,7 +845,11 @@ def fetch_download_details(topic_url: str) -> dict:
             pass
 
     if not html:
-        raise RuntimeError(f"Could not fetch topic page: {topic_url}")
+        raise RuntimeError(
+            f"Could not connect to 1TamilMV ({BASE_HOST}). "
+            "Local Indian ISP filtering (SSL connection reset) is preventing direct access. "
+            "Torrent links load normally on cloud hosting (Koyeb/GitHub) or locally with Cloudflare WARP/VPN."
+        )
 
     soup = BeautifulSoup(html, "lxml")
     options = parse_download_page(html)

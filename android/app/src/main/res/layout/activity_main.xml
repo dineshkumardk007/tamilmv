@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark">
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <!-- Loading Spinner Overlay -->
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/brand_teal"
+        android:visibility="gone" />
+
+    <!-- Error State Overlay with TV-friendly Buttons -->
+    <LinearLayout
+        android:id="@+id/error_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎬"
+            android:textSize="56sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="SDK Movies"
+            android:textColor="@color/text_white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:maxWidth="520dp"
+            android:text="@string/error_connection"
+            android:textColor="#94a3b8"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_retry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/brand_purple"
+                android:focusable="true"
+                android:nextFocusRight="@+id/btn_change_host"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/btn_retry"
+                android:textColor="@color/text_white" />
+
+            <Button
+                android:id="@+id/btn_change_host"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/surface_card"
+                android:focusable="true"
+                android:nextFocusLeft="@+id/btn_retry"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/btn_change_host"
+                android:textColor="@color/brand_teal" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
