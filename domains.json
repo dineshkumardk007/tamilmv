@@ -1,16 +1,14 @@
 {
   "tamilmv": {
-    "active_host": "1tamilmv.win",
+    "active_host": "www.1tamilmv.io",
     "protocol": "https",
     "label": "Tamil(Torrents)",
     "mirrors": [
-      "www.1tamilmv.solar",
       "www.1tamilmv.io",
       "1tamilmv.io",
+      "www.1tamilmv.solar",
       "www.1tamilmv.insure",
       "1tamilmv.insure",
-      "1tamilmv.win",
-      "www.1tamilmv.win",
       "www.1tamilmv.capital",
       "www.1tamilmv.style",
       "1tamilmv.style",

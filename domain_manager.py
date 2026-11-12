@@ -27,17 +27,15 @@ CONFIG_FILE = BASE_DIR / "domains.json"
 
 DEFAULT_DOMAINS = {
     "tamilmv": {
-        "active_host": "www.1tamilmv.solar",
+        "active_host": "www.1tamilmv.io",
         "protocol": "https",
         "label": "Tamil(Torrents)",
         "mirrors": [
-            "www.1tamilmv.solar",
             "www.1tamilmv.io",
             "1tamilmv.io",
+            "www.1tamilmv.solar",
             "www.1tamilmv.insure",
             "1tamilmv.insure",
-            "1tamilmv.win",
-            "www.1tamilmv.win",
             "www.1tamilmv.capital",
             "www.1tamilmv.style",
             "1tamilmv.style",
@@ -122,6 +120,16 @@ def load_config() -> dict:
                                 for m in v["mirrors"]:
                                     if m not in merged[k]["mirrors"]:
                                         merged[k]["mirrors"].append(m)
+
+                    # Always sanitize out hijacked / expired domains
+                    if "tamilmv" in merged:
+                        merged["tamilmv"]["mirrors"] = [
+                            m for m in merged["tamilmv"].get("mirrors", [])
+                            if "1tamilmv.win" not in m.lower()
+                        ]
+                        if "1tamilmv.win" in merged["tamilmv"].get("active_host", "").lower():
+                            merged["tamilmv"]["active_host"] = "www.1tamilmv.io"
+
                     _DOMAINS_STATE = merged
                     return _DOMAINS_STATE
         except Exception as exc:
@@ -294,8 +302,17 @@ def check_candidate_health(source: str, host_or_url: str, timeout: float = 2.5) 
             # Validate domain-specific signature
             is_valid = True
             if src == "tamilmv":
-                # Valid TamilMV pages contain 'tamilmv' or forum tags
-                is_valid = ("tamilmv" in html_low or "banger" in html_low or "forum" in html_low)
+                # Reject known squatted / gambling domains
+                if "1tamilmv.win" in (final_host or host_or_url).lower():
+                    is_valid = False
+                elif any(spam in html_low for spam in ("taruhan", "kasino", "judi", "slot", "betting", "poker")):
+                    is_valid = False
+                else:
+                    # Valid TamilMV pages contain forum/topic structures or banger/attachment links
+                    is_valid = (
+                        ("attachment.php" in html_low or "banger" in html_low or "forum" in html_low or "topic" in html_low)
+                        and ("tamilmv" in html_low or "banger" in html_low)
+                    )
             elif src == "isaidub":
                 is_valid = ("isaidub" in html_low or "tamil" in html_low or "dubbed" in html_low or "mv-content" in html_low)
             elif src == "moviesda":
