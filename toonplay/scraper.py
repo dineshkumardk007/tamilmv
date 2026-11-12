@@ -398,6 +398,27 @@ def resolve_stream(item_id: str, season: int = 1, episode: int = 1) -> dict[str,
                     except Exception as exc:
                         logger.warning(f"ToonPlay extract error: {exc}")
 
+    # Also fetch alternative multi-CDN streams via anilist_id if available
+    anilist_id = info.get("anilist_id")
+    if not anilist_id:
+        raw = info.get("raw_data")
+        if isinstance(raw, str):
+            try:
+                anilist_id = json.loads(raw).get("anilist_id")
+            except Exception:
+                pass
+
+    extra_servers = []
+    if anilist_id:
+        try:
+            stream_ep = episode if not is_movie else 1
+            stream_url = f"https://animesalt.streamindia.co.in/api/stream?anilist_id={anilist_id}&episode={stream_ep}"
+            r2 = _SESSION.get(stream_url, timeout=8)
+            if r2.status_code == 200:
+                extra_servers = r2.json().get("servers", [])
+        except Exception as exc:
+            logger.debug(f"Anilist stream fetch error: {exc}")
+
     # Parse and normalize servers & audio language tracks
     normalized_servers = []
     for srv in watch_servers:
@@ -417,19 +438,20 @@ def resolve_stream(item_id: str, season: int = 1, episode: int = 1) -> dict[str,
                         lang = tr.get("language") or "Default"
                         tr_link = tr.get("link") or ""
                         normalized_servers.append({
-                            "name": f"{srv_name} ({lang})",
+                            "name": f"⚡ {lang} Dub (HD)",
                             "language": lang,
                             "type": "embed",
+                            "is_direct_audio": True,
                             "url": f"/api/toonplay/embed?url={quote(tr_link)}"
                         })
                     continue
             except Exception:
                 pass
 
-        # Check for ravok multi-audio player
+        # Check for ravok multi-audio player (keep as backup server)
         if "/video/" in raw_url:
             normalized_servers.append({
-                "name": f"⚡ Multi 1 (Tamil / Hindi / Telugu Dub)",
+                "name": "⚡ Multi Server (Backup)",
                 "language": "Multi-Audio",
                 "type": "embed",
                 "is_ravok": True,
@@ -452,11 +474,11 @@ def resolve_stream(item_id: str, season: int = 1, episode: int = 1) -> dict[str,
 
         display_name = srv_name
         if "options-0" in srv_name.lower():
-            display_name = f"⚡ Multi 1 ({track_lang})"
+            display_name = f"⚡ Multi Mirror 1 ({track_lang})"
         elif "options-1" in srv_name.lower():
-            display_name = f"⚡ Multi 2 ({track_lang})"
+            display_name = f"⚡ Multi-Audio Dub (HD)"
         elif "options-2" in srv_name.lower():
-            display_name = f"⚡ Multi 3 ({track_lang})"
+            display_name = f"⚡ Multi Mirror 2 ({track_lang})"
 
         normalized_servers.append({
             "name": display_name,
@@ -465,25 +487,55 @@ def resolve_stream(item_id: str, season: int = 1, episode: int = 1) -> dict[str,
             "url": f"/api/toonplay/embed?url={quote(raw_url)}"
         })
 
+    # Add extra high-speed Anilist CDN servers (HD-1, HD-2, MegaPlay)
+    for s in extra_servers:
+        link = s.get("dataLink") or ""
+        sname = s.get("serverName") or "HD"
+        dtype = (s.get("dataType") or "sub").upper()
+        if link:
+            lang_label = "ENG" if dtype == "ENG" else ("JAP" if dtype == "JAP" else dtype)
+            normalized_servers.append({
+                "name": f"⚡ {sname} ({lang_label})",
+                "language": lang_label,
+                "type": "embed",
+                "is_anilist": True,
+                "url": f"/api/toonplay/embed?url={quote(link)}"
+            })
+
     if not normalized_servers:
         return {
             "success": False,
             "error": "No stream mirrors currently available for this title."
         }
 
-    # Prioritize Tamil audio tracks and multi-audio servers as default #1 priority
+    # Prioritize rock-solid direct audio dubs first, then multi-audio, then HD CDN, then ravok backup
     def _server_rank(srv: dict) -> int:
         nm = (srv.get("name") or "").lower()
         lg = (srv.get("language") or "").lower()
-        if "tamil" in nm or "tamil" in lg or "tam" in nm:
+        is_ravok = srv.get("is_ravok", False)
+        is_direct = srv.get("is_direct_audio", False)
+
+        if is_direct and ("tamil" in lg or "tamil" in nm):
+            return 200
+        if is_direct and ("telugu" in lg or "telugu" in nm):
+            return 180
+        if is_direct and ("hindi" in lg or "hindi" in nm):
+            return 160
+        if is_direct and any(x in lg for x in ["malayalam", "kannada", "bengali"]):
+            return 140
+        if is_direct and ("english" in lg or "eng" in lg):
+            return 120
+        if is_direct and ("japanese" in lg or "jap" in lg):
+            return 110
+        if "multi-audio" in nm:
             return 100
-        if "multi" in nm or srv.get("is_ravok") or "multi" in lg:
-            return 90
-        if "telugu" in nm or "hindi" in nm:
+        if "hd-1" in nm or "hd-2" in nm:
+            return 80
+        if "megaplay" in nm:
             return 70
-        if "english" in nm or "eng" in nm:
-            return 60
-        return 10
+        if is_ravok:
+            return 20  # Ravok placed at end as backup mirror
+        return 50
 
     normalized_servers.sort(key=_server_rank, reverse=True)
 

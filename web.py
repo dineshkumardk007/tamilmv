@@ -1942,19 +1942,20 @@ async def api_save_continue_watching(request: Request):
     try:
         data = await request.json()
         item_id = data.get("id") or f"{data.get('title')}_{data.get('season_num', 0)}_{data.get('episode_num', 0)}"
+        is_toon = bool(data.get("is_toonplay") or "toonplay" in str(data.get("topic_url", "")).lower() or "series-" in str(item_id) or "movies-" in str(item_id))
         entry = {
             "id": str(item_id),
             "title": str(data.get("title", "Untitled")),
             "year": str(data.get("year", "")),
-            "poster_url": str(data.get("poster_url", "")),
+            "poster_url": str(data.get("poster_url") or data.get("poster", "")),
             "content_type": str(data.get("content_type", "movie")),
-            "series_id": str(data.get("series_id", "")),
-            "season_num": int(data.get("season_num", 0) or 0),
-            "episode_num": int(data.get("episode_num", 0) or 0),
+            "series_id": str(data.get("series_id") or data.get("cleanId", "")),
+            "season_num": int(data.get("season_num") or data.get("seasonNum", 0) or 0),
+            "episode_num": int(data.get("episode_num") or data.get("epNum", 0) or 0),
             "episode_title": str(data.get("episode_title", "")),
-            "stream_url": str(data.get("stream_url", "")),
-            "source": str(data.get("source", "stream")),
-            "current_time": float(data.get("current_time", 0) or 0),
+            "stream_url": str(data.get("stream_url") or data.get("streamUrl", "")),
+            "source": "toonplay" if is_toon else str(data.get("source", "stream")),
+            "current_time": float(data.get("current_time") or data.get("position", 0) or 0),
             "duration": float(data.get("duration", 0) or 0),
             "progress_pct": float(data.get("progress_pct", 0) or 0),
         }
@@ -2357,8 +2358,8 @@ async def api_toonplay_embed(url: str = Query(...)):
     else:
         player_target = raw_url
 
-    # Match ToonPlay's exact behavior: sandbox /video/ (Ravok) to block ads, allow Abyss without breaking
-    sandbox_attr = 'sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"' if "/video/" in player_target else ''
+    # Universal anti-ad sandbox: allow playback & scripts, block popups & top redirects
+    sandbox_attr = 'sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"'
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -2384,6 +2385,15 @@ async def api_toonplay_embed(url: str = Query(...)):
     referrerpolicy="no-referrer">
   </iframe>
   <script>
+    // Permanently neutralize ad popups, new tabs, and alert prompts
+    try {{
+      window.open = function() {{ console.warn('[SDK AdBlock] Popup blocked'); return null; }};
+      Object.freeze(window.open);
+      window.alert = function() {{}};
+      window.confirm = function() {{ return false; }};
+      window.prompt = function() {{ return null; }};
+    }} catch(e) {{}}
+
     // Forward language/audio change messages to inner player
     window.addEventListener('message', function(e) {{
       try {{

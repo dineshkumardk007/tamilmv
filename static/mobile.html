@@ -2869,13 +2869,14 @@
       </div>
     </div>
 
-    <!-- Controls Panel (Servers, Audio Dub, Quality & Episode Navigation) -->
+    <!-- Controls Panel (Servers & Episode Navigation) -->
     <div class="anime-watch-body">
-      <!-- Row 1: Servers & Episode Prev/Next -->
+      <!-- Row 1: Stream Servers & Controls -->
       <div class="anime-ctrl-section">
         <div class="anime-ctrl-header">
           <span class="anime-ctrl-label">⚡ STREAM SERVERS</span>
           <div class="anime-ep-nav-btns">
+            <button class="anime-nav-btn" id="anime-reload-btn" onclick="retryCurrentAnimeServer()" title="Reload Current Server">🔄 Reload</button>
             <button class="anime-nav-btn" id="anime-prev-ep-btn" onclick="animeNavEpisode(-1)">⏮ Prev</button>
             <button class="anime-nav-btn" id="anime-next-ep-btn" onclick="animeNavEpisode(1)">Next ⏭</button>
           </div>
@@ -2883,28 +2884,7 @@
         <div class="anime-chips-row" id="anime-watch-servers-chips"></div>
       </div>
 
-      <!-- Row 2: Audio Dub Selector -->
-      <div class="anime-ctrl-section">
-        <div class="anime-ctrl-header">
-          <span class="anime-ctrl-label">🎙️ AUDIO DUB TRACK</span>
-        </div>
-        <div class="anime-chips-row" id="anime-watch-audio-chips"></div>
-      </div>
-
-      <!-- Row 3: Video Quality Selector -->
-      <div class="anime-ctrl-section">
-        <div class="anime-ctrl-header">
-          <span class="anime-ctrl-label">📺 VIDEO QUALITY</span>
-        </div>
-        <div class="anime-chips-row" id="anime-watch-quality-chips">
-          <button class="anime-chip-btn active" data-q="1080p" onclick="selectAnimeQuality('1080p')">✨ 1080p FHD</button>
-          <button class="anime-chip-btn" data-q="720p" onclick="selectAnimeQuality('720p')">720p HD</button>
-          <button class="anime-chip-btn" data-q="480p" onclick="selectAnimeQuality('480p')">480p SD</button>
-          <button class="anime-chip-btn" data-q="auto" onclick="selectAnimeQuality('auto')">Auto</button>
-        </div>
-      </div>
-
-      <!-- Row 4: Season Episodes Carousel / List -->
+      <!-- Row 2: Season Episodes Carousel / List -->
       <div class="anime-ctrl-section" id="anime-watch-episodes-section">
         <div class="anime-ctrl-header">
           <span class="anime-ctrl-label">🎬 ALL EPISODES</span>
@@ -3127,6 +3107,18 @@
        MOBILE APPLICATION SCRIPT (PRODUCTION ENGINE)
        ========================================================================== -->
   <script>
+    // Universal ad & popup guard: prevent third-party players or iframes from opening ad tabs
+    (function() {
+      const origOpen = window.open;
+      window.open = function(url, target, features) {
+        if (typeof url === 'string' && url.startsWith('magnet:')) {
+          return origOpen.call(window, url, target, features);
+        }
+        console.warn('[SDK Shield] Neutralized popup window attempt:', url);
+        return null;
+      };
+    })();
+
     const state = {
       shelves: [],
       recent: [],
@@ -3543,6 +3535,44 @@
         };
 
         card.onclick = () => {
+          const isAnime = item.is_toonplay ||
+            item.source === 'toonplay' ||
+            (item.topic_url && item.topic_url.includes('toonplay')) ||
+            (item.id && (item.id.includes('toonplay') || item.id.includes('series-') || item.id.includes('movies-') || item.id.includes('movie-'))) ||
+            item.category === 'anime' ||
+            item.cleanId ||
+            item.series_id ||
+            item.anime_id;
+
+          if (isAnime) {
+            // Close any open video players / sheets
+            if (typeof closeVideoPlayer === 'function') closeVideoPlayer();
+            if (typeof closeAnimeWatch === 'function') closeAnimeWatch();
+
+            // Switch to Anime tab
+            switchTab('tab-anime');
+
+            // Find clean item id
+            let aid = item.cleanId || item.series_id || item.anime_id;
+            if (!aid && item.topic_url) {
+              try {
+                const u = new URL(item.topic_url, window.location.origin);
+                aid = u.searchParams.get('id');
+              } catch (e) {
+                const m = item.topic_url.match(/id=([^&]+)/);
+                if (m) aid = m[1];
+              }
+            }
+            if (!aid && item.id) {
+              aid = item.id.replace(/^cw_toon_/, '').replace(/^cw_.*id=/, '').replace(/^cw_/, '');
+            }
+
+            if (aid) {
+              openAnimeDetails(aid);
+            }
+            return;
+          }
+
           if (item.streamUrl) {
             playVideoStream(item.streamUrl, item.title, 'Resume', item.directUrl, item.magnet, item.position);
           } else {
@@ -4229,7 +4259,12 @@
         magnet: state.currentMagnet,
         position: position,
         duration: duration,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        is_toonplay: !!(movie.is_toonplay || movie.topic_url?.includes('toonplay') || movie.cleanId),
+        cleanId: movie.cleanId || movie.anime_id || '',
+        seasonNum: movie.seasonNum || 1,
+        epNum: movie.epNum || 1,
+        animeTitle: movie.animeTitle || ''
       };
 
       var existingIdx = state.continueWatching.findIndex(function (c) { return c.title === movie.title || c.id === itemId; });
@@ -4736,7 +4771,8 @@
       resolveData: null,
       activeServerIndex: 0,
       activeAudioLang: 'multi',
-      activeQuality: '1080p'
+      activeQuality: '1080p',
+      fallbackTimer: null
     };
 
     async function openAnimeWatch(cleanId, sNum = 1, epNum = 1, epTitle = '', animeTitle = '') {
@@ -4776,28 +4812,30 @@
         const servers = data.servers || [];
         renderAnimeWatchServers(servers);
 
-        // 2. Render Audio Dub Chips
-        renderAnimeWatchAudioChips(servers);
-
-        // 3. Render Episodes List
+        // 2. Render Episodes List
         renderAnimeWatchEpisodesList();
 
-        // 4. Update Prev/Next buttons
+        // 3. Update Prev/Next buttons
         updateAnimePrevNextButtons();
 
-        // 5. Select Initial Server (Default to Tamil if available, else #1 server)
+        // 4. Select Initial Server (Default to direct Tamil if available, else server 0)
         let initialIdx = 0;
-        const tamIdx = servers.findIndex(s => (s.name || '').toLowerCase().includes('tamil') || (s.language || '').toLowerCase().includes('tamil'));
+        const tamIdx = servers.findIndex(s => !s.is_ravok && ((s.name || '').toLowerCase().includes('tamil') || (s.language || '').toLowerCase().includes('tamil')));
         if (tamIdx !== -1) initialIdx = tamIdx;
 
-        switchAnimeWatchServer(initialIdx);
+        switchAnimeWatchServer(initialIdx, true);
 
         // Save progress to Continue Watching
         saveProgress({
           title: `${currentAnimeWatchData.animeTitle} - S${currentAnimeWatchData.seasonNum}E${currentAnimeWatchData.epNum}`,
           poster_url: data.current_episode_image || animeState.currentAnime?.image || '',
           topic_url: `/api/toonplay/info?id=${cleanId}`,
-          is_toonplay: true
+          is_toonplay: true,
+          cleanId: cleanId,
+          anime_id: cleanId,
+          seasonNum: currentAnimeWatchData.seasonNum,
+          epNum: currentAnimeWatchData.epNum,
+          animeTitle: currentAnimeWatchData.animeTitle
         }, 15, 1440);
 
       } catch (err) {
@@ -4807,6 +4845,10 @@
     }
 
     function closeAnimeWatch() {
+      if (currentAnimeWatchData.fallbackTimer) {
+        clearTimeout(currentAnimeWatchData.fallbackTimer);
+        currentAnimeWatchData.fallbackTimer = null;
+      }
       const modal = $('#m-anime-watch-modal');
       if (modal) modal.classList.remove('active');
       const iframe = $('#m-anime-active-iframe');
@@ -4828,75 +4870,24 @@
         const btn = document.createElement('button');
         btn.className = `anime-chip-btn ${idx === currentAnimeWatchData.activeServerIndex ? 'active' : ''}`;
         btn.innerHTML = `<span>⚡</span> <span>${esc(srv.name || `Server ${idx + 1}`)}</span>`;
-        btn.onclick = () => switchAnimeWatchServer(idx);
+        btn.onclick = () => switchAnimeWatchServer(idx, true);
         row.appendChild(btn);
       });
     }
 
-    function renderAnimeWatchAudioChips(servers) {
-      const row = $('#anime-watch-audio-chips');
-      if (!row) return;
-      row.innerHTML = '';
-
-      const audioOptions = [
-        { code: 'multi', label: '✨ Multi-Audio' },
-        { code: 'tamil', label: '🇮🇳 Tamil Dub' },
-        { code: 'telugu', label: '🇮🇳 Telugu Dub' },
-        { code: 'hindi', label: '🇮🇳 Hindi Dub' },
-        { code: 'english', label: '🇬🇧 English Dub' },
-        { code: 'japanese', label: '🇯🇵 Japanese Dub' }
-      ];
-
-      audioOptions.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = `anime-chip-btn ${opt.code === currentAnimeWatchData.activeAudioLang ? 'active' : ''}`;
-        btn.dataset.lang = opt.code;
-        btn.innerHTML = `<span>${esc(opt.label)}</span>`;
-        btn.onclick = () => selectAnimeAudioDub(opt.code);
-        row.appendChild(btn);
-      });
+    function retryCurrentAnimeServer() {
+      showToast('Reloading player mirror…');
+      switchAnimeWatchServer(currentAnimeWatchData.activeServerIndex || 0, true);
     }
 
-    function selectAnimeAudioDub(langCode) {
-      currentAnimeWatchData.activeAudioLang = langCode;
-      const servers = currentAnimeWatchData.resolveData?.servers || [];
-      const iframe = $('#m-anime-active-iframe');
-
-      $$('#anime-watch-audio-chips .anime-chip-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.lang === langCode);
-      });
-
-      // Try finding direct server mirror
-      let foundIdx = -1;
-      if (langCode === 'multi') {
-        foundIdx = servers.findIndex(s => s.is_ravok || (s.name || '').toLowerCase().includes('multi'));
-      } else {
-        foundIdx = servers.findIndex(s => (s.name || '').toLowerCase().includes(langCode) || (s.language || '').toLowerCase().includes(langCode));
-      }
-
-      if (foundIdx !== -1) {
-        switchAnimeWatchServer(foundIdx);
-        showToast(`Switched to ${langCode.toUpperCase()} audio server`);
-      } else {
-        // Send postMessage to embedded player
-        try {
-          if (iframe && iframe.contentWindow) {
-            const codeMap = { tamil: 'tam', telugu: 'tel', hindi: 'hin', english: 'eng', japanese: 'jpn' };
-            const c = codeMap[langCode] || langCode;
-            iframe.contentWindow.postMessage({
-              action: 'setAudioTrack',
-              language: c,
-              audioLanguage: c
-            }, '*');
-          }
-        } catch(e) {}
-        showToast(`Selected ${langCode.toUpperCase()} audio track`);
-      }
-    }
-
-    function switchAnimeWatchServer(idx) {
+    function switchAnimeWatchServer(idx, force = false) {
       const servers = currentAnimeWatchData.resolveData?.servers || [];
       if (!servers[idx]) return;
+
+      if (currentAnimeWatchData.fallbackTimer) {
+        clearTimeout(currentAnimeWatchData.fallbackTimer);
+        currentAnimeWatchData.fallbackTimer = null;
+      }
 
       currentAnimeWatchData.activeServerIndex = idx;
       const srv = servers[idx];
@@ -4910,45 +4901,38 @@
         streamUrl = `/api/toonplay/embed?url=${encodeURIComponent(streamUrl)}`;
       }
 
-      // ToonPlay exact rule: apply sandbox on Ravok (/video/), let Abyss decode without storage errors
-      if (streamUrl.includes('/video/')) {
-        iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-forms');
+      if (force) {
+        iframe.src = 'about:blank';
+        setTimeout(() => { iframe.src = streamUrl; }, 60);
       } else {
-        iframe.removeAttribute('sandbox');
+        iframe.src = streamUrl;
       }
 
-      iframe.src = streamUrl;
       iframe.onload = () => {
+        if (currentAnimeWatchData.fallbackTimer) {
+          clearTimeout(currentAnimeWatchData.fallbackTimer);
+          currentAnimeWatchData.fallbackTimer = null;
+        }
         setTimeout(() => {
           if (loader) loader.classList.add('hidden');
-        }, 600);
+        }, 500);
       };
+
+      // Intelligent Auto-Fallback: if the chosen server stalls/errors for > 5.5s, auto-try next available server
+      currentAnimeWatchData.fallbackTimer = setTimeout(() => {
+        if (loader && !loader.classList.contains('hidden')) {
+          const nextIdx = idx + 1;
+          if (servers[nextIdx]) {
+            showToast(`Server ${idx + 1} slow, switching to backup mirror…`);
+            switchAnimeWatchServer(nextIdx, true);
+          }
+        }
+      }, 5500);
 
       // Update active server chip
       $$('#anime-watch-servers-chips .anime-chip-btn').forEach((b, i) => {
         b.classList.toggle('active', i === idx);
       });
-
-      // Sync active audio chip
-      const sLang = (srv.language || srv.name || '').toLowerCase();
-      $$('#anime-watch-audio-chips .anime-chip-btn').forEach(btn => {
-        const bLang = btn.dataset.lang;
-        const isMatch = (bLang === 'multi' && (sLang.includes('multi') || srv.is_ravok)) ||
-                        (bLang !== 'multi' && sLang.includes(bLang));
-        if (isMatch) {
-          $$('#anime-watch-audio-chips .anime-chip-btn').forEach(c => c.classList.remove('active'));
-          btn.classList.add('active');
-          currentAnimeWatchData.activeAudioLang = bLang;
-        }
-      });
-    }
-
-    function selectAnimeQuality(q) {
-      currentAnimeWatchData.activeQuality = q;
-      $$('#anime-watch-quality-chips .anime-chip-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.q === q);
-      });
-      showToast(`Video quality set to ${q.toUpperCase()}`);
     }
 
     function updateAnimePrevNextButtons() {
