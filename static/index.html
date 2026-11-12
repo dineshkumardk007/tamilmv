@@ -16036,8 +16036,28 @@
           } catch (e) { }
         };
 
-        // 1. Embed default player URL into iframe
-        const defaultStream = resolveData.default_stream_url || resolveData.embed_url || (resolveData.servers?.[0]?.url) || '';
+        // 1. Remember and select user's preferred stream server
+        const servers = resolveData.servers || [{ name: 'Multi 1', url: resolveData.default_stream_url || '' }];
+        let initialIdx = 0;
+        try {
+          const pref = JSON.parse(localStorage.getItem('sdk_anime_preferred_server') || 'null');
+          if (pref && servers.length > 0) {
+            const pName = (pref.name || '').trim().toLowerCase();
+            const pLang = (pref.language || '').trim().toLowerCase();
+            let idx = servers.findIndex(s => (s.name || '').trim().toLowerCase() === pName);
+            if (idx === -1 && pLang) {
+              idx = servers.findIndex(s => (s.language || '').trim().toLowerCase() === pLang && (!pref.is_direct_audio || s.is_direct_audio));
+            }
+            if (idx === -1 && pLang) {
+              idx = servers.findIndex(s => (s.language || '').toLowerCase().includes(pLang) || (s.name || '').toLowerCase().includes(pLang));
+            }
+            if (idx !== -1) initialIdx = idx;
+          }
+        } catch (e) {}
+
+        currentToonServerIndex = initialIdx;
+        const chosenServer = servers[initialIdx] || servers[0];
+        const defaultStream = chosenServer?.url || resolveData.default_stream_url || resolveData.embed_url || '';
         if (iframe && defaultStream) {
           iframe.src = defaultStream.startsWith('/') ? defaultStream : (`/api/toonplay/embed?url=${encodeURIComponent(defaultStream)}`);
           iframe.onload = () => {
@@ -16057,7 +16077,6 @@
         // 2. Render Server selector chips
         const serverChipsWrap = $('#toon-server-chips');
         if (serverChipsWrap) {
-          const servers = resolveData.servers || [{ name: 'Multi 1', url: defaultStream }];
           serverChipsWrap.innerHTML = servers.map((srv, idx) => `
             <button type="button" class="toon-chip-btn ${idx === currentToonServerIndex ? 'active' : ''}" data-sidx="${idx}">
               <span>⚡</span> <span>${esc(srv.name || `Server ${idx + 1}`)}</span>
@@ -16071,6 +16090,16 @@
               serverChipsWrap.querySelectorAll('.toon-chip-btn').forEach(b => b.classList.remove('active'));
               btn.classList.add('active');
               const chosen = servers[sIdx];
+              if (chosen) {
+                try {
+                  localStorage.setItem('sdk_anime_preferred_server', JSON.stringify({
+                    name: chosen.name || '',
+                    language: chosen.language || '',
+                    is_direct_audio: !!chosen.is_direct_audio,
+                    is_anilist: !!chosen.is_anilist
+                  }));
+                } catch (e) {}
+              }
               if (chosen && chosen.url && iframe) {
                 if (loader) loader.classList.remove('hidden');
                 iframe.src = chosen.url.startsWith('/api/') ? chosen.url : (`/api/toonplay/embed?url=${encodeURIComponent(chosen.url)}`);

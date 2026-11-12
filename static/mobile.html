@@ -4772,8 +4772,90 @@
       activeServerIndex: 0,
       activeAudioLang: 'multi',
       activeQuality: '1080p',
-      fallbackTimer: null
+      fallbackTimer: null,
+      preferredServer: null
     };
+
+    function getRememberedAnimeServer(cleanId) {
+      try {
+        if (cleanId) {
+          const itemPref = localStorage.getItem('sdk_anime_server_' + cleanId);
+          if (itemPref) return JSON.parse(itemPref);
+        }
+        const globalPref = localStorage.getItem('sdk_anime_preferred_server');
+        if (globalPref) return JSON.parse(globalPref);
+      } catch (e) {}
+      return currentAnimeWatchData.preferredServer || null;
+    }
+
+    function saveUserPreferredAnimeServer(srv, cleanId) {
+      if (!srv) return;
+      const pref = {
+        name: srv.name || '',
+        language: srv.language || '',
+        is_direct_audio: !!srv.is_direct_audio,
+        is_anilist: !!srv.is_anilist,
+        is_ravok: !!srv.is_ravok
+      };
+      currentAnimeWatchData.preferredServer = pref;
+      try {
+        localStorage.setItem('sdk_anime_preferred_server', JSON.stringify(pref));
+        if (cleanId) {
+          localStorage.setItem('sdk_anime_server_' + cleanId, JSON.stringify(pref));
+        }
+      } catch (e) {}
+    }
+
+    function findPreferredServerIndex(servers, cleanId) {
+      if (!servers || servers.length === 0) return 0;
+      const pref = getRememberedAnimeServer(cleanId);
+      if (!pref) {
+        // Default: direct Tamil dub if available, else server 0
+        const tamIdx = servers.findIndex(s => !s.is_ravok && ((s.name || '').toLowerCase().includes('tamil') || (s.language || '').toLowerCase().includes('tamil')));
+        return tamIdx !== -1 ? tamIdx : 0;
+      }
+
+      const pName = (pref.name || '').trim().toLowerCase();
+      const pLang = (pref.language || '').trim().toLowerCase();
+
+      // 1. Exact Name match (e.g. "⚡ Tamil Dub (HD)", "⚡ Telugu Dub (HD)")
+      let idx = servers.findIndex(s => (s.name || '').trim().toLowerCase() === pName);
+      if (idx !== -1) return idx;
+
+      // 2. Exact Language & Type match (e.g. language === "Tamil" and direct audio)
+      if (pLang) {
+        idx = servers.findIndex(s => 
+          (s.language || '').trim().toLowerCase() === pLang &&
+          (!pref.is_direct_audio || s.is_direct_audio)
+        );
+        if (idx !== -1) return idx;
+      }
+
+      // 3. Normalized Name similarity (strips emoji and punctuation)
+      if (pName) {
+        const cleanPrefName = pName.replace(/[^a-z0-9]/g, '');
+        if (cleanPrefName) {
+          idx = servers.findIndex(s => {
+            const cleanName = (s.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            return cleanName === cleanPrefName || cleanName.includes(cleanPrefName) || cleanPrefName.includes(cleanName);
+          });
+          if (idx !== -1) return idx;
+        }
+      }
+
+      // 4. Broad Language match
+      if (pLang) {
+        idx = servers.findIndex(s => 
+          (s.language || '').toLowerCase().includes(pLang) || 
+          (s.name || '').toLowerCase().includes(pLang)
+        );
+        if (idx !== -1) return idx;
+      }
+
+      // 5. Fallback: direct Tamil dub if available, else server 0
+      const tamIdx = servers.findIndex(s => !s.is_ravok && ((s.name || '').toLowerCase().includes('tamil') || (s.language || '').toLowerCase().includes('tamil')));
+      return tamIdx !== -1 ? tamIdx : 0;
+    }
 
     async function openAnimeWatch(cleanId, sNum = 1, epNum = 1, epTitle = '', animeTitle = '') {
       cleanId = String(cleanId || '').replace(/^toon_/, '').trim();
@@ -4818,11 +4900,8 @@
         // 3. Update Prev/Next buttons
         updateAnimePrevNextButtons();
 
-        // 4. Select Initial Server (Default to direct Tamil if available, else server 0)
-        let initialIdx = 0;
-        const tamIdx = servers.findIndex(s => !s.is_ravok && ((s.name || '').toLowerCase().includes('tamil') || (s.language || '').toLowerCase().includes('tamil')));
-        if (tamIdx !== -1) initialIdx = tamIdx;
-
+        // 4. Select Initial Server (Always remember previous episode's server choice)
+        const initialIdx = findPreferredServerIndex(servers, cleanId);
         switchAnimeWatchServer(initialIdx, true);
 
         // Save progress to Continue Watching
@@ -4870,7 +4949,11 @@
         const btn = document.createElement('button');
         btn.className = `anime-chip-btn ${idx === currentAnimeWatchData.activeServerIndex ? 'active' : ''}`;
         btn.innerHTML = `<span>⚡</span> <span>${esc(srv.name || `Server ${idx + 1}`)}</span>`;
-        btn.onclick = () => switchAnimeWatchServer(idx, true);
+        btn.onclick = () => {
+          saveUserPreferredAnimeServer(srv, currentAnimeWatchData.cleanId);
+          switchAnimeWatchServer(idx, true);
+          showToast(`Default server set: ${srv.name || `Server ${idx + 1}`}`);
+        };
         row.appendChild(btn);
       });
     }
