@@ -3010,15 +3010,69 @@ async def health():
     return Response(content="OK", media_type="text/plain")
 
 
+def is_mobile_ua(ua: str) -> bool:
+    if not ua:
+        return False
+    ua_low = ua.lower()
+    return bool(re.search(r"android|iphone|ipad|ipod|mobile|blackberry|iemobile|opera mini|webos", ua_low))
+
+
+@app.get("/mobile")
+@app.get("/m")
+async def mobile_index():
+    return FileResponse(
+        STATIC_DIR / "mobile.html",
+        headers={
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+        },
+    )
+
+
 @app.get("/")
-async def index():
+async def index(request: Request):
+    # Check explicit query param (?view=desktop or ?view=mobile)
+    view_param = (request.query_params.get("view") or "").strip().lower()
+    if view_param in ("mobile", "m", "phone"):
+        return FileResponse(
+            STATIC_DIR / "mobile.html",
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+    if view_param in ("desktop", "d", "pc", "tv"):
+        return FileResponse(
+            STATIC_DIR / "index.html",
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+
+    # Check cookie preference
+    cookie_pref = (request.cookies.get("view_pref") or "").strip().lower()
+    if cookie_pref == "mobile":
+        return FileResponse(
+            STATIC_DIR / "mobile.html",
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+    if cookie_pref == "desktop":
+        return FileResponse(
+            STATIC_DIR / "index.html",
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+
+    # Check User-Agent for mobile devices
+    ua = request.headers.get("user-agent", "")
+    if is_mobile_ua(ua):
+        return FileResponse(
+            STATIC_DIR / "mobile.html",
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+
     return FileResponse(
         STATIC_DIR / "index.html",
         headers={
             "Cache-Control": "no-cache, no-store, must-revalidate",
             "Pragma": "no-cache",
             "Expires": "0",
-        }
+        },
     )
 
 
