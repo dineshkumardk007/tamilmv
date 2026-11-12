@@ -57,7 +57,7 @@ from urllib.parse import quote_plus, unquote
 import requests
 from bs4 import BeautifulSoup
 
-BASE_HOST = "www.1tamilmv.io"
+BASE_HOST = "www.1tamilmv.solar"
 try:
     import domain_manager
     _h = domain_manager.get_active_host("tamilmv")
@@ -783,38 +783,36 @@ def fetch_download_details(topic_url: str) -> dict:
     """Fetch download links and poster_url from a topic page."""
     clean_url = _clean_topic_fetch_url(topic_url)
     html = ""
-    try:
-        resp = _SESSION.get(clean_url, timeout=2.5)
-        if resp.status_code == 200:
-            html = resp.text
-    except Exception:
-        pass
 
-    if not html:
+    # 1. Direct fetch with 8s timeout (verify content contains real torrent attachment or magnet)
+    for candidate in [clean_url, topic_url]:
         try:
-            fallback_url = re.sub(r"^https?://[^/]+", BASE_URL, topic_url.strip())
-            resp = _SESSION.get(fallback_url, timeout=2.0)
-            if resp.status_code == 200:
+            resp = _SESSION.get(candidate, timeout=8)
+            if resp.status_code == 200 and ("attachment.php" in resp.text or "magnet:?" in resp.text):
                 html = resp.text
+                break
         except Exception:
             pass
 
-    # High-speed fallback to cloud proxy bridge (Render) if local machine is ISP-blocked
+    # 2. High-speed fallback to cloud proxy bridge (Render) if local machine is ISP-blocked
+    # (Only runs when not already on Render to prevent self-deadlock)
     if not html:
         try:
-            cloud_proxy = f"https://tamilmv-4vej.onrender.com/api/downloads?url={quote_plus(clean_url)}"
-            r = requests.get(cloud_proxy, headers=HEADERS, timeout=7)
-            if r.status_code == 200:
-                data = r.json()
-                if data and (data.get("options") or data.get("poster_url")):
-                    return {
-                        "options": data.get("options", []),
-                        "poster_url": data.get("poster_url"),
-                    }
+            import os
+            if not os.environ.get("RENDER"):
+                cloud_proxy = f"https://tamilmv-4vej.onrender.com/api/downloads?url={quote_plus(clean_url)}"
+                r = requests.get(cloud_proxy, headers=HEADERS, timeout=8)
+                if r.status_code == 200:
+                    data = r.json()
+                    if data and (data.get("options") or data.get("poster_url")):
+                        return {
+                            "options": data.get("options", []),
+                            "poster_url": data.get("poster_url"),
+                        }
         except Exception:
             pass
 
-    # Fallback to alternate mirrors if primary host is blocked/offline
+    # 3. Fallback to alternate mirrors if primary host is blocked/offline
     if not html:
         try:
             import domain_manager
@@ -825,8 +823,8 @@ def fetch_download_details(topic_url: str) -> dict:
                     continue
                 mirror_url = re.sub(r"^https?://[^/]+", f"https://{m}", clean_url)
                 try:
-                    resp = _SESSION.get(mirror_url, timeout=2.0)
-                    if resp.status_code == 200 and ("banger" in resp.text.lower() or "magnet" in resp.text.lower() or "topic" in resp.text.lower()):
+                    resp = _SESSION.get(mirror_url, timeout=5)
+                    if resp.status_code == 200 and ("attachment.php" in resp.text or "magnet:?" in resp.text):
                         html = resp.text
                         set_base_host(m)
                         domain_manager.set_active_host("tamilmv", m)
@@ -836,19 +834,21 @@ def fetch_download_details(topic_url: str) -> dict:
         except Exception:
             pass
 
-    # Fallback to curl if requests connection failed
+    # 4. Fallback to system curl if requests connection failed
     if not html:
         try:
+            import shutil
             import subprocess
+            curl_bin = "curl" if shutil.which("curl") else "curl.exe"
             res = subprocess.run(
-                ["curl.exe", "-s", "-L", "-A", HEADERS["User-Agent"], clean_url],
+                [curl_bin, "-s", "-L", "-A", HEADERS["User-Agent"], clean_url],
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
                 errors="ignore",
-                timeout=5,
+                timeout=10,
             )
-            if res.stdout:
+            if res.stdout and ("attachment.php" in res.stdout or "magnet:?" in res.stdout):
                 html = res.stdout
         except Exception:
             pass
@@ -856,8 +856,7 @@ def fetch_download_details(topic_url: str) -> dict:
     if not html:
         raise RuntimeError(
             f"Could not connect to 1TamilMV ({BASE_HOST}). "
-            "Local Indian ISP filtering (SSL connection reset) is preventing direct access. "
-            "Torrent links load normally on cloud hosting (Koyeb/GitHub) or locally with Cloudflare WARP/VPN."
+            "Torrent server timed out or is blocked. Please check active domain settings."
         )
 
     soup = BeautifulSoup(html, "lxml")

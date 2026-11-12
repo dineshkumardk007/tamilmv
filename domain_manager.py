@@ -27,13 +27,13 @@ CONFIG_FILE = BASE_DIR / "domains.json"
 
 DEFAULT_DOMAINS = {
     "tamilmv": {
-        "active_host": "www.1tamilmv.io",
+        "active_host": "www.1tamilmv.solar",
         "protocol": "https",
         "label": "Tamil(Torrents)",
         "mirrors": [
+            "www.1tamilmv.solar",
             "www.1tamilmv.io",
             "1tamilmv.io",
-            "www.1tamilmv.solar",
             "www.1tamilmv.insure",
             "1tamilmv.insure",
             "1tamilmv.win",
