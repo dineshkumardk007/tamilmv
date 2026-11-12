@@ -159,6 +159,8 @@ def format_isaimini_card(m: dict) -> dict:
             break
 
     if poster:
+        if "moviesda.ski" in poster or "moviezda.me" in poster:
+            poster = re.sub(r"https?://(?:moviesda\.ski|moviezda\.me)", m_base, poster)
         poster = re.sub(
             r"-(tamil-dubbed-movie-\d+|tamil-dubbed-movie|tamil-dubbed-web-series-\d+|tamil-dubbed-web-series|tamil-movie-\d+|tamil-movie|tamil-web-series-\d+|tamil-web-series|original-movie|movie-\d+|movie|web-series-\d+|web-series|hd-\d+|hd)\.jpg$",
             ".jpg",
@@ -229,9 +231,15 @@ def format_tmv_card(m: dict) -> dict:
     t_clean = (m.get("clean_title") or m.get("title") or "").lower()
     for o_key, o_val in POSTER_OVERRIDES.items():
         if o_key in t_clean:
-            if not m.get("poster_url") or "extraimage" in (m.get("poster_url") or ""):
+            if not m.get("poster_url") or any(d in (m.get("poster_url") or "") for d in ["extraimage", "imageride", "picx.click", "imgpile"]):
                 m["poster_url"] = o_val.get("poster")
             break
+
+    p = m.get("poster_url") or ""
+    if any(dead in p for dead in ["extraimage", "imageride", "picx.click", "imgpile", "fastpic", "imagehost"]):
+        ck = f"{(m.get('clean_title') or m.get('title') or '').lower()}_{m.get('year') or ''}"
+        if ck in _META_CACHE and _META_CACHE[ck].get("poster"):
+            m["poster_url"] = _META_CACHE[ck]["poster"]
     return m
 
 
@@ -1169,6 +1177,89 @@ def init_meta_cache_db():
 init_meta_cache_db()
 
 
+def resolve_third_party_poster(title: str, year: int | None = None) -> str | None:
+    """Resolve high-quality official movie poster from IMDb (Amazon CDN) or Cinemeta/TMDB."""
+    if not title:
+        return None
+    # Skip category folders
+    if re.search(r"^(Tamil|Telugu|Hindi|Malayalam|Kannada|English)\s+\d{4}\s+Movies", title, re.I):
+        return None
+    if re.search(r"^(Tamil|Telugu|Hindi|Malayalam)\s+(Dubbed|HD|Movies)", title, re.I):
+        return None
+    if any(k in title for k in ["Movies Collection", "Latest Movies Updates"]):
+        return None
+
+    # Clean title
+    pattern = r"\[.*?\]|\(.*?\)|S\d+|EP\d+|TRUE WEB-DL.*|\b(Tamil Dubbed|Tamil|Dubbed|Org|Original|DVDRip|BDRip|Audio|Movie|Web Series|HD|360p|720p|1080p|PreDVD|CAM|\d{4})\b"
+    clean_title = re.sub(pattern, "", title, flags=re.I).strip()
+    clean_title = re.sub(r"\s+", " ", clean_title).strip() or title.strip()
+
+    # Check curated overrides
+    norm_clean = re.sub(r"[^\w\s]", "", clean_title).strip().lower()
+    for o_key, o_val in POSTER_OVERRIDES.items():
+        if o_key in norm_clean or norm_clean in o_key or o_key in title.lower():
+            if o_val.get("poster"):
+                return o_val["poster"]
+
+    if not year:
+        ym = re.search(r"\b(19\d\d|20\d\d)\b", title)
+        if ym:
+            try:
+                year = int(ym.group(1))
+            except Exception:
+                pass
+
+    # Tier 1: IMDb Suggestion API (Free, high-speed, official Amazon CDN posters)
+    slug_base = re.sub(r"[^a-z0-9_]", "", clean_title.lower().replace(" ", "_"))
+    candidates = []
+    if year:
+        candidates.append(f"{slug_base}_{year}")
+    candidates.append(slug_base)
+
+    for slug in candidates:
+        if not slug:
+            continue
+        try:
+            url = f"https://v3.sg.media-imdb.com/suggestion/x/{slug}.json"
+            resp = requests.get(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+                timeout=3.0,
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                items = data.get("d", [])
+                if year:
+                    for it in items:
+                        if it.get("i") and it.get("y") and abs(int(it.get("y")) - int(year)) <= 1:
+                            img = it["i"].get("imageUrl")
+                            if img:
+                                return img
+                for it in items:
+                    if it.get("i"):
+                        img = it["i"].get("imageUrl")
+                        if img:
+                            return img
+        except Exception:
+            pass
+
+    # Tier 2: Cinemeta catalog (Metahub CDN)
+    for ctype in ("movie", "series"):
+        try:
+            search_url = f"https://v3-cinemeta.strem.io/catalog/{ctype}/top/search={quote(clean_title)}.json"
+            resp = requests.get(search_url, timeout=2.5)
+            if resp.status_code == 200:
+                metas = resp.json().get("metas", [])
+                for m in metas:
+                    p = m.get("poster")
+                    if p and p.startswith("http"):
+                        return p
+        except Exception:
+            pass
+
+    return None
+
+
 def get_movie_meta(title: str, year: int | None = None, allow_remote: bool = True) -> dict:
     if not title:
         return {}
@@ -1240,6 +1331,18 @@ def get_movie_meta(title: str, year: int | None = None, allow_remote: bool = Tru
                             pass
         except Exception:
             pass
+
+    # Normalize official poster domain or discard if from known dead image hosts
+    if official_poster:
+        if any(dead in official_poster for dead in ["imageride", "extraimage", "picx.click", "imgpile", "fastpic", "imagehost"]):
+            official_poster = None
+        elif "moviesda.ski" in official_poster or "moviezda.me" in official_poster:
+            m_base = domain_manager.get_active_base_url("moviesda") or "https://moviezda.co"
+            official_poster = re.sub(r"https?://(?:moviesda\.ski|moviezda\.me)", m_base, official_poster)
+
+    # If no valid official poster found in DB, resolve from 3rd party (IMDb Amazon CDN)
+    if not official_poster and allow_remote:
+        official_poster = resolve_third_party_poster(clean_title, year)
 
     res = {
         "found": bool(official_poster),
@@ -2645,7 +2748,7 @@ async def api_downloads(url: str = Query(...)):
 
 
 @app.get("/api/poster-proxy")
-async def api_poster_proxy(url: str = Query(...)):
+async def api_poster_proxy(url: str = Query(...), title: str | None = None, year: str | None = None):
     """Reverse proxy for poster images to bypass CORS, hotlinking blocks, or adblock filters."""
     if not url.startswith("http"):
         raise HTTPException(status_code=400, detail="Invalid URL")
@@ -2671,6 +2774,27 @@ async def api_poster_proxy(url: str = Query(...)):
         return None, None
 
     content, ctype = await asyncio.to_thread(_fetch)
+
+    # Fallback to 3rd-party resolver if original image was dead/404
+    if not content and title:
+        year_int = None
+        if year and year.strip().isdigit():
+            try:
+                year_int = int(year.strip())
+            except Exception:
+                pass
+        fallback_poster = await asyncio.to_thread(resolve_third_party_poster, title, year_int)
+        if fallback_poster and fallback_poster != url:
+            def _fetch_fallback():
+                try:
+                    r = requests.get(fallback_poster, headers={"User-Agent": "Mozilla/5.0"}, timeout=6)
+                    if r.status_code == 200 and r.content:
+                        return r.content, r.headers.get("Content-Type", "image/jpeg")
+                except Exception:
+                    pass
+                return None, None
+            content, ctype = await asyncio.to_thread(_fetch_fallback)
+
     if content:
         return Response(
             content=content,
@@ -2680,6 +2804,116 @@ async def api_poster_proxy(url: str = Query(...)):
             },
         )
     raise HTTPException(status_code=404, detail="Image could not be retrieved")
+
+
+@app.get("/api/poster-fallback")
+async def api_poster_fallback(
+    title: str = Query(..., min_length=1),
+    year: str | None = None,
+    topic_url: str | None = None,
+    current_url: str | None = None,
+):
+    """Resolve any unloaded/broken poster using 3rd-party databases (IMDb / Cinemeta / TMDB) and backfill SQLite."""
+    year_int: int | None = None
+    if year and year.strip().isdigit():
+        try:
+            year_int = int(year.strip())
+        except Exception:
+            pass
+    if not year_int:
+        ym = re.search(r"\b(19\d\d|20\d\d)\b", title)
+        if ym:
+            try:
+                year_int = int(ym.group(1))
+            except Exception:
+                pass
+
+    poster_url = await asyncio.to_thread(resolve_third_party_poster, title, year_int)
+    if poster_url:
+        def _backfill():
+            try:
+                with db.get_conn() as conn:
+                    if topic_url:
+                        conn.execute("UPDATE movies SET poster_url = ? WHERE topic_url = ?", (poster_url, topic_url))
+                    else:
+                        conn.execute("UPDATE movies SET poster_url = ? WHERE title = ? AND (poster_url IS NULL OR poster_url = '' OR poster_url = ?)", (poster_url, title, current_url or ""))
+            except Exception:
+                pass
+            try:
+                with isaimini_db.get_conn() as iconn:
+                    if topic_url:
+                        iconn.execute("UPDATE movies SET poster = ? WHERE url = ?", (poster_url, topic_url))
+                    else:
+                        iconn.execute("UPDATE movies SET poster = ? WHERE (title = ? OR clean_title = ?) AND (poster IS NULL OR poster = '' OR poster = ?)", (poster_url, title, title, current_url or ""))
+            except Exception:
+                pass
+        asyncio.create_task(asyncio.to_thread(_backfill))
+        return JSONResponse({"status": "ok", "poster": poster_url, "source": "imdb"})
+
+    return JSONResponse({"status": "not_found", "poster": None}, status_code=404)
+
+
+@app.post("/api/posters/heal-all")
+async def api_heal_all_posters():
+    """Trigger complete scan and repair of dead/missing posters across all database tables."""
+    def _heal():
+        results = {"tmv_healed": 0, "isaimini_healed": 0, "domain_replaced": 0}
+        try:
+            with db.get_conn() as conn:
+                cur = conn.execute("UPDATE movies SET poster_url = REPLACE(poster_url, 'moviesda.ski', 'moviezda.co') WHERE poster_url LIKE '%moviesda.ski%'")
+                results["domain_replaced"] += cur.rowcount
+                cur2 = conn.execute("UPDATE movies SET poster_url = REPLACE(poster_url, 'moviezda.me', 'moviezda.co') WHERE poster_url LIKE '%moviezda.me%'")
+                results["domain_replaced"] += cur2.rowcount
+                conn.commit()
+
+                rows = conn.execute("""
+                    SELECT id, title, year, poster_url FROM movies 
+                    WHERE poster_url LIKE '%imageride%' 
+                       OR poster_url LIKE '%extraimage%' 
+                       OR poster_url LIKE '%picx.click%' 
+                       OR poster_url LIKE '%imgpile%'
+                       OR poster_url LIKE '%fastpic%'
+                       OR poster_url LIKE '%imagehost%'
+                       OR poster_url IS NULL 
+                       OR poster_url = ''
+                """).fetchall()
+                for r in rows:
+                    p = resolve_third_party_poster(r["title"], r["year"])
+                    if p:
+                        conn.execute("UPDATE movies SET poster_url = ? WHERE id = ?", (p, r["id"]))
+                        results["tmv_healed"] += 1
+                conn.commit()
+        except Exception:
+            pass
+
+        try:
+            with isaimini_db.get_conn() as iconn:
+                cur = iconn.execute("UPDATE movies SET poster = REPLACE(poster, 'moviesda.ski', 'moviezda.co') WHERE poster LIKE '%moviesda.ski%'")
+                results["domain_replaced"] += cur.rowcount
+                cur2 = iconn.execute("UPDATE movies SET poster = REPLACE(poster, 'moviezda.me', 'moviezda.co') WHERE poster LIKE '%moviezda.me%'")
+                results["domain_replaced"] += cur2.rowcount
+                iconn.commit()
+
+                irows = iconn.execute("""
+                    SELECT id, title, clean_title, year, poster FROM movies 
+                    WHERE poster IS NULL 
+                       OR poster = '' 
+                       OR poster LIKE '%imageride%' 
+                       OR poster LIKE '%extraimage%'
+                """).fetchall()
+                for r in irows:
+                    t = r["clean_title"] or r["title"]
+                    p = resolve_third_party_poster(t, r["year"])
+                    if p:
+                        iconn.execute("UPDATE movies SET poster = ? WHERE id = ?", (p, r["id"]))
+                        results["isaimini_healed"] += 1
+                iconn.commit()
+        except Exception:
+            pass
+        return results
+
+    res = await asyncio.to_thread(_heal)
+    return JSONResponse({"status": "ok", "results": res})
 
 
 @app.get("/api/watchlist")

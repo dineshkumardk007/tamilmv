@@ -13286,7 +13286,7 @@
       return null;
     }
 
-    // Enhanced Poster Error Handler with automatic proxy fallback and Cinemeta recovery
+    // Enhanced Poster Error Handler with automatic 3rd-party recovery (IMDb / Amazon CDN / Cinemeta)
     function handlePosterError(imgEl, title) {
       if (!imgEl) return;
       title = title || imgEl.dataset.title || imgEl.alt || '';
@@ -13298,19 +13298,14 @@
         return;
       }
 
-      // Step 1: If original CDN image failed (blocked referrer/CORS/adblock), route through local proxy
-      if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
-        imgEl.dataset.triedProxy = '1';
-        imgEl.src = '/api/poster-proxy?url=' + encodeURIComponent(imgEl.src);
-        return;
-      }
-      // Step 2: If proxy also failed or wasn't viable, search Cinemeta/IMDb catalog
-      if (!imgEl.dataset.triedMeta && title) {
-        imgEl.dataset.triedMeta = '1';
+      // Step 1: 3rd-Party IMDb / Amazon CDN / Cinemeta Recovery
+      if (!imgEl.dataset.triedFallback && title) {
+        imgEl.dataset.triedFallback = '1';
         const yr = imgEl.dataset.year || (title.match(/\b(19\d\d|20\d\d)\b/) || [])[1] || '';
         const yrParam = yr ? `&year=${encodeURIComponent(yr)}` : '';
-        fetch(`/api/metadata?title=${encodeURIComponent(title)}${yrParam}`)
-          .then(r => r.json())
+        const curParam = imgEl.src ? `&current_url=${encodeURIComponent(imgEl.src)}` : '';
+        fetch(`/api/poster-fallback?title=${encodeURIComponent(title)}${yrParam}${curParam}`)
+          .then(r => r.ok ? r.json() : null)
           .then(d => {
             if (d && d.poster && d.poster !== imgEl.src) {
               imgEl.dataset.triedProxy = '';
@@ -13321,13 +13316,32 @@
                 const noPoster = parent.querySelector('.card-no-poster');
                 if (noPoster) noPoster.remove();
               }
+            } else if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
+              imgEl.dataset.triedProxy = '1';
+              imgEl.src = `/api/poster-proxy?url=${encodeURIComponent(imgEl.src)}&title=${encodeURIComponent(title)}${yrParam}`;
             } else {
               showPosterPlaceholder(imgEl);
             }
           })
-          .catch(() => showPosterPlaceholder(imgEl));
+          .catch(() => {
+            if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
+              imgEl.dataset.triedProxy = '1';
+              imgEl.src = `/api/poster-proxy?url=${encodeURIComponent(imgEl.src)}&title=${encodeURIComponent(title)}${yrParam}`;
+            } else {
+              showPosterPlaceholder(imgEl);
+            }
+          });
         return;
       }
+
+      // Step 2: Route through local proxy
+      if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
+        imgEl.dataset.triedProxy = '1';
+        const yr = imgEl.dataset.year || '';
+        imgEl.src = `/api/poster-proxy?url=${encodeURIComponent(imgEl.src)}&title=${encodeURIComponent(title)}${yr ? `&year=${encodeURIComponent(yr)}` : ''}`;
+        return;
+      }
+
       showPosterPlaceholder(imgEl);
     }
 

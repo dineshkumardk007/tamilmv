@@ -3157,37 +3157,59 @@
     }
 
     // 4-Step Poster Error Recovery
+    // 4-Step Intelligent 3rd-Party Poster Recovery (IMDb / TMDB / Cinemeta)
     function handlePosterError(imgEl, title) {
       if (!imgEl) return;
       title = title || imgEl.dataset.title || imgEl.alt || '';
 
+      // Step 0: If URL has -tamil-movie.jpg suffix, try clean official CDN poster
       if (!imgEl.dataset.triedClean && imgEl.src && /-(?:tamil-dubbed-web-series|tamil-web-series|web-series|tamil-dubbed-movie|tamil-movie)\.jpg/i.test(imgEl.src)) {
         imgEl.dataset.triedClean = '1';
         imgEl.src = imgEl.src.replace(/-(?:tamil-dubbed-web-series|tamil-web-series|web-series|tamil-dubbed-movie|tamil-movie)\.jpg/i, '.jpg');
         return;
       }
 
-      if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
-        imgEl.dataset.triedProxy = '1';
-        imgEl.src = '/api/poster-proxy?url=' + encodeURIComponent(imgEl.src);
-        return;
-      }
-
-      if (!imgEl.dataset.triedMeta && title) {
-        imgEl.dataset.triedMeta = '1';
+      // Step 1: 3rd-Party IMDb / Amazon CDN / Cinemeta Recovery
+      if (!imgEl.dataset.triedFallback && title) {
+        imgEl.dataset.triedFallback = '1';
         const yr = imgEl.dataset.year || (title.match(/\b(19\d\d|20\d\d)\b/) || [])[1] || '';
         const yrParam = yr ? `&year=${encodeURIComponent(yr)}` : '';
-        fetch(`/api/metadata?title=${encodeURIComponent(title)}${yrParam}`)
-          .then(r => r.json())
+        const curParam = imgEl.src ? `&current_url=${encodeURIComponent(imgEl.src)}` : '';
+        fetch(`/api/poster-fallback?title=${encodeURIComponent(title)}${yrParam}${curParam}`)
+          .then(r => r.ok ? r.json() : null)
           .then(d => {
             if (d && d.poster && d.poster !== imgEl.src) {
               imgEl.dataset.triedProxy = '';
+              imgEl.style.display = 'block';
               imgEl.src = d.poster;
+              const parent = imgEl.parentElement;
+              if (parent) {
+                const placeholder = parent.querySelector('.poster-placeholder');
+                if (placeholder) placeholder.remove();
+              }
+            } else if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
+              imgEl.dataset.triedProxy = '1';
+              imgEl.src = `/api/poster-proxy?url=${encodeURIComponent(imgEl.src)}&title=${encodeURIComponent(title)}${yrParam}`;
             } else {
               showFallbackPlaceholder(imgEl, title);
             }
           })
-          .catch(() => showFallbackPlaceholder(imgEl, title));
+          .catch(() => {
+            if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
+              imgEl.dataset.triedProxy = '1';
+              imgEl.src = `/api/poster-proxy?url=${encodeURIComponent(imgEl.src)}&title=${encodeURIComponent(title)}${yrParam}`;
+            } else {
+              showFallbackPlaceholder(imgEl, title);
+            }
+          });
+        return;
+      }
+
+      // Step 2: Route through local proxy to bypass CORS / hotlink block
+      if (!imgEl.dataset.triedProxy && imgEl.src && !imgEl.src.includes('/api/poster-proxy')) {
+        imgEl.dataset.triedProxy = '1';
+        const yr = imgEl.dataset.year || '';
+        imgEl.src = `/api/poster-proxy?url=${encodeURIComponent(imgEl.src)}&title=${encodeURIComponent(title)}${yr ? `&year=${encodeURIComponent(yr)}` : ''}`;
         return;
       }
 
@@ -4390,7 +4412,7 @@
 
       card.innerHTML = `
         <div class="poster-img-wrap">
-          <img class="poster-img" src="${esc(poster)}" alt="${esc(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='/favicon.svg'">
+          <img class="poster-img" src="${esc(poster)}" alt="${esc(item.title)}" data-title="${esc(item.title)}" data-year="${item.year || ''}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this)">
           <span class="card-badge anime">${isMovie ? 'Movie' : 'Series'}</span>
           ${item.rating ? `<div class="card-rating-pill">⭐ ${item.rating}</div>` : ''}
         </div>
@@ -4669,7 +4691,7 @@
 
         card.innerHTML = `
           <div class="poster-img-wrap">
-            <img class="poster-img" src="${esc(img)}" alt="${esc(rec.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='/favicon.svg'">
+            <img class="poster-img" src="${esc(img)}" alt="${esc(rec.title)}" data-title="${esc(rec.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this)">
             <span class="card-badge anime">Anime</span>
           </div>
           <div class="poster-info">
