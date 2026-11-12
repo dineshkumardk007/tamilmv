@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SDK Movies">
@@ -49,7 +51,8 @@
       -webkit-user-select: none;
     }
 
-    input, textarea {
+    input,
+    textarea {
       user-select: text;
       -webkit-user-select: text;
     }
@@ -69,8 +72,13 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    ::-webkit-scrollbar { display: none; }
-    * { scrollbar-width: none; }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    * {
+      scrollbar-width: none;
+    }
 
     .mobile-ambient {
       position: fixed;
@@ -121,6 +129,7 @@
       place-items: center;
       box-shadow: 0 0 14px var(--primary-glow);
     }
+
     .brand-mark svg {
       width: 18px;
       height: 18px;
@@ -133,6 +142,7 @@
       letter-spacing: -0.3px;
       color: #fff;
     }
+
     .brand-text span {
       background: linear-gradient(135deg, #a78bfa, #12d8b4);
       -webkit-background-clip: text;
@@ -158,6 +168,7 @@
       font-size: 15px;
       transition: transform 0.15s, background 0.15s;
     }
+
     .header-btn:active {
       transform: scale(0.92);
       background: rgba(255, 255, 255, 0.12);
@@ -171,6 +182,7 @@
       box-shadow: 0 0 8px #10b981;
       display: inline-block;
     }
+
     .status-dot.offline {
       background: #ef4444;
       box-shadow: 0 0 8px #ef4444;
@@ -202,7 +214,11 @@
       transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
       flex-shrink: 0;
     }
-    .chip-btn:active { transform: scale(0.95); }
+
+    .chip-btn:active {
+      transform: scale(0.95);
+    }
+
     .chip-btn.active {
       background: linear-gradient(135deg, rgba(255, 179, 64, 0.3), rgba(124, 92, 255, 0.25));
       border-color: var(--accent-gold);
@@ -260,17 +276,24 @@
       text-transform: uppercase;
       letter-spacing: 0.4px;
     }
-    .badge-tag.primary { background: var(--primary); color: #fff; }
+
+    .badge-tag.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
     .badge-tag.torrent {
       background: rgba(255, 179, 64, 0.25);
       color: var(--accent-gold);
       border: 1px solid rgba(255, 179, 64, 0.4);
     }
+
     .badge-tag.rating {
       background: rgba(255, 179, 64, 0.25);
       color: var(--accent-gold);
       border: 1px solid rgba(255, 179, 64, 0.4);
     }
+
     .badge-tag.quality {
       background: rgba(18, 216, 180, 0.2);
       color: var(--accent-teal);
@@ -312,12 +335,16 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
+
     .btn-play-primary.direct {
       background: linear-gradient(135deg, #7c5cff, #9061f9);
       color: #fff;
       box-shadow: 0 4px 16px var(--primary-glow);
     }
-    .btn-play-primary:active { transform: scale(0.96); }
+
+    .btn-play-primary:active {
+      transform: scale(0.96);
+    }
 
     .btn-details-secondary {
       width: 42px;
@@ -333,10 +360,15 @@
       font-size: 16px;
       transition: transform 0.15s;
     }
-    .btn-details-secondary:active { transform: scale(0.92); }
+
+    .btn-details-secondary:active {
+      transform: scale(0.92);
+    }
 
     /* SHELVES & CAROUSELS */
-    .shelf-section { margin-bottom: 22px; }
+    .shelf-section {
+      margin-bottom: 22px;
+    }
 
     .shelf-header {
       padding: 0 16px 10px;
@@ -350,13 +382,18 @@
       align-items: center;
       gap: 7px;
     }
-    .shelf-icon { font-size: 16px; }
+
+    .shelf-icon {
+      font-size: 16px;
+    }
+
     .shelf-title {
       font-size: 16px;
       font-weight: 700;
       color: #fff;
       letter-spacing: -0.2px;
     }
+
     .shelf-count {
       font-size: 11px;
       font-weight: 600;
@@ -382,7 +419,10 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .poster-card:active { transform: scale(0.96); }
+
+    .poster-card:active {
+      transform: scale(0.96);
+    }
 
     .poster-img-wrap {
       position: relative;
@@ -428,10 +468,26 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
       z-index: 2;
     }
-    .card-badge.torrent { background: rgba(255, 179, 64, 0.9); color: #2a1600; }
-    .card-badge.direct { background: rgba(18, 216, 180, 0.85); color: #042520; }
-    .card-badge.dubbed { background: rgba(255, 77, 141, 0.85); color: #fff; }
-    .card-badge.anime { background: rgba(168, 85, 247, 0.85); color: #fff; }
+
+    .card-badge.torrent {
+      background: rgba(255, 179, 64, 0.9);
+      color: #2a1600;
+    }
+
+    .card-badge.direct {
+      background: rgba(18, 216, 180, 0.85);
+      color: #042520;
+    }
+
+    .card-badge.dubbed {
+      background: rgba(255, 77, 141, 0.85);
+      color: #fff;
+    }
+
+    .card-badge.anime {
+      background: rgba(168, 85, 247, 0.85);
+      color: #fff;
+    }
 
     .card-rating-pill {
       position: absolute;
@@ -450,7 +506,9 @@
       z-index: 2;
     }
 
-    .poster-info { margin-top: 6px; }
+    .poster-info {
+      margin-top: 6px;
+    }
 
     .poster-title {
       font-size: 12.5px;
@@ -479,6 +537,7 @@
       justify-content: space-between;
       width: 100%;
     }
+
     .cw-clear-all-btn {
       background: none;
       border: 1px solid rgba(255, 107, 107, 0.3);
@@ -489,12 +548,14 @@
       font-weight: 600;
       cursor: pointer;
     }
+
     .cw-card {
       flex: 0 0 160px;
       scroll-snap-align: start;
       cursor: pointer;
       position: relative;
     }
+
     .cw-thumb-wrap {
       position: relative;
       width: 160px;
@@ -504,11 +565,13 @@
       background: #181926;
       border: 1px solid var(--border);
     }
+
     .cw-thumb {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .cw-card-del-btn {
       position: absolute;
       top: 5px;
@@ -525,6 +588,7 @@
       z-index: 5;
       cursor: pointer;
     }
+
     .cw-play-circle {
       position: absolute;
       inset: 0;
@@ -532,12 +596,14 @@
       place-items: center;
       background: rgba(0, 0, 0, 0.35);
     }
+
     .cw-play-circle svg {
       width: 26px;
       height: 26px;
       fill: #fff;
       filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
     }
+
     .cw-progress-bar {
       position: absolute;
       bottom: 0;
@@ -546,7 +612,12 @@
       height: 3px;
       background: rgba(255, 255, 255, 0.2);
     }
-    .cw-progress-fill { height: 100%; background: var(--primary); }
+
+    .cw-progress-fill {
+      height: 100%;
+      background: var(--primary);
+    }
+
     .cw-title {
       font-size: 12px;
       font-weight: 600;
@@ -558,7 +629,9 @@
     }
 
     /* 2-COLUMN CATALOG GRID */
-    .catalog-section { padding: 0 16px; }
+    .catalog-section {
+      padding: 0 16px;
+    }
 
     .catalog-header {
       display: flex;
@@ -567,7 +640,11 @@
       margin-bottom: 12px;
     }
 
-    .catalog-title { font-size: 16px; font-weight: 700; color: #fff; }
+    .catalog-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
 
     .catalog-grid {
       display: grid;
@@ -579,7 +656,10 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .grid-card:active { transform: scale(0.97); }
+
+    .grid-card:active {
+      transform: scale(0.97);
+    }
 
     .grid-img-wrap {
       position: relative;
@@ -590,6 +670,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
     }
+
     .grid-img {
       position: absolute;
       inset: 0;
@@ -599,13 +680,20 @@
     }
 
     /* SEARCH VIEW */
-    .search-view { display: none; padding: 10px 16px; }
-    .search-view.active { display: block; }
+    .search-view {
+      display: none;
+      padding: 10px 16px;
+    }
+
+    .search-view.active {
+      display: block;
+    }
 
     .search-input-box {
       position: relative;
       margin-bottom: 14px;
     }
+
     .search-input-box svg {
       position: absolute;
       left: 14px;
@@ -615,6 +703,7 @@
       height: 18px;
       fill: var(--text-muted);
     }
+
     .search-input {
       width: 100%;
       height: 46px;
@@ -627,10 +716,12 @@
       outline: none;
       transition: border-color 0.2s;
     }
+
     .search-input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 14px rgba(124, 92, 255, 0.25);
     }
+
     .search-clear-btn {
       position: absolute;
       right: 12px;
@@ -654,6 +745,7 @@
       overflow-x: auto;
       padding-bottom: 12px;
     }
+
     .quick-tag {
       padding: 5px 12px;
       border-radius: var(--radius-pill);
@@ -664,11 +756,20 @@
       white-space: nowrap;
       cursor: pointer;
     }
-    .quick-tag:active { background: rgba(124, 92, 255, 0.2); }
+
+    .quick-tag:active {
+      background: rgba(124, 92, 255, 0.2);
+    }
 
     /* TAB VIEWS */
-    .tab-view { display: none; padding: 10px 16px; }
-    .tab-view.active { display: block; }
+    .tab-view {
+      display: none;
+      padding: 10px 16px;
+    }
+
+    .tab-view.active {
+      display: block;
+    }
 
     .view-heading {
       font-size: 20px;
@@ -685,14 +786,25 @@
       padding: 60px 20px;
       color: var(--text-dim);
     }
-    .empty-icon { font-size: 44px; margin-bottom: 10px; }
-    .empty-title { font-size: 16px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+
+    .empty-icon {
+      font-size: 44px;
+      margin-bottom: 10px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
 
     .settings-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
+
     .settings-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -702,8 +814,18 @@
       align-items: center;
       justify-content: space-between;
     }
-    .settings-info h4 { font-size: 14px; color: #fff; margin-bottom: 2px; }
-    .settings-info p { font-size: 12px; color: var(--text-dim); }
+
+    .settings-info h4 {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .settings-info p {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
     .settings-btn {
       padding: 6px 14px;
       border-radius: var(--radius-pill);
@@ -718,7 +840,10 @@
       gap: 6px;
       text-decoration: none;
     }
-    .settings-btn:active { transform: scale(0.95); }
+
+    .settings-btn:active {
+      transform: scale(0.95);
+    }
 
     /* FIXED BOTTOM NAVIGATION BAR */
     .bottom-nav {
@@ -753,9 +878,20 @@
       position: relative;
       transition: color 0.2s, transform 0.15s;
     }
-    .nav-tab-btn:active { transform: scale(0.92); }
-    .nav-tab-btn.active { color: #fff; }
-    .nav-tab-btn.active .nav-icon { color: var(--primary); transform: translateY(-1px); }
+
+    .nav-tab-btn:active {
+      transform: scale(0.92);
+    }
+
+    .nav-tab-btn.active {
+      color: #fff;
+    }
+
+    .nav-tab-btn.active .nav-icon {
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
     .nav-tab-btn.active::after {
       content: "";
       position: absolute;
@@ -767,8 +903,16 @@
       box-shadow: 0 0 10px var(--primary);
     }
 
-    .nav-icon { font-size: 20px; transition: transform 0.2s; }
-    .nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2px; }
+    .nav-icon {
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
 
     /* MOVIE DETAILS BOTTOM SHEET */
     .sheet-backdrop {
@@ -782,7 +926,11 @@
       pointer-events: none;
       transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    .sheet-backdrop.active { opacity: 1; pointer-events: auto; }
+
+    .sheet-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
     .bottom-sheet {
       position: fixed;
@@ -802,7 +950,10 @@
       flex-direction: column;
       padding-bottom: max(16px, var(--safe-bottom));
     }
-    .bottom-sheet.active { transform: translateY(0); }
+
+    .bottom-sheet.active {
+      transform: translateY(0);
+    }
 
     .sheet-drag-handle {
       width: 36px;
@@ -824,6 +975,7 @@
       gap: 14px;
       margin-bottom: 14px;
     }
+
     .sheet-poster-wrap {
       position: relative;
       width: 85px;
@@ -834,18 +986,21 @@
       border: 1px solid var(--border);
       flex-shrink: 0;
     }
+
     .sheet-poster {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
+
     .sheet-hero-info {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
+
     .sheet-title {
       font-size: 17px;
       font-weight: 800;
@@ -853,6 +1008,7 @@
       line-height: 1.25;
       margin-bottom: 6px;
     }
+
     .sheet-meta-tags {
       display: flex;
       flex-wrap: wrap;
@@ -865,6 +1021,7 @@
       gap: 10px;
       margin-bottom: 16px;
     }
+
     .btn-sheet-stream {
       flex: 1;
       height: 44px;
@@ -882,12 +1039,17 @@
       box-shadow: 0 4px 14px var(--primary-glow);
       text-decoration: none;
     }
+
     .btn-sheet-stream.torrent {
       background: linear-gradient(135deg, #ffb340, #d17d10);
       color: #030712;
       box-shadow: 0 4px 14px rgba(255, 179, 64, 0.35);
     }
-    .btn-sheet-stream:active { transform: scale(0.96); }
+
+    .btn-sheet-stream:active {
+      transform: scale(0.96);
+    }
+
     .btn-sheet-fav {
       width: 44px;
       height: 44px;
@@ -900,7 +1062,10 @@
       cursor: pointer;
       font-size: 18px;
     }
-    .btn-sheet-fav:active { transform: scale(0.92); }
+
+    .btn-sheet-fav:active {
+      transform: scale(0.92);
+    }
 
     .sheet-section-title {
       font-size: 13px;
@@ -916,6 +1081,7 @@
       flex-direction: column;
       gap: 8px;
     }
+
     .stream-opt-card {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
@@ -927,12 +1093,23 @@
       cursor: pointer;
       transition: background 0.15s;
     }
+
     .stream-opt-card:active {
       background: rgba(124, 92, 255, 0.18);
       border-color: var(--primary);
     }
-    .stream-opt-title { font-size: 13px; font-weight: 600; color: #fff; }
-    .stream-opt-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+    .stream-opt-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .stream-opt-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
 
     .episodes-track {
       display: flex;
@@ -940,6 +1117,7 @@
       overflow-x: auto;
       padding-bottom: 6px;
     }
+
     .ep-chip {
       padding: 8px 14px;
       border-radius: var(--radius-md);
@@ -952,7 +1130,9 @@
       cursor: pointer;
       flex-shrink: 0;
     }
-    .ep-chip:active, .ep-chip.active {
+
+    .ep-chip:active,
+    .ep-chip.active {
       background: var(--primary);
       border-color: var(--primary);
     }
@@ -968,7 +1148,10 @@
       justify-content: space-between;
       touch-action: none;
     }
-    .mobile-player-overlay.active { display: flex; }
+
+    .mobile-player-overlay.active {
+      display: flex;
+    }
 
     .player-video-container {
       position: absolute;
@@ -992,7 +1175,9 @@
       display: flex;
       z-index: 5;
     }
-    .touch-half-left, .touch-half-right {
+
+    .touch-half-left,
+    .touch-half-right {
       flex: 1;
       height: 100%;
       position: relative;
@@ -1017,8 +1202,15 @@
       pointer-events: none;
       transition: opacity 0.25s, transform 0.25s;
     }
-    .seek-ripple.left { left: 20%; }
-    .seek-ripple.right { right: 20%; }
+
+    .seek-ripple.left {
+      left: 20%;
+    }
+
+    .seek-ripple.right {
+      right: 20%;
+    }
+
     .seek-ripple.show {
       opacity: 1;
       transform: translateY(-50%) scale(1.15);
@@ -1036,6 +1228,7 @@
       transition: opacity 0.3s;
       pointer-events: auto;
     }
+
     .player-controls-scrim.fade-out {
       opacity: 0;
       pointer-events: none;
@@ -1047,6 +1240,7 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .player-back-btn {
       width: 40px;
       height: 40px;
@@ -1059,6 +1253,7 @@
       font-size: 20px;
       cursor: pointer;
     }
+
     .player-title-info {
       flex: 1;
       margin: 0 12px;
@@ -1066,6 +1261,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .player-m-title {
       font-size: 14.5px;
       font-weight: 700;
@@ -1074,12 +1270,18 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .player-m-sub {
       font-size: 11px;
       color: var(--accent-teal);
       margin-top: 1px;
     }
-    .player-top-tools { display: flex; gap: 8px; }
+
+    .player-top-tools {
+      display: flex;
+      gap: 8px;
+    }
+
     .player-tool-btn {
       width: 36px;
       height: 36px;
@@ -1099,6 +1301,7 @@
       justify-content: center;
       gap: 36px;
     }
+
     .center-seek-btn {
       width: 48px;
       height: 48px;
@@ -1115,7 +1318,11 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .center-seek-btn:active { transform: scale(0.92); }
+
+    .center-seek-btn:active {
+      transform: scale(0.92);
+    }
+
     .center-play-btn {
       width: 66px;
       height: 66px;
@@ -1129,8 +1336,16 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .center-play-btn:active { transform: scale(0.92); }
-    .center-play-btn svg { width: 28px; height: 28px; fill: #fff; }
+
+    .center-play-btn:active {
+      transform: scale(0.92);
+    }
+
+    .center-play-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: #fff;
+    }
 
     .player-spinner {
       position: absolute;
@@ -1142,7 +1357,12 @@
       animation: spin 0.8s linear infinite;
       display: none;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     .spinner-sm {
       width: 18px;
@@ -1166,6 +1386,7 @@
       align-items: center;
       gap: 12px;
     }
+
     .time-label {
       font-size: 11px;
       font-weight: 600;
@@ -1173,7 +1394,10 @@
       font-variant-numeric: tabular-nums;
       min-width: 45px;
     }
-    .time-label.right { text-align: right; }
+
+    .time-label.right {
+      text-align: right;
+    }
 
     .scrubber-track {
       flex: 1;
@@ -1183,6 +1407,7 @@
       align-items: center;
       cursor: pointer;
     }
+
     .scrubber-rail {
       width: 100%;
       height: 4px;
@@ -1190,6 +1415,7 @@
       background: rgba(255, 255, 255, 0.25);
       position: relative;
     }
+
     .scrubber-fill {
       position: absolute;
       left: 0;
@@ -1199,6 +1425,7 @@
       background: var(--primary);
       border-radius: 2px;
     }
+
     .scrubber-thumb {
       position: absolute;
       top: 50%;
@@ -1216,6 +1443,7 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .sub-tool-pill {
       padding: 4px 10px;
       border-radius: var(--radius-pill);
@@ -1239,7 +1467,10 @@
       flex-direction: column;
       justify-content: flex-end;
     }
-    .admin-modal-wrap.active { display: flex; }
+
+    .admin-modal-wrap.active {
+      display: flex;
+    }
 
     .admin-sheet {
       background: #11131c;
@@ -1259,6 +1490,7 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .admin-title {
       font-size: 16px;
       font-weight: 800;
@@ -1282,6 +1514,7 @@
       text-align: center;
       padding: 20px 10px;
     }
+
     .admin-lock-icon {
       width: 56px;
       height: 56px;
@@ -1292,6 +1525,7 @@
       place-items: center;
       font-size: 26px;
     }
+
     .admin-auth-input {
       width: 100%;
       max-width: 280px;
@@ -1305,6 +1539,7 @@
       letter-spacing: 2px;
       outline: none;
     }
+
     .admin-auth-btn {
       width: 100%;
       max-width: 280px;
@@ -1324,17 +1559,20 @@
       gap: 10px;
       margin-bottom: 20px;
     }
+
     .admin-stat-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: 12px;
     }
+
     .admin-stat-val {
       font-size: 20px;
       font-weight: 800;
       color: #fff;
     }
+
     .admin-stat-lbl {
       font-size: 11px;
       color: var(--text-dim);
@@ -1361,11 +1599,12 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
       white-space: nowrap;
     }
+
     .mobile-toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-  
+
     /* COMPACT RIGHT-ALIGNED TORRENT DOWNLOAD BUTTONS & READABLE MOVIE INFO */
     .torrent-opt-card {
       display: flex;
@@ -1380,10 +1619,12 @@
       box-sizing: border-box;
       transition: background 0.15s, border-color 0.15s;
     }
+
     .torrent-opt-card:active {
       background: rgba(255, 179, 64, 0.08);
       border-color: rgba(255, 179, 64, 0.35);
     }
+
     .torrent-meta-col {
       flex: 1;
       min-width: 0;
@@ -1392,6 +1633,7 @@
       gap: 3px;
       padding-right: 4px;
     }
+
     .torrent-title-line {
       font-size: 12px;
       font-weight: 700;
@@ -1403,6 +1645,7 @@
       overflow: hidden;
       word-break: break-word;
     }
+
     .torrent-pills-row {
       display: flex;
       align-items: center;
@@ -1411,6 +1654,7 @@
       font-size: 10px;
       margin-top: 1px;
     }
+
     .t-pill-gold {
       color: #ffb340;
       background: rgba(255, 179, 64, 0.14);
@@ -1419,6 +1663,7 @@
       border-radius: 4px;
       font-weight: 700;
     }
+
     .t-pill-purple {
       color: #c084fc;
       background: rgba(192, 132, 252, 0.12);
@@ -1427,6 +1672,7 @@
       border-radius: 4px;
       font-weight: 600;
     }
+
     .t-pill-teal {
       color: #12d8b4;
       background: rgba(18, 216, 180, 0.12);
@@ -1435,10 +1681,12 @@
       border-radius: 4px;
       font-weight: 600;
     }
+
     .t-pill-dim {
       color: #94a3b8;
       font-size: 10px;
     }
+
     .torrent-btns-col {
       display: flex;
       align-items: center;
@@ -1447,6 +1695,7 @@
       flex-shrink: 0;
       margin-left: auto;
     }
+
     .t-action-btn {
       padding: 4px 7px;
       border-radius: 6px;
@@ -1462,19 +1711,23 @@
       box-sizing: border-box;
       touch-action: manipulation;
     }
+
     .t-action-btn:active {
       transform: scale(0.93);
     }
+
     .t-btn-mag {
       background: linear-gradient(135deg, #ffb340, #e08712);
       color: #030712;
       box-shadow: 0 2px 8px rgba(255, 179, 64, 0.25);
     }
+
     .t-btn-copy {
       background: rgba(255, 255, 255, 0.08);
       border-color: rgba(255, 255, 255, 0.15);
       color: #e2e8f0;
     }
+
     .t-btn-file {
       background: rgba(18, 216, 180, 0.1);
       border-color: rgba(18, 216, 180, 0.3);
@@ -1507,7 +1760,10 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
-    .anime-detail-modal.active { display: flex; }
+
+    .anime-detail-modal.active {
+      display: flex;
+    }
 
     .anime-detail-hero {
       position: relative;
@@ -1522,12 +1778,14 @@
       background-position: center top;
       background-repeat: no-repeat;
     }
+
     .anime-detail-scrim {
       position: absolute;
       inset: 0;
       background: linear-gradient(180deg, rgba(9, 10, 15, 0.2) 0%, rgba(9, 10, 15, 0.7) 50%, #090a0f 100%);
       pointer-events: none;
     }
+
     .anime-hero-content {
       position: relative;
       z-index: 2;
@@ -1535,6 +1793,7 @@
       flex-direction: column;
       gap: 8px;
     }
+
     .anime-hero-sub {
       display: flex;
       align-items: center;
@@ -1546,18 +1805,21 @@
       text-transform: uppercase;
       letter-spacing: 0.6px;
     }
+
     .anime-main-title {
       font-size: 24px;
       font-weight: 800;
       color: #fff;
       line-height: 1.2;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
     }
+
     .anime-actions-row {
       display: flex;
       gap: 10px;
       margin-top: 6px;
     }
+
     .anime-btn-watch {
       flex: 1.2;
       height: 44px;
@@ -1574,7 +1836,10 @@
       cursor: pointer;
       box-shadow: 0 4px 18px rgba(255, 77, 141, 0.4);
     }
-    .anime-btn-watch:active { transform: scale(0.96); }
+
+    .anime-btn-watch:active {
+      transform: scale(0.96);
+    }
 
     .anime-btn-fav {
       height: 44px;
@@ -1591,7 +1856,10 @@
       gap: 6px;
       cursor: pointer;
     }
-    .anime-btn-fav:active { transform: scale(0.96); }
+
+    .anime-btn-fav:active {
+      transform: scale(0.96);
+    }
 
     .anime-detail-close {
       position: absolute;
@@ -1618,6 +1886,7 @@
       flex-direction: column;
       gap: 20px;
     }
+
     .anime-section-title {
       font-size: 15px;
       font-weight: 800;
@@ -1628,6 +1897,7 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .anime-overview-text {
       font-size: 12.5px;
       color: #cbd5e1;
@@ -1640,6 +1910,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
+
     .anime-metric-card {
       background: #13151f;
       border: 1px solid var(--border);
@@ -1647,11 +1918,13 @@
       padding: 10px 8px;
       text-align: center;
     }
+
     .anime-metric-val {
       font-size: 16px;
       font-weight: 800;
       color: #ffb340;
     }
+
     .anime-metric-lbl {
       font-size: 10px;
       font-weight: 600;
@@ -1667,6 +1940,7 @@
       flex-wrap: wrap;
       gap: 6px;
     }
+
     .anime-genre-pill {
       padding: 5px 11px;
       border-radius: 20px;
@@ -1676,6 +1950,7 @@
       font-size: 11.5px;
       font-weight: 600;
     }
+
     .anime-dub-pill {
       padding: 5px 12px;
       border-radius: 20px;
@@ -1697,6 +1972,7 @@
       overflow-x: auto;
       padding-bottom: 4px;
     }
+
     .season-tab-btn {
       padding: 6px 14px;
       border-radius: 20px;
@@ -1708,6 +1984,7 @@
       white-space: nowrap;
       cursor: pointer;
     }
+
     .season-tab-btn.active {
       background: #7c5cff;
       border-color: #7c5cff;
@@ -1719,6 +1996,7 @@
       flex-direction: column;
       gap: 8px;
     }
+
     .ep-card-item {
       display: flex;
       align-items: center;
@@ -1730,10 +2008,12 @@
       cursor: pointer;
       transition: background 0.15s;
     }
+
     .ep-card-item:active {
       background: rgba(124, 92, 255, 0.15);
       border-color: var(--primary);
     }
+
     .ep-thumb-wrap {
       width: 72px;
       height: 48px;
@@ -1743,25 +2023,29 @@
       flex-shrink: 0;
       position: relative;
     }
+
     .ep-thumb-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .ep-play-badge {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.35);
+      background: rgba(0, 0, 0, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
       font-size: 14px;
     }
+
     .ep-info-col {
       flex: 1;
       min-width: 0;
     }
+
     .ep-num-tag {
       font-size: 10px;
       font-weight: 800;
@@ -1769,6 +2053,7 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
+
     .ep-name-text {
       font-size: 12.5px;
       font-weight: 700;
@@ -1794,12 +2079,23 @@
       transition: background 0.15s, border-color 0.15s;
       touch-action: manipulation;
     }
+
     .anime-search-bar:active {
       background: rgba(255, 77, 141, 0.12);
       border-color: rgba(255, 77, 141, 0.35);
     }
-    .anime-search-icon { font-size: 14px; color: #ff4d8d; }
-    .anime-search-text { font-size: 13px; color: var(--text-dim); flex: 1; }
+
+    .anime-search-icon {
+      font-size: 14px;
+      color: #ff4d8d;
+    }
+
+    .anime-search-text {
+      font-size: 13px;
+      color: var(--text-dim);
+      flex: 1;
+    }
+
     .anime-search-pill {
       font-size: 10px;
       font-weight: 700;
@@ -1817,15 +2113,18 @@
       display: none !important;
       pointer-events: none !important;
     }
+
     .mobile-player-overlay.anime-embed-mode .player-center-controls,
     .mobile-player-overlay.anime-embed-mode .player-bottom-bar {
       display: none !important;
       pointer-events: none !important;
     }
+
     .mobile-player-overlay.anime-embed-mode .player-controls-scrim {
       background: none !important;
       pointer-events: none !important;
     }
+
     .mobile-player-overlay.anime-embed-mode .player-top-bar {
       pointer-events: auto !important;
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0) 100%);
@@ -1840,11 +2139,13 @@
       justify-content: space-between;
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
+
     .mobile-player-overlay.anime-embed-mode.ui-hidden .player-top-bar {
       opacity: 0;
       transform: translateY(-20px);
       pointer-events: none !important;
     }
+
     .mobile-player-overlay.anime-embed-mode #m-player-iframe {
       display: block !important;
       width: 100% !important;
@@ -1854,6 +2155,7 @@
       z-index: 1;
       background: #000;
     }
+
     .anime-srv-chips-row {
       display: flex;
       align-items: center;
@@ -1862,6 +2164,7 @@
       max-width: 65%;
       pointer-events: auto;
     }
+
     .anime-srv-chip {
       padding: 3px 8px;
       border-radius: 6px;
@@ -1873,12 +2176,276 @@
       white-space: nowrap;
       cursor: pointer;
     }
+
     .anime-srv-chip.active {
       background: #ff4d8d;
       border-color: #ff4d8d;
     }
+  
+    /* ==========================================================================
+       DEDICATED MOBILE ANIME WATCH STAGE (Exact ToonPlay Video Player Engine)
+       ========================================================================== */
+    .anime-watch-modal {
+      position: fixed;
+      inset: 0;
+      background: #080911;
+      z-index: 9500;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .anime-watch-modal.active {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+    .anime-watch-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: max(12px, var(--safe-top)) 16px 12px 16px;
+      background: #0e101d;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .anime-watch-back {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .anime-watch-back:active {
+      transform: scale(0.92);
+      background: rgba(255, 77, 141, 0.25);
+    }
+    .anime-watch-title-block {
+      flex: 1;
+      min-width: 0;
+    }
+    .anime-watch-main-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .anime-watch-sub-title {
+      font-size: 11px;
+      color: #ff4d8d;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .anime-watch-ep-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, #ff4d8d, #7c5cff);
+      padding: 3px 8px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .anime-watch-player-stage {
+      padding: 12px 16px;
+      background: #040509;
+    }
+    .anime-player-box {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    }
+    .anime-player-box iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #000;
+    }
+    .anime-player-loader {
+      position: absolute;
+      inset: 0;
+      background: #05060c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: opacity 0.25s ease;
+    }
+    .anime-player-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .anime-watch-body {
+      padding: 14px 16px 40px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .anime-ctrl-section {
+      background: #0e101d;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .anime-ctrl-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .anime-ctrl-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .anime-chips-row {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .anime-chips-row::-webkit-scrollbar { display: none; }
+    .anime-chip-btn {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+    .anime-chip-btn:active {
+      transform: scale(0.96);
+    }
+    .anime-chip-btn.active {
+      background: linear-gradient(135deg, #ff4d8d, #7c5cff);
+      border-color: #ff4d8d;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(255, 77, 141, 0.4);
+    }
+    .anime-ep-nav-btns {
+      display: flex;
+      gap: 6px;
+    }
+    .anime-nav-btn {
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .anime-nav-btn:disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .anime-season-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffb340;
+    }
+    .anime-watch-episodes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+    .anime-watch-ep-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .anime-watch-ep-card:active {
+      background: rgba(255, 77, 141, 0.12);
+      border-color: rgba(255, 77, 141, 0.3);
+    }
+    .anime-watch-ep-card.playing {
+      background: rgba(255, 77, 141, 0.15);
+      border-color: #ff4d8d;
+    }
+    .anime-watch-ep-thumb {
+      width: 76px;
+      height: 44px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #000;
+      flex-shrink: 0;
+    }
+    .anime-watch-ep-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .anime-watch-ep-num {
+      font-size: 10px;
+      font-weight: 800;
+      color: #ff4d8d;
+      text-transform: uppercase;
+    }
+    .anime-watch-ep-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .anime-watch-ep-badge-status {
+      font-size: 10px;
+      font-weight: 800;
+      color: #ff4d8d;
+      background: rgba(255, 77, 141, 0.15);
+      padding: 2px 6px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
 </style>
 </head>
+
 <body>
 
   <div class="mobile-ambient"></div>
@@ -1887,7 +2454,9 @@
   <header class="mobile-header">
     <div class="brand-wrap" id="brand-home-btn" title="Tap to return Home (Triple-tap for Admin Settings)">
       <div class="brand-mark">
-        <svg viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V4h-4z"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V4h-4z" />
+        </svg>
       </div>
       <div class="brand-text">SDK <span>Movies</span></div>
       <span class="status-dot" id="header-status-dot" title="Server Status: Online"></span>
@@ -1910,7 +2479,7 @@
         <button class="chip-btn" data-source="all">🔥 All Releases</button>
         <button class="chip-btn" data-source="direct_tamil">⚡ Tamil Direct MP4</button>
         <button class="chip-btn" data-source="dubbed">🎙️ TamDub</button>
-        
+
       </div>
 
       <!-- Hero Spotlight Banner -->
@@ -1944,7 +2513,8 @@
               <span class="shelf-icon">⏱️</span>
               <h3 class="shelf-title">Continue Watching</h3>
             </div>
-            <button class="cw-clear-all-btn" id="btn-cw-clear-all" title="Clear all watch history">🗑️ Clear History</button>
+            <button class="cw-clear-all-btn" id="btn-cw-clear-all" title="Clear all watch history">🗑️ Clear
+              History</button>
           </div>
         </div>
         <div class="shelf-track" id="m-cw-track"></div>
@@ -1963,7 +2533,7 @@
       </section>
     </div>
 
-    
+
     <!-- ANIME & CARTOONS TAB (Dedicated Universe without Upstream Ads) -->
     <div class="tab-view" id="tab-anime">
       <!-- Anime Dedicated Quick Search Bar -->
@@ -1990,11 +2560,14 @@
           <div class="spotlight-meta-row">
             <span class="anime-badge" id="anime-spotlight-badge">ANIMATED SERIES</span>
             <span class="badge-tag quality">1080p Ultra HD</span>
-            <span class="badge-tag" style="background:rgba(255,179,64,0.15);color:#ffb340;border:1px solid rgba(255,179,64,0.3);">Multi Audio</span>
+            <span class="badge-tag"
+              style="background:rgba(255,179,64,0.15);color:#ffb340;border:1px solid rgba(255,179,64,0.3);">Multi
+              Audio</span>
           </div>
           <h2 class="spotlight-title" id="anime-spotlight-title">Demon Slayer</h2>
           <div class="spotlight-actions">
-            <button class="btn-play-primary" id="anime-spotlight-watch" style="background:linear-gradient(135deg,#ff4d8d,#7c5cff);">
+            <button class="btn-play-primary" id="anime-spotlight-watch"
+              style="background:linear-gradient(135deg,#ff4d8d,#7c5cff);">
               <span>▶ Watch Now</span>
             </button>
             <button class="btn-details-secondary" id="anime-spotlight-info" title="Episodes &amp; Info">ℹ</button>
@@ -2020,8 +2593,12 @@
     <!-- SEARCH TAB -->
     <div class="tab-view search-view" id="tab-search">
       <div class="search-input-box">
-        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
-        <input type="text" class="search-input" id="m-search-input" placeholder="Search movies, dubs, anime…" autocomplete="off">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z" />
+        </svg>
+        <input type="text" class="search-input" id="m-search-input" placeholder="Search movies, dubs, anime…"
+          autocomplete="off">
         <button class="search-clear-btn" id="m-search-clear">✕</button>
       </div>
 
@@ -2059,7 +2636,8 @@
             <h4>🧲 4K UHD Torrents (1TamilMV)</h4>
             <p>1080p/4K high-bitrate torrent magnets &amp; .torrent downloads</p>
           </div>
-          <button class="settings-btn" style="color:var(--accent-gold);border-color:rgba(255,179,64,0.3);">Browse ›</button>
+          <button class="settings-btn" style="color:var(--accent-gold);border-color:rgba(255,179,64,0.3);">Browse
+            ›</button>
         </div>
         <div class="settings-card" onclick="filterBySource('direct_tamil')">
           <div class="settings-info">
@@ -2112,7 +2690,8 @@
             <h4>Delete Watch History</h4>
             <p>Clear all continue watching movies and in-progress timestamps</p>
           </div>
-          <button class="settings-btn" id="m-btn-clear-history" style="color:#ff6b6b;border-color:rgba(255,107,107,0.3);">🗑️ Clear</button>
+          <button class="settings-btn" id="m-btn-clear-history"
+            style="color:#ff6b6b;border-color:rgba(255,107,107,0.3);">🗑️ Clear</button>
         </div>
         <div class="settings-card">
           <div class="settings-info">
@@ -2162,7 +2741,7 @@
   </nav>
 
   <!-- Movie Details Bottom Sheet -->
-    <!-- ANIME SHOW / MOVIE DETAIL MODAL (Matching User Specification) -->
+  <!-- ANIME SHOW / MOVIE DETAIL MODAL (Matching User Specification) -->
   <div class="anime-detail-modal" id="m-anime-detail-modal">
     <div class="anime-detail-hero" id="anime-modal-hero">
       <button class="anime-detail-close" id="anime-modal-close" title="Close">‹</button>
@@ -2195,7 +2774,9 @@
       <div class="anime-overview-box">
         <h3 class="anime-section-title">Story Overview</h3>
         <p class="anime-overview-text" id="anime-view-overview">
-          Shin-chan, the boy next door, is a walking disaster, creating chaos wherever he goes. With the body of a child and the mind of an adult, Shinchan is wreaking more havoc than any child before. Shin-chan is carefree, optimistic and gets excited about everything. This 5 year-old likes to do things his way.
+          Shin-chan, the boy next door, is a walking disaster, creating chaos wherever he goes. With the body of a child
+          and the mind of an adult, Shinchan is wreaking more havoc than any child before. Shin-chan is carefree,
+          optimistic and gets excited about everything. This 5 year-old likes to do things his way.
         </p>
       </div>
 
@@ -2259,7 +2840,82 @@
     </div>
   </div>
 
-<div class="sheet-backdrop" id="m-sheet-backdrop"></div>
+  
+  <!-- DEDICATED ANIME WATCH STAGE (Exact ToonPlay Experience for Mobile) -->
+  <div class="anime-watch-modal" id="m-anime-watch-modal">
+    <!-- Header Bar -->
+    <div class="anime-watch-header">
+      <button class="anime-watch-back" id="anime-watch-back" onclick="closeAnimeWatch()" title="Back">‹</button>
+      <div class="anime-watch-title-block">
+        <div class="anime-watch-main-title" id="anime-watch-title">Anime Stream</div>
+        <div class="anime-watch-sub-title" id="anime-watch-sub">Season 1 • Episode 1</div>
+      </div>
+      <div class="anime-watch-header-right">
+        <span class="anime-watch-ep-badge" id="anime-watch-ep-pill">EP 1</span>
+      </div>
+    </div>
+
+    <!-- 16:9 Aspect Ratio Video Player Stage -->
+    <div class="anime-watch-player-stage">
+      <div class="anime-player-box" id="anime-player-box">
+        <div class="anime-player-loader" id="anime-player-loader">
+          <div class="spinner-sm"></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:6px;">Connecting stream mirror…</div>
+        </div>
+        <iframe id="m-anime-active-iframe" src="about:blank"
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+          allowfullscreen="true">
+        </iframe>
+      </div>
+    </div>
+
+    <!-- Controls Panel (Servers, Audio Dub, Quality & Episode Navigation) -->
+    <div class="anime-watch-body">
+      <!-- Row 1: Servers & Episode Prev/Next -->
+      <div class="anime-ctrl-section">
+        <div class="anime-ctrl-header">
+          <span class="anime-ctrl-label">⚡ STREAM SERVERS</span>
+          <div class="anime-ep-nav-btns">
+            <button class="anime-nav-btn" id="anime-prev-ep-btn" onclick="animeNavEpisode(-1)">⏮ Prev</button>
+            <button class="anime-nav-btn" id="anime-next-ep-btn" onclick="animeNavEpisode(1)">Next ⏭</button>
+          </div>
+        </div>
+        <div class="anime-chips-row" id="anime-watch-servers-chips"></div>
+      </div>
+
+      <!-- Row 2: Audio Dub Selector -->
+      <div class="anime-ctrl-section">
+        <div class="anime-ctrl-header">
+          <span class="anime-ctrl-label">🎙️ AUDIO DUB TRACK</span>
+        </div>
+        <div class="anime-chips-row" id="anime-watch-audio-chips"></div>
+      </div>
+
+      <!-- Row 3: Video Quality Selector -->
+      <div class="anime-ctrl-section">
+        <div class="anime-ctrl-header">
+          <span class="anime-ctrl-label">📺 VIDEO QUALITY</span>
+        </div>
+        <div class="anime-chips-row" id="anime-watch-quality-chips">
+          <button class="anime-chip-btn active" data-q="1080p" onclick="selectAnimeQuality('1080p')">✨ 1080p FHD</button>
+          <button class="anime-chip-btn" data-q="720p" onclick="selectAnimeQuality('720p')">720p HD</button>
+          <button class="anime-chip-btn" data-q="480p" onclick="selectAnimeQuality('480p')">480p SD</button>
+          <button class="anime-chip-btn" data-q="auto" onclick="selectAnimeQuality('auto')">Auto</button>
+        </div>
+      </div>
+
+      <!-- Row 4: Season Episodes Carousel / List -->
+      <div class="anime-ctrl-section" id="anime-watch-episodes-section">
+        <div class="anime-ctrl-header">
+          <span class="anime-ctrl-label">🎬 ALL EPISODES</span>
+          <div class="anime-season-badge" id="anime-watch-season-pill">Season 1</div>
+        </div>
+        <div class="anime-watch-episodes-list" id="anime-watch-episodes-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-backdrop" id="m-sheet-backdrop"></div>
   <div class="bottom-sheet" id="m-details-sheet">
     <div class="sheet-drag-handle"></div>
     <div class="sheet-body">
@@ -2279,10 +2935,13 @@
 
       <div class="sheet-actions-row">
         <a class="btn-sheet-stream" id="sheet-btn-stream" href="#">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
           <span id="sheet-stream-label">Stream Now</span>
         </a>
-        <button class="btn-sheet-fav" id="sheet-btn-copy-main-mag" style="display:none;" title="Copy Magnet Link">📋</button>
+        <button class="btn-sheet-fav" id="sheet-btn-copy-main-mag" style="display:none;"
+          title="Copy Magnet Link">📋</button>
         <button class="btn-sheet-fav" id="sheet-btn-fav" title="Save to Watchlist">♥</button>
       </div>
 
@@ -2304,7 +2963,10 @@
   <div class="mobile-player-overlay" id="m-player-overlay">
     <div class="player-video-container">
       <video id="m-video" playsinline webkit-playsinline></video>
-      <iframe id="m-player-iframe" style="display:none;width:100%;height:100%;border:none;background:#000;" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" referrerpolicy="no-referrer"></iframe>
+      <iframe id="m-player-iframe" style="display:none;width:100%;height:100%;border:none;background:#000;"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" allowfullscreen="true"
+        webkitallowfullscreen="true" mozallowfullscreen="true"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media" referrerpolicy="no-referrer"></iframe>
       <div class="player-spinner" id="m-player-spinner"></div>
     </div>
 
@@ -2344,7 +3006,9 @@
         </button>
 
         <button class="center-play-btn" id="m-btn-playpause" title="Play / Pause">
-          <svg id="m-play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="m-play-icon" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
         </button>
 
         <button class="center-seek-btn" id="m-btn-forward" title="Forward 10s">
@@ -2389,23 +3053,31 @@
           <div class="admin-lock-icon">🔒</div>
           <div>
             <h3 style="font-size:16px;font-weight:700;color:#fff;">Easter Egg: Admin Controls</h3>
-            <p style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">Enter password to unlock system diagnostics and live domain switches.</p>
+            <p style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">Enter password to unlock system
+              diagnostics and live domain switches.</p>
           </div>
-          <form id="m-admin-pwd-form" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
-            <input type="password" class="admin-auth-input" id="m-admin-pwd-input" placeholder="Password…" autocomplete="off">
+          <form id="m-admin-pwd-form"
+            style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
+            <input type="password" class="admin-auth-input" id="m-admin-pwd-input" placeholder="Password…"
+              autocomplete="off">
             <button type="submit" class="admin-auth-btn">Unlock Controls</button>
           </form>
-          <div id="m-admin-pwd-err" style="color:#ff6b6b;font-size:12.5px;display:none;">⚠️ Incorrect password. Try again.</div>
+          <div id="m-admin-pwd-err" style="color:#ff6b6b;font-size:12.5px;display:none;">⚠️ Incorrect password. Try
+            again.</div>
         </div>
 
         <!-- Unlocked Admin Content Box -->
         <div id="m-admin-content-box" style="display:none;flex-direction:column;gap:16px;">
           <!-- Local Network Access -->
-          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;">
-            <div style="font-size:12px;font-weight:700;color:var(--accent-teal);text-transform:uppercase;">📡 Local Network &amp; Smart TV Access</div>
-            <div style="font-size:15px;font-weight:700;color:#fff;margin-top:4px;" id="m-admin-ip">192.168.29.197:8777</div>
+          <div
+            style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;">
+            <div style="font-size:12px;font-weight:700;color:var(--accent-teal);text-transform:uppercase;">📡 Local
+              Network &amp; Smart TV Access</div>
+            <div style="font-size:15px;font-weight:700;color:#fff;margin-top:4px;" id="m-admin-ip">192.168.29.197:8777
+            </div>
             <div style="display:flex;gap:8px;margin-top:10px;">
-              <a class="settings-btn" id="m-admin-tv-link" href="/?mode=tv" target="_blank" style="color:#12d8b4;border-color:rgba(18,216,180,0.3);">Open TV Mode ↗</a>
+              <a class="settings-btn" id="m-admin-tv-link" href="/?mode=tv" target="_blank"
+                style="color:#12d8b4;border-color:rgba(18,216,180,0.3);">Open TV Mode ↗</a>
               <button class="settings-btn" id="m-admin-btn-copy-ip">📋 Copy IP</button>
             </div>
           </div>
@@ -2431,10 +3103,13 @@
           </div>
 
           <!-- Live Domain Diagnostics -->
-          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;">
+          <div
+            style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-              <div style="font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;">🌐 Live Active Domains</div>
-              <button class="settings-btn" id="m-admin-btn-auto-resolve" style="background:linear-gradient(135deg,#7c5cff,#9061f9);border:none;">⚡ Auto-Resolve</button>
+              <div style="font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;">🌐 Live Active Domains
+              </div>
+              <button class="settings-btn" id="m-admin-btn-auto-resolve"
+                style="background:linear-gradient(135deg,#7c5cff,#9061f9);border:none;">⚡ Auto-Resolve</button>
             </div>
             <div id="m-admin-domain-list" style="display:flex;flex-direction:column;gap:8px;">
               <div style="color:var(--text-dim);font-size:12px;">Loading domains…</div>
@@ -2811,7 +3486,7 @@
         var json = JSON.stringify(list || []);
         localStorage.setItem('sdk_continue_watching', json);
         localStorage.setItem('sdk_cw', json);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     async function syncContinueWatching() {
@@ -2826,7 +3501,7 @@
               renderContinueWatching();
             }
           }
-        } catch (e) {}
+        } catch (e) { }
       }
     }
 
@@ -2885,7 +3560,7 @@
         state.continueWatching.splice(index, 1);
         setLocalCw(state.continueWatching);
         var itemId = item.id || item.title || ('cw_' + (item.topic_url || ''));
-        fetch('/api/continue-watching/' + encodeURIComponent(itemId), { method: 'DELETE' }).catch(function() {});
+        fetch('/api/continue-watching/' + encodeURIComponent(itemId), { method: 'DELETE' }).catch(function () { });
         renderContinueWatching();
         showToast('Item removed from watch history');
       }
@@ -2897,9 +3572,9 @@
       try {
         localStorage.removeItem('sdk_continue_watching');
         localStorage.removeItem('sdk_cw');
-      } catch (e) {}
-      fetch('/api/continue-watching/clear', { method: 'POST' }).catch(function() {});
-      fetch('/api/continue-watching', { method: 'DELETE' }).catch(function() {});
+      } catch (e) { }
+      fetch('/api/continue-watching/clear', { method: 'POST' }).catch(function () { });
+      fetch('/api/continue-watching', { method: 'DELETE' }).catch(function () { });
       renderContinueWatching();
       showToast('Watch history cleared');
     }
@@ -3271,19 +3946,10 @@
     }
 
     async function playAnimeEpisode(itemId, ep, title) {
-      showToast('Resolving anime stream…');
-      try {
-        const epNum = ep.episode_number || ep.ep || 1;
-        const season = ep.season || 1;
-        const res = await fetch(`/api/toonplay/resolve?id=${encodeURIComponent(itemId)}&s=${season}&ep=${epNum}`);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        const streamUrl = data.stream_url || data.hls_url || data.embed_url;
-        if (!streamUrl) throw new Error('No stream URL returned');
-        playVideoStream(streamUrl, `${title} - Ep ${epNum}`, '1080p FHD');
-      } catch (err) {
-        showToast('Anime stream error: ' + err.message);
-      }
+      const epNum = (typeof ep === 'object') ? (ep.episode_number || ep.ep || ep.number || 1) : (ep || 1);
+      const season = (typeof ep === 'object') ? (ep.season || ep.season_num || 1) : 1;
+      const epTitle = (typeof ep === 'object') ? (ep.title || '') : '';
+      openAnimeWatch(itemId, season, epNum, epTitle, title);
     }
 
     // ==========================================================================
@@ -3507,10 +4173,10 @@
     function toggleFullscreen() {
       const player = $('#m-player-overlay');
       if (!document.fullscreenElement) {
-        player.requestFullscreen?.().catch(() => {});
-        screen.orientation?.lock?.('landscape').catch(() => {});
+        player.requestFullscreen?.().catch(() => { });
+        screen.orientation?.lock?.('landscape').catch(() => { });
       } else {
-        document.exitFullscreen?.().catch(() => {});
+        document.exitFullscreen?.().catch(() => { });
       }
     }
 
@@ -3545,7 +4211,7 @@
       if (!movie || !duration || duration <= 30 || position < 10) return;
       var progressPct = (position / duration) * 100;
       if (progressPct >= 92) {
-        var idx = state.continueWatching.findIndex(function(c) { return c.title === movie.title; });
+        var idx = state.continueWatching.findIndex(function (c) { return c.title === movie.title; });
         if (idx >= 0) deleteSingleWatchHistory(idx);
         return;
       }
@@ -3566,7 +4232,7 @@
         timestamp: Date.now()
       };
 
-      var existingIdx = state.continueWatching.findIndex(function(c) { return c.title === movie.title || c.id === itemId; });
+      var existingIdx = state.continueWatching.findIndex(function (c) { return c.title === movie.title || c.id === itemId; });
       if (existingIdx >= 0) {
         state.continueWatching[existingIdx] = entry;
       } else {
@@ -3578,7 +4244,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(entry)
-      }).catch(function() {});
+      }).catch(function () { });
 
       renderContinueWatching();
     }
@@ -3856,7 +4522,7 @@
           const firstEp = firstSeason && firstSeason.episodes ? firstSeason.episodes[0] : null;
           const epNum = firstEp ? (firstEp.number || firstEp.ep_num || 1) : 1;
           const epTitle = firstEp ? firstEp.title : 'Episode 1';
-          playAnimeEpisode(cleanId, 1, epNum, epTitle, card.title);
+          openAnimeWatch(cleanId, 1, epNum, epTitle, card.title);
         };
 
         // 10. More Like This (Recommendations)
@@ -3881,7 +4547,7 @@
       if (!seasons || seasons.length === 0) {
         // Single Movie or Direct Episode
         episodesList.innerHTML = `
-          <div class="ep-card-item" onclick="playAnimeEpisode('${esc(cleanId)}', 1, 1, 'Full Movie', '${esc(animeTitle)}')">
+          <div class="ep-card-item" onclick="openAnimeWatch('${esc(cleanId)}', 1, 1, 'Full Movie', '${esc(animeTitle)}')">
             <div class="ep-thumb-wrap">
               <img class="ep-thumb-img" src="${esc(animeState.currentAnime?.image || '/favicon.svg')}" alt="Play">
               <div class="ep-play-badge">▶</div>
@@ -3943,7 +4609,7 @@
         `;
 
         row.onclick = () => {
-          playAnimeEpisode(cleanId, sNum, epNum, epTitle, animeTitle);
+          openAnimeWatch(cleanId, sNum, epNum, epTitle, animeTitle);
         };
 
         episodesList.appendChild(row);
@@ -3985,29 +4651,7 @@
     // HIGH-SPEED ANIME STREAMING PLAYBACK (AD-FREE SANDBOXED PLAYER)
     // ==========================================================================
     async function playAnimeEpisode(cleanId, sNum, epNum, epTitle, animeTitle) {
-      showToast(`Buffering ${animeTitle || 'Anime'} S${sNum} E${epNum}…`);
-      try {
-        const res = await fetch(`/api/toonplay/resolve?id=${encodeURIComponent(cleanId)}&season=${sNum}&episode=${epNum}`);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-
-        const streamUrl = data.default_stream_url || (data.servers && data.servers[0]?.embed_url);
-        if (!streamUrl) throw new Error('No stream mirror available');
-
-        const titleText = `${animeTitle || 'Anime'} - S${sNum}E${epNum}: ${epTitle || 'Episode'}`;
-
-        // Save progress to Continue Watching
-        saveProgress({
-          title: titleText,
-          poster_url: data.current_episode_image || animeState.currentAnime?.image || '',
-          topic_url: `/api/toonplay/info?id=${cleanId}`,
-          is_toonplay: true
-        }, 15, 1440);
-
-        playStreamInPlayer(streamUrl, titleText, 'Multi-Audio Ultra HD', data.servers || []);
-      } catch (err) {
-        showToast('Stream resolve error: ' + err.message);
-      }
+      openAnimeWatch(cleanId, sNum, epNum, epTitle, animeTitle);
     }
 
     let animeTopBarTimer = null;
@@ -4075,9 +4719,292 @@
         video.style.display = 'block';
         video.src = streamUrl;
         video.load();
-        video.play().catch(() => {});
+        video.play().catch(() => { });
         showControls();
       }
+    }
+
+    
+    // ==========================================================================
+    // DEDICATED ANIME WATCH STAGE ENGINE (Exact ToonPlay Match)
+    // ==========================================================================
+    let currentAnimeWatchData = {
+      cleanId: '',
+      animeTitle: '',
+      seasonNum: 1,
+      epNum: 1,
+      resolveData: null,
+      activeServerIndex: 0,
+      activeAudioLang: 'multi',
+      activeQuality: '1080p'
+    };
+
+    async function openAnimeWatch(cleanId, sNum = 1, epNum = 1, epTitle = '', animeTitle = '') {
+      cleanId = String(cleanId || '').replace(/^toon_/, '').trim();
+      if (!cleanId) return;
+
+      const modal = $('#m-anime-watch-modal');
+      if (!modal) return;
+      modal.classList.add('active');
+      modal.scrollTop = 0;
+
+      currentAnimeWatchData.cleanId = cleanId;
+      currentAnimeWatchData.animeTitle = animeTitle || animeState.currentAnime?.title || 'Anime';
+      currentAnimeWatchData.seasonNum = parseInt(sNum, 10) || 1;
+      currentAnimeWatchData.epNum = parseInt(epNum, 10) || 1;
+
+      $('#anime-watch-title').textContent = currentAnimeWatchData.animeTitle;
+      $('#anime-watch-sub').textContent = `Season ${currentAnimeWatchData.seasonNum} • Episode ${currentAnimeWatchData.epNum}${epTitle ? ': ' + epTitle : ''}`;
+      $('#anime-watch-ep-pill').textContent = `EP ${currentAnimeWatchData.epNum}`;
+      $('#anime-watch-season-pill').textContent = `Season ${currentAnimeWatchData.seasonNum}`;
+      $('#anime-player-loader').classList.remove('hidden');
+
+      const iframe = $('#m-anime-active-iframe');
+      if (iframe) iframe.src = 'about:blank';
+
+      try {
+        const res = await fetch(`/api/toonplay/resolve?id=${encodeURIComponent(cleanId)}&season=${currentAnimeWatchData.seasonNum}&episode=${currentAnimeWatchData.epNum}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        currentAnimeWatchData.resolveData = data;
+
+        if (data.current_episode_title) {
+          $('#anime-watch-sub').textContent = `Season ${currentAnimeWatchData.seasonNum} • Episode ${currentAnimeWatchData.epNum}: ${data.current_episode_title}`;
+        }
+
+        // 1. Render Servers
+        const servers = data.servers || [];
+        renderAnimeWatchServers(servers);
+
+        // 2. Render Audio Dub Chips
+        renderAnimeWatchAudioChips(servers);
+
+        // 3. Render Episodes List
+        renderAnimeWatchEpisodesList();
+
+        // 4. Update Prev/Next buttons
+        updateAnimePrevNextButtons();
+
+        // 5. Select Initial Server (Default to Tamil if available, else #1 server)
+        let initialIdx = 0;
+        const tamIdx = servers.findIndex(s => (s.name || '').toLowerCase().includes('tamil') || (s.language || '').toLowerCase().includes('tamil'));
+        if (tamIdx !== -1) initialIdx = tamIdx;
+
+        switchAnimeWatchServer(initialIdx);
+
+        // Save progress to Continue Watching
+        saveProgress({
+          title: `${currentAnimeWatchData.animeTitle} - S${currentAnimeWatchData.seasonNum}E${currentAnimeWatchData.epNum}`,
+          poster_url: data.current_episode_image || animeState.currentAnime?.image || '',
+          topic_url: `/api/toonplay/info?id=${cleanId}`,
+          is_toonplay: true
+        }, 15, 1440);
+
+      } catch (err) {
+        showToast('Stream error: ' + err.message);
+        $('#anime-player-loader').classList.add('hidden');
+      }
+    }
+
+    function closeAnimeWatch() {
+      const modal = $('#m-anime-watch-modal');
+      if (modal) modal.classList.remove('active');
+      const iframe = $('#m-anime-active-iframe');
+      if (iframe) iframe.src = 'about:blank';
+      renderContinueWatching();
+    }
+
+    function renderAnimeWatchServers(servers) {
+      const row = $('#anime-watch-servers-chips');
+      if (!row) return;
+      row.innerHTML = '';
+
+      if (!servers || servers.length === 0) {
+        row.innerHTML = '<span style="color:#94a3b8;font-size:11px;">Default server active</span>';
+        return;
+      }
+
+      servers.forEach((srv, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `anime-chip-btn ${idx === currentAnimeWatchData.activeServerIndex ? 'active' : ''}`;
+        btn.innerHTML = `<span>⚡</span> <span>${esc(srv.name || `Server ${idx + 1}`)}</span>`;
+        btn.onclick = () => switchAnimeWatchServer(idx);
+        row.appendChild(btn);
+      });
+    }
+
+    function renderAnimeWatchAudioChips(servers) {
+      const row = $('#anime-watch-audio-chips');
+      if (!row) return;
+      row.innerHTML = '';
+
+      const audioOptions = [
+        { code: 'multi', label: '✨ Multi-Audio' },
+        { code: 'tamil', label: '🇮🇳 Tamil Dub' },
+        { code: 'telugu', label: '🇮🇳 Telugu Dub' },
+        { code: 'hindi', label: '🇮🇳 Hindi Dub' },
+        { code: 'english', label: '🇬🇧 English Dub' },
+        { code: 'japanese', label: '🇯🇵 Japanese Dub' }
+      ];
+
+      audioOptions.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = `anime-chip-btn ${opt.code === currentAnimeWatchData.activeAudioLang ? 'active' : ''}`;
+        btn.dataset.lang = opt.code;
+        btn.innerHTML = `<span>${esc(opt.label)}</span>`;
+        btn.onclick = () => selectAnimeAudioDub(opt.code);
+        row.appendChild(btn);
+      });
+    }
+
+    function selectAnimeAudioDub(langCode) {
+      currentAnimeWatchData.activeAudioLang = langCode;
+      const servers = currentAnimeWatchData.resolveData?.servers || [];
+      const iframe = $('#m-anime-active-iframe');
+
+      $$('#anime-watch-audio-chips .anime-chip-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.lang === langCode);
+      });
+
+      // Try finding direct server mirror
+      let foundIdx = -1;
+      if (langCode === 'multi') {
+        foundIdx = servers.findIndex(s => s.is_ravok || (s.name || '').toLowerCase().includes('multi'));
+      } else {
+        foundIdx = servers.findIndex(s => (s.name || '').toLowerCase().includes(langCode) || (s.language || '').toLowerCase().includes(langCode));
+      }
+
+      if (foundIdx !== -1) {
+        switchAnimeWatchServer(foundIdx);
+        showToast(`Switched to ${langCode.toUpperCase()} audio server`);
+      } else {
+        // Send postMessage to embedded player
+        try {
+          if (iframe && iframe.contentWindow) {
+            const codeMap = { tamil: 'tam', telugu: 'tel', hindi: 'hin', english: 'eng', japanese: 'jpn' };
+            const c = codeMap[langCode] || langCode;
+            iframe.contentWindow.postMessage({
+              action: 'setAudioTrack',
+              language: c,
+              audioLanguage: c
+            }, '*');
+          }
+        } catch(e) {}
+        showToast(`Selected ${langCode.toUpperCase()} audio track`);
+      }
+    }
+
+    function switchAnimeWatchServer(idx) {
+      const servers = currentAnimeWatchData.resolveData?.servers || [];
+      if (!servers[idx]) return;
+
+      currentAnimeWatchData.activeServerIndex = idx;
+      const srv = servers[idx];
+      const iframe = $('#m-anime-active-iframe');
+      const loader = $('#anime-player-loader');
+
+      if (loader) loader.classList.remove('hidden');
+
+      let streamUrl = srv.url || srv.embed_url || '';
+      if (!streamUrl.startsWith('/api/') && !streamUrl.startsWith('http')) {
+        streamUrl = `/api/toonplay/embed?url=${encodeURIComponent(streamUrl)}`;
+      }
+
+      // ToonPlay exact rule: apply sandbox on Ravok (/video/), let Abyss decode without storage errors
+      if (streamUrl.includes('/video/')) {
+        iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-forms');
+      } else {
+        iframe.removeAttribute('sandbox');
+      }
+
+      iframe.src = streamUrl;
+      iframe.onload = () => {
+        setTimeout(() => {
+          if (loader) loader.classList.add('hidden');
+        }, 600);
+      };
+
+      // Update active server chip
+      $$('#anime-watch-servers-chips .anime-chip-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === idx);
+      });
+
+      // Sync active audio chip
+      const sLang = (srv.language || srv.name || '').toLowerCase();
+      $$('#anime-watch-audio-chips .anime-chip-btn').forEach(btn => {
+        const bLang = btn.dataset.lang;
+        const isMatch = (bLang === 'multi' && (sLang.includes('multi') || srv.is_ravok)) ||
+                        (bLang !== 'multi' && sLang.includes(bLang));
+        if (isMatch) {
+          $$('#anime-watch-audio-chips .anime-chip-btn').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          currentAnimeWatchData.activeAudioLang = bLang;
+        }
+      });
+    }
+
+    function selectAnimeQuality(q) {
+      currentAnimeWatchData.activeQuality = q;
+      $$('#anime-watch-quality-chips .anime-chip-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.q === q);
+      });
+      showToast(`Video quality set to ${q.toUpperCase()}`);
+    }
+
+    function updateAnimePrevNextButtons() {
+      const prevBtn = $('#anime-prev-ep-btn');
+      const nextBtn = $('#anime-next-ep-btn');
+      if (prevBtn) prevBtn.disabled = (currentAnimeWatchData.epNum <= 1);
+      
+      const seasons = animeState.currentSeasons || [];
+      const curSeasonObj = seasons.find(s => (s.season_num || s.season || 1) == currentAnimeWatchData.seasonNum) || seasons[0];
+      const maxEp = curSeasonObj?.episodes?.length || 999;
+      if (nextBtn) nextBtn.disabled = (currentAnimeWatchData.epNum >= maxEp);
+    }
+
+    function animeNavEpisode(delta) {
+      const nextEp = currentAnimeWatchData.epNum + delta;
+      if (nextEp < 1) return;
+      openAnimeWatch(currentAnimeWatchData.cleanId, currentAnimeWatchData.seasonNum, nextEp, '', currentAnimeWatchData.animeTitle);
+    }
+
+    function renderAnimeWatchEpisodesList() {
+      const list = $('#anime-watch-episodes-list');
+      if (!list) return;
+      list.innerHTML = '';
+
+      const seasons = animeState.currentSeasons || [];
+      const curSeasonObj = seasons.find(s => (s.season_num || s.season || 1) == currentAnimeWatchData.seasonNum) || seasons[0];
+      const episodes = curSeasonObj?.episodes || [];
+
+      if (episodes.length === 0) {
+        list.innerHTML = '<div style="color:#94a3b8;font-size:11px;padding:8px;">Full Presentation Stream</div>';
+        return;
+      }
+
+      episodes.forEach(ep => {
+        const epNum = ep.number || ep.ep_num || 1;
+        const epTitle = ep.title || `Episode ${epNum}`;
+        const epImg = ep.image || animeState.currentAnime?.image || '/favicon.svg';
+        const isCurrent = (epNum == currentAnimeWatchData.epNum);
+
+        const card = document.createElement('div');
+        card.className = `anime-watch-ep-card ${isCurrent ? 'playing' : ''}`;
+        card.innerHTML = `
+          <img class="anime-watch-ep-thumb" src="${esc(epImg)}" alt="${esc(epTitle)}" loading="lazy" onerror="this.src='/favicon.svg'">
+          <div class="anime-watch-ep-info">
+            <div class="anime-watch-ep-num">EPISODE ${epNum}</div>
+            <div class="anime-watch-ep-title">${esc(epTitle)}</div>
+          </div>
+          ${isCurrent ? '<span class="anime-watch-ep-badge-status">▶ Playing</span>' : ''}
+        `;
+
+        card.onclick = () => {
+          openAnimeWatch(currentAnimeWatchData.cleanId, currentAnimeWatchData.seasonNum, epNum, epTitle, currentAnimeWatchData.animeTitle);
+        };
+
+        list.appendChild(card);
+      });
     }
 
     function setupNavigation() {
@@ -4159,7 +5086,7 @@
     // ==========================================================================
     let searchFilterSource = 'all';
 
-    
+
     function goToAnimeSearch() {
       setSearchSourceFilter('toonplay_anime');
       switchTab('tab-search');
@@ -4488,4 +5415,5 @@
     window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
+
 </html>
