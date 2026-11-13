@@ -19,17 +19,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
   <script>
-    (function() {
+    (function () {
       try {
-        var isTv = /SDKMovies-AndroidTV|Android TV|Leanback|Large Screen|SmartTV|Tizen|Web0S|AppleTV|AFT|Roku|HbbTV|CrKey|BRAVIA/i.test(navigator.userAgent) || 
-                   window.location.search.indexOf('mode=tv') !== -1 ||
-                   window.location.search.indexOf('tv=1') !== -1 ||
-                   sessionStorage.getItem('sdk_manual_view_mode') === 'tv';
+        var isTv = /SDKMovies-AndroidTV|Android TV|Leanback|Large Screen|SmartTV|Tizen|Web0S|AppleTV|AFT|Roku|HbbTV|CrKey|BRAVIA/i.test(navigator.userAgent) ||
+          window.location.search.indexOf('mode=tv') !== -1 ||
+          window.location.search.indexOf('tv=1') !== -1 ||
+          sessionStorage.getItem('sdk_manual_view_mode') === 'tv';
         if (isTv) {
           document.documentElement.classList.add('tv-mode-html');
           document.documentElement.style.scrollbarWidth = 'none';
         }
-      } catch (e) {}
+      } catch (e) { }
     })();
   </script>
   <style>
@@ -4448,13 +4448,14 @@
       .toon-spotlight-poster-wrap {
         display: none !important;
       }
+
       .toon-spotlight-info {
         max-width: 100% !important;
         padding: 24px !important;
       }
     }
 
-    
+
     /* Option C Enhancements: Continue Watching, Next Episode Countdown & Skip Intro */
     .card-cw-progress-wrap {
       position: absolute;
@@ -4467,6 +4468,7 @@
       overflow: hidden;
       border-radius: 0 0 12px 12px;
     }
+
     .card-cw-progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #6366f1, #12d8b4);
@@ -4474,6 +4476,7 @@
       transition: width 0.3s ease;
       box-shadow: 0 0 8px #12d8b4;
     }
+
     .card-cw-remove {
       position: absolute;
       top: 8px;
@@ -4494,10 +4497,12 @@
       opacity: 0;
       transition: opacity 0.2s ease, transform 0.2s ease;
     }
+
     .card:hover .card-cw-remove,
     .card.tv-focused .card-cw-remove {
       opacity: 1;
     }
+
     .card-cw-remove:hover,
     .card-cw-remove.tv-focused {
       background: #ef4444;
@@ -4505,6 +4510,7 @@
       border-color: #f87171;
       transform: scale(1.15);
     }
+
     .card-cw-badge {
       display: inline-flex;
       align-items: center;
@@ -4537,10 +4543,19 @@
       animation: nextEpSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       max-width: 460px;
     }
+
     @keyframes nextEpSlideIn {
-      from { transform: translateY(24px) scale(0.96); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
+      from {
+        transform: translateY(24px) scale(0.96);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
     }
+
     .next-ep-thumb {
       width: 76px;
       height: 48px;
@@ -4552,6 +4567,7 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       flex-shrink: 0;
     }
+
     .next-ep-body {
       display: flex;
       flex-direction: column;
@@ -4559,11 +4575,13 @@
       min-width: 0;
       flex: 1;
     }
+
     .next-ep-header {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     .next-ep-badge {
       font-size: 10px;
       font-weight: 800;
@@ -4574,15 +4592,18 @@
       padding: 2px 6px;
       border-radius: 4px;
     }
+
     .next-ep-timer {
       font-size: 12px;
       color: #94a3b8;
     }
+
     .next-ep-timer b {
       color: #fff;
       font-size: 14px;
       font-weight: 800;
     }
+
     .next-ep-title {
       font-size: 13.5px;
       font-weight: 700;
@@ -4591,6 +4612,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .next-ep-subtitle {
       font-size: 11.5px;
       color: #94a3b8;
@@ -4598,12 +4620,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .next-ep-btns {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-shrink: 0;
     }
+
     .btn-next-now {
       padding: 8px 16px;
       border-radius: 10px;
@@ -4618,12 +4642,14 @@
       gap: 6px;
       transition: all 0.2s ease;
     }
+
     .btn-next-now:hover,
     .btn-next-now.tv-focused {
       transform: scale(1.06);
       box-shadow: 0 0 16px rgba(99, 102, 241, 0.8);
       outline: 2px solid #fff;
     }
+
     .btn-next-dismiss {
       width: 32px;
       height: 32px;
@@ -4638,6 +4664,7 @@
       font-size: 13px;
       transition: all 0.2s ease;
     }
+
     .btn-next-dismiss:hover,
     .btn-next-dismiss.tv-focused {
       background: rgba(239, 68, 68, 0.8);
@@ -4665,8 +4692,9 @@
       align-items: center;
       gap: 6px;
       transition: all 0.2s ease;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.65);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
     }
+
     .skip-intro-btn:hover,
     .skip-intro-btn.tv-focused {
       background: #6366f1;
@@ -4681,6 +4709,7 @@
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       outline: none;
     }
+
     .tv-quit-btn:hover,
     .tv-quit-btn.tv-focused {
       outline: 3px solid #818cf8 !important;
@@ -4688,6 +4717,7 @@
       transform: scale(1.06) !important;
       box-shadow: 0 0 24px rgba(129, 140, 248, 0.6) !important;
     }
+
     #btn-quit-confirm:hover,
     #btn-quit-confirm.tv-focused {
       outline: 3px solid #f87171 !important;
@@ -9024,7 +9054,7 @@
         transition: none !important
       }
     }
-  
+
     /* ==========================================================================
        ULTRA WATCH PARTY SUITE (Virtual Cinema, Reactions, SFX & Live Chat)
        ========================================================================== */
@@ -9037,8 +9067,17 @@
     }
 
     @keyframes partyPulse {
-      0%, 100% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.3); border-color: rgba(236, 72, 153, 0.5); }
-      50% { box-shadow: 0 0 24px rgba(236, 72, 153, 0.7); border-color: rgba(236, 72, 153, 0.9); }
+
+      0%,
+      100% {
+        box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+        border-color: rgba(236, 72, 153, 0.5);
+      }
+
+      50% {
+        box-shadow: 0 0 24px rgba(236, 72, 153, 0.7);
+        border-color: rgba(236, 72, 153, 0.9);
+      }
     }
 
     /* Floating Reaction Dock on Player (Auto slides open on hover over chat icon, collapses on leave; No arrows) */
@@ -9176,11 +9215,14 @@
     }
 
     @keyframes redDotBlink {
-      0%, 100% {
+
+      0%,
+      100% {
         opacity: 1;
         transform: scale(1);
         box-shadow: 0 0 10px #ef4444, 0 0 22px rgba(239, 68, 68, 0.95);
       }
+
       50% {
         opacity: 0.2;
         transform: scale(0.68);
@@ -9210,13 +9252,16 @@
         opacity: 0;
         transform: translate(0, 0) scale(0.6) rotate(0deg);
       }
+
       15% {
         opacity: 1;
         transform: translate(calc(var(--dx) * 0.25), calc(var(--dy) * 0.25)) scale(1.35) rotate(calc(var(--rot) * 0.3));
       }
+
       80% {
         opacity: 0.95;
       }
+
       100% {
         opacity: 0;
         transform: translate(var(--dx), var(--dy)) scale(0.85) rotate(var(--rot));
@@ -9238,18 +9283,28 @@
       display: flex !important;
       align-items: center !important;
       gap: 8px !important;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.7), 0 0 16px rgba(236, 72, 153, 0.3) !important;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7), 0 0 16px rgba(236, 72, 153, 0.3) !important;
       z-index: 99998 !important;
       animation: toastInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1), toastFadeOut 0.4s ease 2.2s forwards;
     }
 
     @keyframes toastInUp {
-      from { opacity: 0; transform: translateY(12px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     @keyframes toastFadeOut {
-      to { opacity: 0; transform: translateY(-8px); }
+      to {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
     }
 
     /* Cinema Hype Combo Aura */
@@ -9282,8 +9337,15 @@
     }
 
     @keyframes hypePopRight {
-      0% { transform: scale(0.7); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     /* Glass Live Chat Drawer */
@@ -9305,8 +9367,13 @@
     }
 
     @keyframes chatSlideIn {
-      from { transform: translateX(100%); }
-      to { transform: translateX(0); }
+      from {
+        transform: translateX(100%);
+      }
+
+      to {
+        transform: translateX(0);
+      }
     }
 
     .party-chat-head {
@@ -9372,8 +9439,15 @@
     }
 
     @keyframes chatMsgIn {
-      from { opacity: 0; transform: translateY(8px) scale(0.97); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .party-chat-action-card .act-icon {
@@ -9453,7 +9527,9 @@
       border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    .party-chat-quick-chips::-webkit-scrollbar { display: none; }
+    .party-chat-quick-chips::-webkit-scrollbar {
+      display: none;
+    }
 
     .party-quick-chip {
       flex: 0 0 auto;
@@ -9546,8 +9622,15 @@
     }
 
     @keyframes fadeInCw {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .cw-shelf-header {
@@ -9928,14 +10011,24 @@
       --sar: env(safe-area-inset-right, 0px);
     }
 
-    html, body {
+    html,
+    body {
       max-width: 100vw;
       overflow-x: hidden;
       -webkit-tap-highlight-color: transparent;
     }
 
     /* Zero 300ms delay on touch clicks */
-    button, a, input, select, .card, .cw-card, .seg-btn, .pill, .dock-item, .shelf-nav-btn {
+    button,
+    a,
+    input,
+    select,
+    .card,
+    .cw-card,
+    .seg-btn,
+    .pill,
+    .dock-item,
+    .shelf-nav-btn {
       touch-action: manipulation;
     }
 
@@ -9953,8 +10046,11 @@
     }
 
     @media (max-width: 768px) {
+
       /* Prevent iOS zoom jump on input tap */
-      input, select, textarea {
+      input,
+      select,
+      textarea {
         font-size: 16px !important;
       }
 
@@ -10089,7 +10185,7 @@
       will-change: transform;
     }
 
-    
+
     /* ==========================================================================
        CINESTREAM DESKTOP & TV THEME (Neon Lime #DCFC35 & Dark #141414)
        ========================================================================== */
@@ -10122,7 +10218,7 @@
       padding: 36px 44px;
       background: #111;
       border: 1px solid rgba(220, 252, 53, 0.28);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.7), 0 0 40px rgba(220, 252, 53, 0.08);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 40px rgba(220, 252, 53, 0.08);
     }
 
     .cine-spotlight-bg {
@@ -10137,8 +10233,8 @@
     .cine-spotlight-scrim {
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.8) 45%, rgba(10,10,10,0.2) 100%),
-                  linear-gradient(0deg, rgba(10,10,10,0.9) 0%, transparent 60%);
+      background: linear-gradient(90deg, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.8) 45%, rgba(10, 10, 10, 0.2) 100%),
+        linear-gradient(0deg, rgba(10, 10, 10, 0.9) 0%, transparent 60%);
     }
 
     .cine-spotlight-content {
@@ -10162,13 +10258,13 @@
       font-weight: 800;
       color: #fff;
       line-height: 1.15;
-      text-shadow: 0 2px 14px rgba(0,0,0,0.8);
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
       margin: 0;
     }
 
     .cine-spotlight-desc {
       font-size: 14.5px;
-      color: rgba(255,255,255,0.75);
+      color: rgba(255, 255, 255, 0.75);
       line-height: 1.5;
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -10199,6 +10295,7 @@
       box-shadow: 0 4px 20px var(--cine-glow);
       transition: all 0.2s ease;
     }
+
     .btn-cine-watch-main:hover {
       background: var(--cine-primary-hover);
       transform: translateY(-2px);
@@ -10209,19 +10306,20 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
       color: #fff;
       font-weight: 600;
       font-size: 14.5px;
       padding: 13px 22px;
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       cursor: pointer;
       transition: all 0.2s ease;
     }
+
     .btn-cine-action-sec:hover {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.2);
       transform: translateY(-2px);
     }
 
@@ -10233,12 +10331,15 @@
       overflow-x: auto;
       padding: 4px 0;
     }
-    .cine-category-bar::-webkit-scrollbar { display: none; }
+
+    .cine-category-bar::-webkit-scrollbar {
+      display: none;
+    }
 
     .cine-tab-btn {
       padding: 10px 18px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
       color: #cbd5e1;
       font-size: 13.5px;
@@ -10247,10 +10348,12 @@
       white-space: nowrap;
       transition: all 0.15s ease;
     }
+
     .cine-tab-btn:hover {
-      background: rgba(255,255,255,0.12);
+      background: rgba(255, 255, 255, 0.12);
       color: #fff;
     }
+
     .cine-tab-btn.active {
       background: var(--cine-primary);
       color: #050505;
@@ -10272,6 +10375,7 @@
       justify-content: center;
       padding: 24px;
     }
+
     #cinestream-info-scrim.on,
     #cinestream-watch-scrim.on {
       display: flex !important;
@@ -10288,12 +10392,13 @@
       border-radius: 20px;
       overflow-y: auto;
       overflow-x: hidden;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.9);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
       display: flex;
       flex-direction: column;
       scrollbar-width: none !important;
       -ms-overflow-style: none !important;
     }
+
     .cinestream-info-modal::-webkit-scrollbar {
       display: none !important;
       width: 0 !important;
@@ -10311,17 +10416,17 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.9);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
       scrollbar-width: none !important;
       -ms-overflow-style: none !important;
     }
+
     .cinestream-watch-modal::-webkit-scrollbar {
       display: none !important;
       width: 0 !important;
       height: 0 !important;
     }
-
-</style>
+  </style>
 </head>
 
 <body>
@@ -10373,7 +10478,8 @@
         <span class="dock-icon">🧲</span>
         <span class="dock-label">Torrents</span>
       </button>
-            <button class="dock-item" id="dock-cinestream" data-target="cinestream" title="🎬 CineStream Global Movies &amp; TV">
+      <button class="dock-item" id="dock-cinestream" data-target="cinestream"
+        title="🎬 CineStream Global Movies &amp; TV">
         <span class="dock-icon">🎬</span>
         <span class="dock-label">CineStream</span>
       </button>
@@ -10419,16 +10525,20 @@
 
       <div class="nav-actions">
         <!-- Mobile View Switcher -->
-        <button class="pill pill-btn" id="btn-switch-mobile" title="Switch to Mobile App Layout" onclick="document.cookie='view_pref=mobile; path=/; max-age=31536000'; window.location.href='/?view=mobile';">
+        <button class="pill pill-btn" id="btn-switch-mobile" title="Switch to Mobile App Layout"
+          onclick="document.cookie='view_pref=mobile; path=/; max-age=31536000'; window.location.href='/?view=mobile';">
           <span>📱</span>
           <span>Mobile App</span>
         </button>
 
-                <!-- CineStream Button -->
-        <button class="pill pill-btn tv-nav-item" id="btn-top-cinestream" title="Open CineStream Global Movies &amp; TV Hub" onclick="openCineStreamHub()" style="background:rgba(220,252,53,0.15);color:#DCFC35;border-color:rgba(220,252,53,0.35);">
+        <!-- CineStream Button -->
+        <button class="pill pill-btn tv-nav-item" id="btn-top-cinestream"
+          title="Open CineStream Global Movies &amp; TV Hub" onclick="openCineStreamHub()"
+          style="background:rgba(220,252,53,0.15);color:#DCFC35;border-color:rgba(220,252,53,0.35);">
           <span>🎬</span>
           <span>CineStream</span>
         </button>
+
 
         <!-- TV View Mode Switcher -->
         <button class="pill pill-btn" id="btn-toggle-view" title="Toggle between TV Shelves and Classic Grid">
@@ -10443,7 +10553,9 @@
         </button>
 
         <!-- Cinema Watch Party Button -->
-        <button class="pill pill-btn tv-nav-item" id="btn-top-party" title="Join or Host a Cinema Watch Party with Friends (P)" style="background:rgba(236,72,153,0.18);color:#f472b6;border-color:rgba(236,72,153,0.4);">
+        <button class="pill pill-btn tv-nav-item" id="btn-top-party"
+          title="Join or Host a Cinema Watch Party with Friends (P)"
+          style="background:rgba(236,72,153,0.18);color:#f472b6;border-color:rgba(236,72,153,0.4);">
           <span id="top-party-icon">🍿</span>
           <span id="top-party-label">Watch Party</span>
         </button>
@@ -10461,7 +10573,8 @@
             <path
               d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
           </svg>
-          <input id="q" placeholder="Search a movie, series, or actor… (Press / or Ctrl+K)" autocomplete="off" spellcheck="false">
+          <input id="q" placeholder="Search a movie, series, or actor… (Press / or Ctrl+K)" autocomplete="off"
+            spellcheck="false">
           <div class="search-actions">
             <button type="button" class="kb-btn" id="btn-open-tv-keyboard"
               title="Open TV On-Screen Keyboard">⌨️</button>
@@ -10475,12 +10588,14 @@
     </section>
 
     <!-- Dedicated Continue Watching Shelf (Visible on Home Page across Mobile, Desktop & TV) -->
-    <section class="continue-watching-section" id="continue-watching-section" style="display:none;" aria-label="Continue Watching">
+    <section class="continue-watching-section" id="continue-watching-section" style="display:none;"
+      aria-label="Continue Watching">
       <div class="cw-shelf-header">
         <div class="cw-shelf-title-wrap">
           <div class="cw-shelf-badge-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+              <path
+                d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z" />
             </svg>
           </div>
           <div class="cw-shelf-title-texts">
@@ -10492,9 +10607,12 @@
           </div>
         </div>
         <div class="cw-shelf-actions">
-          <button type="button" class="cw-nav-arrow cw-prev tv-nav-item" id="btn-cw-prev" aria-label="Scroll left">‹</button>
-          <button type="button" class="cw-nav-arrow cw-next tv-nav-item" id="btn-cw-next" aria-label="Scroll right">›</button>
-          <button type="button" class="cw-clear-all-btn tv-nav-item" id="btn-cw-clear-all" title="Clear all continue watching">Clear All</button>
+          <button type="button" class="cw-nav-arrow cw-prev tv-nav-item" id="btn-cw-prev"
+            aria-label="Scroll left">‹</button>
+          <button type="button" class="cw-nav-arrow cw-next tv-nav-item" id="btn-cw-next"
+            aria-label="Scroll right">›</button>
+          <button type="button" class="cw-clear-all-btn tv-nav-item" id="btn-cw-clear-all"
+            title="Clear all continue watching">Clear All</button>
         </div>
       </div>
       <div class="cw-shelf-track" id="cw-shelf-track" tabindex="0">
@@ -10686,14 +10804,16 @@
       </div>
     </section>
 
-    
+
     <!-- Dedicated CineStream Hub (Global Movies & TV) -->
     <section class="cinestream-hub-section" id="cinestream-hub" style="display:none;">
       <!-- Hero Spotlight Banner -->
       <div class="cine-spotlight-card" id="desk-cine-spotlight">
-        <div class="cine-spotlight-actions" style="position:absolute;top:20px;right:22px;z-index:10;display:flex;gap:10px;">
-          <button type="button" class="btn toon-action-btn tv-nav-item" id="btn-cine-back-home" onclick="closeCineStreamHub(true)"
-            title="Return to SDK Movies" style="background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);padding:8px 16px;border-radius:10px;color:#cbd5e1;font-size:13px;cursor:pointer;">
+        <div class="cine-spotlight-actions"
+          style="position:absolute;top:20px;right:22px;z-index:10;display:flex;gap:10px;">
+          <button type="button" class="btn toon-action-btn tv-nav-item" id="btn-cine-back-home"
+            onclick="closeCineStreamHub(true)" title="Return to SDK Movies"
+            style="background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);padding:8px 16px;border-radius:10px;color:#cbd5e1;font-size:13px;cursor:pointer;">
             <span>✕ Exit CineStream</span>
           </button>
         </div>
@@ -10701,13 +10821,20 @@
         <div class="cine-spotlight-scrim"></div>
         <div class="cine-spotlight-content">
           <div class="cine-spotlight-meta-row">
-            <span class="cine-badge" id="desk-cine-spotlight-badge" style="background:var(--cine-primary);color:#050505;font-weight:900;">FEATURED</span>
-            <span class="badge-tag" style="background:rgba(220,252,53,0.15);color:var(--cine-primary);border:1px solid rgba(220,252,53,0.3);font-size:12px;padding:3px 8px;border-radius:6px;font-weight:700;">1080p Ultra HD</span>
-            <span class="badge-tag" id="desk-cine-spotlight-rating" style="background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.3);font-size:12px;padding:3px 8px;border-radius:6px;font-weight:700;">⭐ 8.5</span>
-            <span class="badge-tag" id="desk-cine-spotlight-year" style="font-size:12px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,0.1);color:#fff;">2026</span>
+            <span class="cine-badge" id="desk-cine-spotlight-badge"
+              style="background:var(--cine-primary);color:#050505;font-weight:900;">FEATURED</span>
+            <span class="badge-tag"
+              style="background:rgba(220,252,53,0.15);color:var(--cine-primary);border:1px solid rgba(220,252,53,0.3);font-size:12px;padding:3px 8px;border-radius:6px;font-weight:700;">1080p
+              Ultra HD</span>
+            <span class="badge-tag" id="desk-cine-spotlight-rating"
+              style="background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.3);font-size:12px;padding:3px 8px;border-radius:6px;font-weight:700;">⭐
+              8.5</span>
+            <span class="badge-tag" id="desk-cine-spotlight-year"
+              style="font-size:12px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,0.1);color:#fff;">2026</span>
           </div>
           <h2 class="cine-spotlight-title" id="desk-cine-spotlight-title">Featured Title</h2>
-          <p class="cine-spotlight-desc" id="desk-cine-spotlight-desc">Discover thousands of global movies and TV series in HD with instant ad-free streaming.</p>
+          <p class="cine-spotlight-desc" id="desk-cine-spotlight-desc">Discover thousands of global movies and TV series
+            in HD with instant ad-free streaming.</p>
           <div class="cine-spotlight-actions">
             <button type="button" class="btn-cine-watch-main tv-nav-item" id="btn-desk-cine-hero-play">
               <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;">
@@ -10740,10 +10867,13 @@
       <div class="toon-search-strip">
         <div class="toon-search-box" style="border-color:rgba(220,252,53,0.3);">
           <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--cine-primary);">
-            <path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z" />
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z" />
           </svg>
-          <input type="text" id="desk-cine-search-input" placeholder="Search CineStream movies, series, or actors…" autocomplete="off">
-          <button type="button" class="toon-search-clear" id="btn-desk-cine-clear-search" style="display:none;" onclick="clearDeskCineSearch()">✕</button>
+          <input type="text" id="desk-cine-search-input" placeholder="Search CineStream movies, series, or actors…"
+            autocomplete="off">
+          <button type="button" class="toon-search-clear" id="btn-desk-cine-clear-search" style="display:none;"
+            onclick="clearDeskCineSearch()">✕</button>
         </div>
         <div class="toon-status-counter" id="desk-cine-status-counter" style="color:var(--cine-primary);">Ready</div>
       </div>
@@ -10762,16 +10892,20 @@
 
       <!-- Featured Spotlight Hero for ToonPlay -->
       <div class="toon-spotlight-card" id="toon-spotlight-card">
-        <div class="toon-spotlight-actions" style="position:absolute;top:18px;right:18px;z-index:10;display:flex;gap:10px;">
+        <div class="toon-spotlight-actions"
+          style="position:absolute;top:18px;right:18px;z-index:10;display:flex;gap:10px;">
           <button type="button" class="btn toon-action-btn tv-nav-item" id="btn-toon-resync"
-            title="Sync Latest Anime Releases" style="background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);padding:7px 14px;border-radius:10px;color:#cbd5e1;font-size:12.5px;">
+            title="Sync Latest Anime Releases"
+            style="background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);padding:7px 14px;border-radius:10px;color:#cbd5e1;font-size:12.5px;">
             <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;">
-              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+              <path
+                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
             </svg>
             <span>Sync Catalog</span>
           </button>
           <button type="button" class="btn toon-action-btn tv-nav-item" id="btn-toon-back-home"
-            title="Return to Main SDK Movies" style="background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);padding:7px 14px;border-radius:10px;color:#cbd5e1;font-size:12.5px;">
+            title="Return to Main SDK Movies"
+            style="background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);padding:7px 14px;border-radius:10px;color:#cbd5e1;font-size:12.5px;">
             <span>✕ Exit Hub</span>
           </button>
         </div>
@@ -10883,6 +11017,7 @@
                   <option value="isaidub">🎙️ TamDub (Dubbed MP4)</option>
                   <option value="tamilmv">🧲 Tamil(Torrents)</option>
                   <option value="toonplay">🎌 Anime &amp; Cartoons</option>
+                  <option value="cinestream">🎬 CineStream (Global Movies &amp; TV)</option>
                 </optgroup>
                 <optgroup label="── Releases ──">
                   <option value="recent">🕒 Latest Added</option>
@@ -11026,7 +11161,8 @@
 
           <div class="atv-header-right">
             <!-- Audio Boost & Dialogue Clarity Pill -->
-            <button class="atv-glass-btn tv-nav-item" id="btn-audio-boost" title="Audio Boost & Dialogue Clarity: Off / Clarity (+140%) / Max (+200%)">
+            <button class="atv-glass-btn tv-nav-item" id="btn-audio-boost"
+              title="Audio Boost & Dialogue Clarity: Off / Clarity (+140%) / Max (+200%)">
               <span id="audio-boost-icon">🔊</span>
               <span id="audio-boost-label">100%</span>
             </button>
@@ -11039,7 +11175,8 @@
               <div class="player-ext-menu" id="player-sub-menu" style="display:none;min-width:220px;right:0;">
                 <button type="button" class="ext-item active" id="sub-opt-off"><span>🚫 Subtitles Off</span></button>
                 <div class="ext-divider"></div>
-                <button type="button" class="ext-item" id="sub-opt-upload"><span>📁 Upload .SRT / .VTT File</span></button>
+                <button type="button" class="ext-item" id="sub-opt-upload"><span>📁 Upload .SRT / .VTT
+                    File</span></button>
                 <button type="button" class="ext-item" id="sub-opt-url"><span>🔗 Paste Subtitle URL</span></button>
                 <input type="file" id="sub-file-input" accept=".srt,.vtt" style="display:none;" />
               </div>
@@ -11051,12 +11188,14 @@
             </button>
 
             <!-- Cinema Watch Party -->
-            <button class="atv-glass-btn tv-nav-item" id="btn-player-party" title="Cinema Watch Party (Synced Playback, Live Reactions &amp; Chat)">
+            <button class="atv-glass-btn tv-nav-item" id="btn-player-party"
+              title="Cinema Watch Party (Synced Playback, Live Reactions &amp; Chat)">
               <span id="player-party-icon">🍿</span>
               <span id="player-party-label">Watch Party</span>
             </button>
 
-            <button class="atv-glass-btn tv-nav-item" id="btn-quick-vlc-mx" title="Launch Stream in VLC / MX Player (Hardware Acceleration)">
+            <button class="atv-glass-btn tv-nav-item" id="btn-quick-vlc-mx"
+              title="Launch Stream in VLC / MX Player (Hardware Acceleration)">
               <span>🚀 VLC / MX Player</span>
             </button>
             <!-- External Player Dropdown -->
@@ -11172,10 +11311,13 @@
           </div>
           <div class="next-ep-btns">
             <button type="button" class="btn btn-next-now tv-nav-item" id="btn-next-ep-play">
-              <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;"><path d="M8 5v14l11-7z"/></svg>
+              <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;">
+                <path d="M8 5v14l11-7z" />
+              </svg>
               <span>Play Now</span>
             </button>
-            <button type="button" class="btn btn-next-dismiss tv-nav-item" id="btn-next-ep-dismiss" title="Cancel auto-play">✕</button>
+            <button type="button" class="btn btn-next-dismiss tv-nav-item" id="btn-next-ep-dismiss"
+              title="Cancel auto-play">✕</button>
           </div>
         </div>
 
@@ -11289,15 +11431,17 @@
     </div>
   </div>
 
-  
+
   <!-- CineStream Dedicated Info Modal -->
   <div class="scrim" id="cinestream-info-scrim">
     <div class="modal cinestream-info-modal" id="cinestream-info-modal">
       <!-- Hero Banner with Backdrop -->
       <div class="toon-info-hero-banner" style="height:320px;">
         <img class="toon-info-backdrop-img" id="desk-cine-info-backdrop" src="" alt="Backdrop">
-        <div class="toon-info-gradient-overlay" style="background:linear-gradient(0deg,#111 10%,rgba(17,17,17,0.7) 60%,rgba(17,17,17,0.3) 100%);"></div>
-        <button type="button" class="btn toon-info-close-btn tv-nav-item" id="btn-close-cine-info" onclick="closeCineStreamInfo()" title="Close (Esc)">✕</button>
+        <div class="toon-info-gradient-overlay"
+          style="background:linear-gradient(0deg,#111 10%,rgba(17,17,17,0.7) 60%,rgba(17,17,17,0.3) 100%);"></div>
+        <button type="button" class="btn toon-info-close-btn tv-nav-item" id="btn-close-cine-info"
+          onclick="closeCineStreamInfo()" title="Close (Esc)">✕</button>
 
         <div class="toon-info-hero-content">
           <div class="toon-info-poster-box">
@@ -11309,7 +11453,8 @@
               <span class="toon-info-badge" id="desk-cine-info-year">2026</span>
               <span class="toon-info-badge" id="desk-cine-info-type" style="color:var(--cine-primary);">Movie</span>
               <span class="toon-info-badge rating" id="desk-cine-info-rating">⭐ 8.4</span>
-              <span class="toon-info-badge quality" style="color:var(--cine-primary);border-color:rgba(220,252,53,0.3);">HD 1080p</span>
+              <span class="toon-info-badge quality"
+                style="color:var(--cine-primary);border-color:rgba(220,252,53,0.3);">HD 1080p</span>
             </div>
             <div class="toon-info-actions">
               <button type="button" class="btn-cine-watch-main tv-nav-item" id="btn-desk-cine-info-watch">
@@ -11336,9 +11481,11 @@
 
         <!-- TV Seasons & Episodes -->
         <div id="desk-cine-seasons-section" style="display:none;">
-          <h3 style="font-size:16px;font-weight:700;color:var(--cine-primary);margin-bottom:12px;">Seasons &amp; Episodes</h3>
+          <h3 style="font-size:16px;font-weight:700;color:var(--cine-primary);margin-bottom:12px;">Seasons &amp;
+            Episodes</h3>
           <div class="toon-tabs-scroll" id="desk-cine-seasons-tabs" style="margin-bottom:14px;"></div>
-          <div class="toon-ep-cards-grid" id="desk-cine-ep-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;"></div>
+          <div class="toon-ep-cards-grid" id="desk-cine-ep-grid"
+            style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;"></div>
         </div>
 
         <!-- Cast -->
@@ -11354,9 +11501,11 @@
   <div class="scrim" id="cinestream-watch-scrim">
     <div class="modal cinestream-watch-modal" id="cinestream-watch-modal">
       <!-- Header -->
-      <div class="toon-watch-header" style="background:#111;border-bottom:1px solid rgba(220,252,53,0.2);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;">
+      <div class="toon-watch-header"
+        style="background:#111;border-bottom:1px solid rgba(220,252,53,0.2);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:16px;">
-          <button type="button" class="btn toon-watch-back tv-nav-item" id="btn-desk-cine-watch-back" onclick="closeCineStreamWatch()" title="Back">‹ Back</button>
+          <button type="button" class="btn toon-watch-back tv-nav-item" id="btn-desk-cine-watch-back"
+            onclick="closeCineStreamWatch()" title="Back">‹ Back</button>
           <div>
             <div style="font-size:17px;font-weight:800;color:#fff;" id="desk-cine-watch-title">CineStream</div>
             <div style="font-size:12.5px;color:var(--text-muted);" id="desk-cine-watch-sub">HD Stream</div>
@@ -11364,8 +11513,10 @@
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
           <div id="desk-cine-ep-nav" style="display:none;align-items:center;gap:8px;">
-            <button type="button" class="btn toon-action-btn tv-nav-item" onclick="deskCineNavEpisode(-1)">⏮ Prev</button>
-            <button type="button" class="btn toon-action-btn tv-nav-item" onclick="deskCineNavEpisode(1)">Next ⏭</button>
+            <button type="button" class="btn toon-action-btn tv-nav-item" onclick="deskCineNavEpisode(-1)">⏮
+              Prev</button>
+            <button type="button" class="btn toon-action-btn tv-nav-item" onclick="deskCineNavEpisode(1)">Next
+              ⏭</button>
           </div>
           <span class="cine-badge" style="background:var(--cine-primary);color:#050505;font-weight:900;">1080p HD</span>
         </div>
@@ -11373,21 +11524,23 @@
 
       <!-- Player Stage -->
       <div style="flex:1;position:relative;background:#000;">
-        <div class="toon-player-loader" id="desk-cine-player-loader" style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;">
+        <div class="toon-player-loader" id="desk-cine-player-loader"
+          style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;">
           <div class="spinner-sm" style="border-top-color:var(--cine-primary);width:32px;height:32px;"></div>
           <div style="font-size:13px;color:#cbd5e1;margin-top:10px;">Loading ad-free stream server…</div>
         </div>
         <iframe id="desk-cine-active-iframe" src="about:blank" style="width:100%;height:100%;border:none;"
           allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
-          allowfullscreen="true"
-          referrerpolicy="no-referrer">
+          allowfullscreen="true" referrerpolicy="no-referrer">
         </iframe>
       </div>
 
       <!-- Bottom Server Bar -->
-      <div style="background:#111;border-top:1px solid rgba(220,252,53,0.15);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div
+        style="background:#111;border-top:1px solid rgba(220,252,53,0.15);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <span style="font-size:12px;font-weight:700;color:var(--cine-primary);text-transform:uppercase;">⚡ STREAM SERVERS:</span>
+          <span style="font-size:12px;font-weight:700;color:var(--cine-primary);text-transform:uppercase;">⚡ STREAM
+            SERVERS:</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap;" id="desk-cine-servers-row"></div>
         </div>
         <div style="font-size:11.5px;color:var(--text-dim);">🛡️ Ad-Shield Active • Zero Popups</div>
@@ -11540,7 +11693,9 @@
         </div>
 
         <div class="toon-watch-header-right">
-          <button type="button" class="btn toon-watch-btn tv-nav-item" id="btn-toon-party" style="background:rgba(236,72,153,0.18);color:#f472b6;border:1px solid rgba(236,72,153,0.4);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px;" title="Cinema Watch Party (P)">
+          <button type="button" class="btn toon-watch-btn tv-nav-item" id="btn-toon-party"
+            style="background:rgba(236,72,153,0.18);color:#f472b6;border:1px solid rgba(236,72,153,0.4);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px;"
+            title="Cinema Watch Party (P)">
             <span>🍿</span>
             <span id="toon-party-label">Watch Party</span>
           </button>
@@ -11790,7 +11945,9 @@
             <div class="domain-input-group">
               <input class="domain-input" id="domain-input" placeholder="Enter new host domain…" spellcheck="false">
               <button class="btn play" id="btn-save-domain">Save &amp; Switch</button>
-              <button class="btn" id="btn-auto-resolve-domain" type="button" style="background:linear-gradient(135deg,rgba(18,216,180,0.2),rgba(124,92,255,0.2));border:1px solid rgba(18,216,180,0.4);color:#12d8b4;white-space:nowrap;padding:0 14px;cursor:pointer;" title="Automatically probe all candidate mirrors and switch to the live domain">⚡ Auto-Discover</button>
+              <button class="btn" id="btn-auto-resolve-domain" type="button"
+                style="background:linear-gradient(135deg,rgba(18,216,180,0.2),rgba(124,92,255,0.2));border:1px solid rgba(18,216,180,0.4);color:#12d8b4;white-space:nowrap;padding:0 14px;cursor:pointer;"
+                title="Automatically probe all candidate mirrors and switch to the live domain">⚡ Auto-Discover</button>
             </div>
 
             <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:2px;align-items:center;"
@@ -12027,45 +12184,71 @@
   </div>
 
   <!-- Cross-Device QR Handoff Modal (Send to Phone / TV) -->
-  <div class="scrim" id="qr-handoff-scrim" style="display:none;align-items:center;justify-content:center;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);">
-    <div class="modal" id="qr-handoff-modal" role="dialog" aria-modal="true" style="max-width:440px;width:92%;padding:28px 24px;background:linear-gradient(145deg,#0d0f1e,#15182d);border:1px solid rgba(18,216,180,0.35);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.9);text-align:center;">
-      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:16px;">
+  <div class="scrim" id="qr-handoff-scrim"
+    style="display:none;align-items:center;justify-content:center;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);">
+    <div class="modal" id="qr-handoff-modal" role="dialog" aria-modal="true"
+      style="max-width:440px;width:92%;padding:28px 24px;background:linear-gradient(145deg,#0d0f1e,#15182d);border:1px solid rgba(18,216,180,0.35);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.9);text-align:center;">
+      <div
+        style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:16px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:36px;height:36px;border-radius:10px;background:rgba(18,216,180,0.15);border:1px solid rgba(18,216,180,0.3);color:#12d8b4;display:flex;align-items:center;justify-content:center;font-size:18px;">📲</div>
+          <div
+            style="width:36px;height:36px;border-radius:10px;background:rgba(18,216,180,0.15);border:1px solid rgba(18,216,180,0.3);color:#12d8b4;display:flex;align-items:center;justify-content:center;font-size:18px;">
+            📲</div>
           <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0;">Send to Phone / TV</h3>
         </div>
-        <button type="button" class="close" id="btn-close-qr-handoff" style="font-size:16px;background:none;border:none;color:#94a3b8;cursor:pointer;padding:4px 8px;border-radius:6px;">✕</button>
+        <button type="button" class="close" id="btn-close-qr-handoff"
+          style="font-size:16px;background:none;border:none;color:#94a3b8;cursor:pointer;padding:4px 8px;border-radius:6px;">✕</button>
       </div>
 
-      <div id="qr-target-title" style="font-size:14.5px;font-weight:700;color:#fff;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Ben 10</div>
-      <div id="qr-target-sub" style="font-size:12px;color:#12d8b4;margin-bottom:16px;font-weight:600;">Instant Playback</div>
+      <div id="qr-target-title"
+        style="font-size:14.5px;font-weight:700;color:#fff;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+        Ben 10</div>
+      <div id="qr-target-sub" style="font-size:12px;color:#12d8b4;margin-bottom:16px;font-weight:600;">Instant Playback
+      </div>
 
-      <div style="background:#ffffff;padding:12px;border-radius:16px;display:inline-block;box-shadow:0 8px 30px rgba(0,0,0,0.6);margin-bottom:16px;">
+      <div
+        style="background:#ffffff;padding:12px;border-radius:16px;display:inline-block;box-shadow:0 8px 30px rgba(0,0,0,0.6);margin-bottom:16px;">
         <img id="qr-code-img" src="" alt="Scan QR Code" style="width:190px;height:190px;display:block;" />
       </div>
 
       <div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px;">
-        <button type="button" class="seg-btn on" id="qr-toggle-mobile" style="font-size:12px;padding:6px 14px;">📱 Mobile View</button>
-        <button type="button" class="seg-btn" id="qr-toggle-tv" style="font-size:12px;padding:6px 14px;">📺 TV Leanback Mode</button>
+        <button type="button" class="seg-btn on" id="qr-toggle-mobile" style="font-size:12px;padding:6px 14px;">📱
+          Mobile View</button>
+        <button type="button" class="seg-btn" id="qr-toggle-tv" style="font-size:12px;padding:6px 14px;">📺 TV Leanback
+          Mode</button>
       </div>
 
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
-        <span id="qr-url-text" style="font-size:11px;color:#94a3b8;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-align:left;"></span>
-        <button type="button" class="btn" id="btn-copy-qr-url" style="padding:4px 10px;font-size:11px;flex-shrink:0;">📋 Copy</button>
+      <div
+        style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <span id="qr-url-text"
+          style="font-size:11px;color:#94a3b8;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-align:left;"></span>
+        <button type="button" class="btn" id="btn-copy-qr-url" style="padding:4px 10px;font-size:11px;flex-shrink:0;">📋
+          Copy</button>
       </div>
-      <p style="font-size:11px;color:#64748b;margin-top:10px;margin-bottom:0;">Scan with camera or TV scanner on the same Wi-Fi.</p>
+      <p style="font-size:11px;color:#64748b;margin-top:10px;margin-bottom:0;">Scan with camera or TV scanner on the
+        same Wi-Fi.</p>
     </div>
   </div>
 
   <!-- Smart TV Exit / Quit Application Modal -->
-  <div class="scrim" id="tv-quit-scrim" style="display:none;align-items:center;justify-content:center;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);">
-    <div class="modal" id="tv-quit-modal" role="dialog" aria-modal="true" style="max-width:480px;width:90%;padding:32px 28px;background:linear-gradient(145deg,#0d0f1e,#16192e);border:1px solid rgba(99,102,241,0.35);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.9);text-align:center;">
-      <div style="width:60px;height:60px;border-radius:50%;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);color:#f87171;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px;">✕</div>
+  <div class="scrim" id="tv-quit-scrim"
+    style="display:none;align-items:center;justify-content:center;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);">
+    <div class="modal" id="tv-quit-modal" role="dialog" aria-modal="true"
+      style="max-width:480px;width:90%;padding:32px 28px;background:linear-gradient(145deg,#0d0f1e,#16192e);border:1px solid rgba(99,102,241,0.35);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.9);text-align:center;">
+      <div
+        style="width:60px;height:60px;border-radius:50%;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);color:#f87171;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px;">
+        ✕</div>
       <h3 style="font-size:22px;font-weight:800;color:#fff;margin:0 0 8px;letter-spacing:-0.02em;">Exit SDK Movies?</h3>
-      <p style="font-size:14.5px;color:#94a3b8;line-height:1.55;margin:0 0 24px;">Are you sure you want to exit the application? Press <kbd style="background:rgba(255,255,255,0.1);padding:2px 7px;border-radius:5px;color:#f1f5f9;font-size:12px;">Back</kbd> again or select Exit.</p>
+      <p style="font-size:14.5px;color:#94a3b8;line-height:1.55;margin:0 0 24px;">Are you sure you want to exit the
+        application? Press <kbd
+          style="background:rgba(255,255,255,0.1);padding:2px 7px;border-radius:5px;color:#f1f5f9;font-size:12px;">Back</kbd>
+        again or select Exit.</p>
       <div style="display:flex;gap:14px;justify-content:center;">
-        <button type="button" class="btn tv-nav-item tv-quit-btn" id="btn-quit-cancel" style="padding:13px 28px;font-size:14.5px;font-weight:700;border-radius:12px;background:rgba(255,255,255,0.08);color:#cbd5e1;border:1px solid rgba(255,255,255,0.18);cursor:pointer;min-width:125px;">Cancel</button>
-        <button type="button" class="btn tv-nav-item tv-quit-btn" id="btn-quit-confirm" style="padding:13px 28px;font-size:14.5px;font-weight:700;border-radius:12px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;cursor:pointer;min-width:125px;box-shadow:0 4px 16px rgba(239,68,68,0.4);">Exit App</button>
+        <button type="button" class="btn tv-nav-item tv-quit-btn" id="btn-quit-cancel"
+          style="padding:13px 28px;font-size:14.5px;font-weight:700;border-radius:12px;background:rgba(255,255,255,0.08);color:#cbd5e1;border:1px solid rgba(255,255,255,0.18);cursor:pointer;min-width:125px;">Cancel</button>
+        <button type="button" class="btn tv-nav-item tv-quit-btn" id="btn-quit-confirm"
+          style="padding:13px 28px;font-size:14.5px;font-weight:700;border-radius:12px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;cursor:pointer;min-width:125px;box-shadow:0 4px 16px rgba(239,68,68,0.4);">Exit
+          App</button>
       </div>
     </div>
   </div>
@@ -12091,39 +12274,47 @@
     </div>
   </div>
 
-  
+
   <!-- Cinema Watch Party Modal -->
-  <div class="scrim" id="party-modal-scrim" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);">
-    <div class="modal party-modal" id="party-modal" style="max-width:540px;width:92%;background:rgba(10,12,28,0.96);backdrop-filter:blur(32px);border:1px solid rgba(236,72,153,0.3);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,0.9),0 0 40px rgba(236,72,153,0.25);overflow:hidden;padding:0;">
-      
+  <div class="scrim" id="party-modal-scrim"
+    style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);">
+    <div class="modal party-modal" id="party-modal"
+      style="max-width:540px;width:92%;background:rgba(10,12,28,0.96);backdrop-filter:blur(32px);border:1px solid rgba(236,72,153,0.3);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,0.9),0 0 40px rgba(236,72,153,0.25);overflow:hidden;padding:0;">
+
       <!-- Modal Header -->
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:rgba(236,72,153,0.08);border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div
+        style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:rgba(236,72,153,0.08);border-bottom:1px solid rgba(255,255,255,0.08);">
         <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:40px;height:40px;border-radius:12px;background:rgba(236,72,153,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;">🍿</div>
+          <div
+            style="width:40px;height:40px;border-radius:12px;background:rgba(236,72,153,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;">
+            🍿</div>
           <div>
             <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0;">Cinema Watch Party</h3>
             <p style="font-size:12px;color:#cbd5e1;margin:2px 0 0;">Synchronized Playback, Live Reactions &amp; Chat</p>
           </div>
         </div>
-        <button type="button" class="x" id="btn-close-party-modal" style="background:rgba(255,255,255,0.08);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;">✕</button>
+        <button type="button" class="x" id="btn-close-party-modal"
+          style="background:rgba(255,255,255,0.08);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;">✕</button>
       </div>
 
       <!-- Modal Body -->
       <div style="padding:22px 24px;display:flex;flex-direction:column;gap:18px;max-height:80vh;overflow-y:auto;">
-        
+
         <!-- Not In Party State (Create or Join) -->
         <div id="party-lobby-view">
           <div style="text-align:center;padding:10px 0;">
-            <p style="font-size:13.5px;color:#94a3b8;line-height:1.5;">Watch movies and anime in 100% sync with friends across phones, laptops, and Smart TVs with real-time whistles, fireworks, and live chat!</p>
+            <p style="font-size:13.5px;color:#94a3b8;line-height:1.5;">Watch movies and anime in 100% sync with friends
+              across phones, laptops, and Smart TVs with real-time whistles, fireworks, and live chat!</p>
           </div>
 
           <!-- Create Party Button -->
           <div style="display:flex;flex-direction:column;gap:12px;margin-top:10px;">
-            <button type="button" class="btn play" id="btn-create-party" style="background:linear-gradient(135deg, #ec4899, #8b5cf6);border:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(236,72,153,0.35);cursor:pointer;">
+            <button type="button" class="btn play" id="btn-create-party"
+              style="background:linear-gradient(135deg, #ec4899, #8b5cf6);border:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(236,72,153,0.35);cursor:pointer;">
               <span>🎉</span>
               <span>Host New Watch Party</span>
             </button>
-            
+
             <div style="display:flex;align-items:center;gap:12px;margin:8px 0;">
               <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
               <span style="font-size:12px;color:#64748b;text-transform:uppercase;font-weight:600;">OR JOIN ROOM</span>
@@ -12131,8 +12322,10 @@
             </div>
 
             <div style="display:flex;gap:10px;">
-              <input type="text" id="party-join-input" placeholder="Enter Room Code (e.g. TAMIL-41)" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:12px;padding:12px 16px;color:#fff;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1px;outline:none;" />
-              <button type="button" class="btn" id="btn-join-party" style="background:#6366f1;color:#fff;border:none;border-radius:12px;padding:0 20px;font-weight:700;cursor:pointer;">Join</button>
+              <input type="text" id="party-join-input" placeholder="Enter Room Code (e.g. TAMIL-41)"
+                style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:12px;padding:12px 16px;color:#fff;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1px;outline:none;" />
+              <button type="button" class="btn" id="btn-join-party"
+                style="background:#6366f1;color:#fff;border:none;border-radius:12px;padding:0 20px;font-weight:700;cursor:pointer;">Join</button>
             </div>
           </div>
         </div>
@@ -12140,51 +12333,67 @@
         <!-- In-Party Active State -->
         <div id="party-active-view" style="display:none;flex-direction:column;gap:16px;">
           <!-- Room Code Card -->
-          <div style="background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.3);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;">
+          <div
+            style="background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.3);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;">
             <div>
-              <div style="font-size:11px;color:#f472b6;font-weight:700;text-transform:uppercase;letter-spacing:1px;">ROOM CODE</div>
-              <div id="party-active-code" style="font-size:24px;font-weight:800;color:#fff;font-family:monospace;letter-spacing:2px;margin-top:2px;">TAMIL-41</div>
+              <div style="font-size:11px;color:#f472b6;font-weight:700;text-transform:uppercase;letter-spacing:1px;">
+                ROOM CODE</div>
+              <div id="party-active-code"
+                style="font-size:24px;font-weight:800;color:#fff;font-family:monospace;letter-spacing:2px;margin-top:2px;">
+                TAMIL-41</div>
             </div>
             <div style="display:flex;gap:8px;">
-              <button type="button" class="btn" id="btn-copy-party-link" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:8px 14px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;" title="Copy room code">📋 Copy Code</button>
+              <button type="button" class="btn" id="btn-copy-party-link"
+                style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:8px 14px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;"
+                title="Copy room code">📋 Copy Code</button>
             </div>
           </div>
 
           <!-- QR Code for Phone Join / Second Screen Controller -->
-          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;display:flex;gap:14px;align-items:center;">
-            <div id="party-qr-box" style="width:100px;height:100px;background:#fff;border-radius:12px;padding:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div
+            style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;display:flex;gap:14px;align-items:center;">
+            <div id="party-qr-box"
+              style="width:100px;height:100px;background:#fff;border-radius:12px;padding:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <img id="party-qr-img" src="" alt="Party QR" style="width:100%;height:100%;object-fit:contain;" />
             </div>
             <div style="display:flex;flex-direction:column;gap:4px;">
               <span style="font-size:13px;font-weight:700;color:#fff;">📲 Scan to Join on Phone</span>
-              <span style="font-size:11.5px;color:#94a3b8;line-height:1.4;">Use phone as an interactive <b>Touch Remote &amp; Reaction Pad</b> while movie plays on TV!</span>
-              <span id="party-lan-url" style="font-size:11px;color:#a5b4fc;font-family:monospace;word-break:break-all;"></span>
+              <span style="font-size:11.5px;color:#94a3b8;line-height:1.4;">Use phone as an interactive <b>Touch Remote
+                  &amp; Reaction Pad</b> while movie plays on TV!</span>
+              <span id="party-lan-url"
+                style="font-size:11px;color:#a5b4fc;font-family:monospace;word-break:break-all;"></span>
             </div>
           </div>
 
           <!-- Host Controls Toggle -->
-          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <div
+            style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
             <div>
               <div style="font-size:13px;font-weight:700;color:#fff;">👑 Host Control Mode</div>
               <div style="font-size:11.5px;color:#94a3b8;">Only party host can play, pause, or seek</div>
             </div>
-            <input type="checkbox" id="party-host-only-toggle" style="width:20px;height:20px;accent-color:#ec4899;cursor:pointer;" />
+            <input type="checkbox" id="party-host-only-toggle"
+              style="width:20px;height:20px;accent-color:#ec4899;cursor:pointer;" />
           </div>
 
           <!-- Active Viewers Roster -->
           <div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-              <span style="font-size:13px;font-weight:700;color:#cbd5e1;">👥 Watching Now (<span id="party-member-count">1</span>)</span>
+              <span style="font-size:13px;font-weight:700;color:#cbd5e1;">👥 Watching Now (<span
+                  id="party-member-count">1</span>)</span>
               <span style="font-size:11px;color:#10b981;font-weight:600;">● Live Synced</span>
             </div>
-            <div id="party-members-list" style="display:flex;flex-direction:column;gap:8px;max-height:130px;overflow-y:auto;">
+            <div id="party-members-list"
+              style="display:flex;flex-direction:column;gap:8px;max-height:130px;overflow-y:auto;">
               <!-- Member cards injected here -->
             </div>
           </div>
 
           <!-- Nickname & Avatar Config -->
-          <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);padding:10px 14px;border-radius:12px;">
-            <select id="party-avatar-select" style="background:#1e293b;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:6px 10px;font-size:16px;cursor:pointer;">
+          <div
+            style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);padding:10px 14px;border-radius:12px;">
+            <select id="party-avatar-select"
+              style="background:#1e293b;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:6px 10px;font-size:16px;cursor:pointer;">
               <option value="🍿">🍿 Popcorn</option>
               <option value="🕶️">🕶️ Shades</option>
               <option value="👑">👑 Crown</option>
@@ -12193,12 +12402,16 @@
               <option value="🎬">🎬 Director</option>
               <option value="🦸">🦸 Hero</option>
             </select>
-            <input type="text" id="party-my-nickname" placeholder="Your Nickname" style="flex:1;background:transparent;border:none;color:#fff;font-size:13.5px;font-weight:600;outline:none;" />
-            <button type="button" class="btn" id="btn-save-nickname" style="font-size:11.5px;padding:5px 12px;background:rgba(255,255,255,0.1);color:#fff;border-radius:6px;border:none;cursor:pointer;">Update</button>
+            <input type="text" id="party-my-nickname" placeholder="Your Nickname"
+              style="flex:1;background:transparent;border:none;color:#fff;font-size:13.5px;font-weight:600;outline:none;" />
+            <button type="button" class="btn" id="btn-save-nickname"
+              style="font-size:11.5px;padding:5px 12px;background:rgba(255,255,255,0.1);color:#fff;border-radius:6px;border:none;cursor:pointer;">Update</button>
           </div>
 
           <!-- Leave Party Button -->
-          <button type="button" class="btn" id="btn-leave-party" style="background:rgba(239,68,68,0.16);color:#f87171;border:1px solid rgba(239,68,68,0.3);padding:10px;border-radius:12px;font-weight:700;cursor:pointer;">🚪 Leave Watch Party</button>
+          <button type="button" class="btn" id="btn-leave-party"
+            style="background:rgba(239,68,68,0.16);color:#f87171;border:1px solid rgba(239,68,68,0.3);padding:10px;border-radius:12px;font-weight:700;cursor:pointer;">🚪
+            Leave Watch Party</button>
         </div>
 
       </div>
@@ -12217,24 +12430,30 @@
       <button type="button" class="party-dock-btn" data-emoji="😱" data-label="Shock" title="Shock (5)">😱</button>
       <button type="button" class="party-dock-btn" data-emoji="❤️" data-label="Love" title="Love (6)">❤️</button>
       <div class="party-dock-divider"></div>
-      <button type="button" class="party-dock-btn sfx-btn" id="btn-dock-whistle" title="Theatre Whistle Sound">🎺</button>
-      <button type="button" class="party-dock-btn sfx-btn" id="btn-dock-applause" title="Audience Applause Sound">🎉</button>
+      <button type="button" class="party-dock-btn sfx-btn" id="btn-dock-whistle"
+        title="Theatre Whistle Sound">🎺</button>
+      <button type="button" class="party-dock-btn sfx-btn" id="btn-dock-applause"
+        title="Audience Applause Sound">🎉</button>
     </div>
 
     <!-- Always Visible Cool Cinema Chat Option Button (With Blinking Red Dot on Unread) -->
-    <button type="button" class="party-dock-btn chat-toggle-btn" id="btn-toggle-party-chat" title="Cinema Live Chat (C)">
+    <button type="button" class="party-dock-btn chat-toggle-btn" id="btn-toggle-party-chat"
+      title="Cinema Live Chat (C)">
       <svg class="chat-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="partyChatGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#f472b6"/>
-            <stop offset="0.5" stop-color="#ec4899"/>
-            <stop offset="1" stop-color="#a855f7"/>
+            <stop stop-color="#f472b6" />
+            <stop offset="0.5" stop-color="#ec4899" />
+            <stop offset="1" stop-color="#a855f7" />
           </linearGradient>
         </defs>
-        <path d="M12 2C6.48 2 2 6.03 2 11c0 2.3 0.97 4.39 2.58 6L3.2 21.2a0.75 0.75 0 0 0 0.97 0.91l4.43-1.64c1.07 0.35 2.16 0.53 3.4 0.53 5.52 0 10-4.03 10-9s-4.48-9-10-9z" fill="url(#partyChatGrad)" fill-opacity="0.22" stroke="url(#partyChatGrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="8" cy="11.5" r="1.3" fill="#f472b6"/>
-        <circle cx="12" cy="11.5" r="1.3" fill="#ec4899"/>
-        <circle cx="16" cy="11.5" r="1.3" fill="#a855f7"/>
+        <path
+          d="M12 2C6.48 2 2 6.03 2 11c0 2.3 0.97 4.39 2.58 6L3.2 21.2a0.75 0.75 0 0 0 0.97 0.91l4.43-1.64c1.07 0.35 2.16 0.53 3.4 0.53 5.52 0 10-4.03 10-9s-4.48-9-10-9z"
+          fill="url(#partyChatGrad)" fill-opacity="0.22" stroke="url(#partyChatGrad)" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="8" cy="11.5" r="1.3" fill="#f472b6" />
+        <circle cx="12" cy="11.5" r="1.3" fill="#ec4899" />
+        <circle cx="16" cy="11.5" r="1.3" fill="#a855f7" />
       </svg>
       <span class="party-chat-unread-badge" id="party-chat-unread-badge" style="display:none;"></span>
     </button>
@@ -12248,10 +12467,12 @@
         <span style="font-weight:700;color:#fff;">Cinema Live Chat</span>
         <span class="party-online-pill" id="chat-online-pill">1 online</span>
       </div>
-      <button type="button" class="x" id="btn-close-party-chat" style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;">✕</button>
+      <button type="button" class="x" id="btn-close-party-chat"
+        style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;">✕</button>
     </div>
     <div class="party-chat-messages" id="party-chat-messages">
-      <div style="font-size:12px;color:#94a3b8;text-align:center;padding:16px;">Welcome to the Cinema Chat! Messages and reactions sync in real-time.</div>
+      <div style="font-size:12px;color:#94a3b8;text-align:center;padding:16px;">Welcome to the Cinema Chat! Messages and
+        reactions sync in real-time.</div>
     </div>
     <!-- Quick Reaction Chips -->
     <div class="party-chat-quick-chips">
@@ -12263,7 +12484,8 @@
     </div>
     <!-- Chat Form -->
     <form class="party-chat-form" id="party-chat-form">
-      <input type="text" id="party-chat-input" placeholder="Type a message… (Press Enter)" autocomplete="off" maxlength="200" />
+      <input type="text" id="party-chat-input" placeholder="Type a message… (Press Enter)" autocomplete="off"
+        maxlength="200" />
       <button type="submit" class="party-chat-send">➤</button>
     </form>
   </div>
@@ -12275,9 +12497,9 @@
   <script>
 
     // Universal Ad & Redirect Guard: block unauthorized popups and iframe top redirects
-    (function() {
+    (function () {
       const origOpen = window.open;
-      window.open = function(url, target, features) {
+      window.open = function (url, target, features) {
         if (typeof url === 'string' && url.startsWith('magnet:')) {
           return origOpen.call(window, url, target, features);
         }
@@ -12286,7 +12508,7 @@
       };
 
       // Block attempts by embedded player iframes to navigate parent away from the website
-      window.addEventListener('beforeunload', function(e) {
+      window.addEventListener('beforeunload', function (e) {
         const watchModalActive = $('#cinestream-watch-scrim')?.classList.contains('active');
         if (watchModalActive) {
           e.preventDefault();
@@ -12296,10 +12518,10 @@
       });
 
       // Anti-Popunder Focus Shield
-      window.addEventListener('blur', function() {
+      window.addEventListener('blur', function () {
         const watchModalActive = $('#cinestream-watch-scrim')?.classList.contains('active');
         if (watchModalActive) {
-          setTimeout(function() {
+          setTimeout(function () {
             window.focus();
           }, 30);
         }
@@ -12412,14 +12634,14 @@
         list = list.filter(x => x.id !== itemId);
         list.unshift(entry);
         localStorage.setItem('sdk_continue_watching', JSON.stringify(list.slice(0, 30)));
-      } catch (e) {}
+      } catch (e) { }
 
       // Background API sync
       fetch('/api/continue-watching', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(entry)
-      }).catch(() => {});
+      }).catch(() => { });
 
       // Live update of the continue watching shelf
       if (typeof renderContinueWatchingShelf === 'function') {
@@ -12435,9 +12657,9 @@
         let list = getLocalContinueWatching();
         list = list.filter(x => x.id !== itemId);
         localStorage.setItem('sdk_continue_watching', JSON.stringify(list));
-      } catch (e) {}
+      } catch (e) { }
 
-      fetch(`/api/continue-watching/${encodeURIComponent(itemId)}`, { method: 'DELETE' }).catch(() => {});
+      fetch(`/api/continue-watching/${encodeURIComponent(itemId)}`, { method: 'DELETE' }).catch(() => { });
 
       if (typeof renderContinueWatchingShelf === 'function') {
         renderContinueWatchingShelf();
@@ -12450,10 +12672,10 @@
     async function clearAllContinueWatching() {
       try {
         localStorage.removeItem('sdk_continue_watching');
-      } catch (e) {}
+      } catch (e) { }
 
-      fetch('/api/continue-watching/clear', { method: 'POST' }).catch(() => {});
-      fetch('/api/continue-watching', { method: 'DELETE' }).catch(() => {});
+      fetch('/api/continue-watching/clear', { method: 'POST' }).catch(() => { });
+      fetch('/api/continue-watching', { method: 'DELETE' }).catch(() => { });
 
       renderContinueWatchingShelf();
       if (typeof renderTvShelves === 'function' && currentViewMode === 'tv') {
@@ -12480,10 +12702,10 @@
               items = data.items;
               try {
                 localStorage.setItem('sdk_continue_watching', JSON.stringify(items));
-              } catch (e) {}
+              } catch (e) { }
             }
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       // Filter out any invalid items (< 10s or >= 95% finished)
@@ -12506,8 +12728,8 @@
         const pct = Math.min(100, Math.max(1, Math.round(item.progress_pct || (dur ? (cur / dur * 100) : 0))));
         const remainingSec = Math.max(0, dur - cur);
         const mLeft = Math.round(remainingSec / 60);
-        const timeLeftText = dur > 0 
-          ? (mLeft > 60 ? `${Math.floor(mLeft / 60)}h ${mLeft % 60}m left` : `${mLeft}m left`) 
+        const timeLeftText = dur > 0
+          ? (mLeft > 60 ? `${Math.floor(mLeft / 60)}h ${mLeft % 60}m left` : `${mLeft}m left`)
           : `Resumed at ${formatTime(cur)}`;
 
         // Clean movie title without any site names or domains
@@ -12694,7 +12916,7 @@
 
     function warmupStreamUrl(url) {
       if (!url || !url.startsWith('http')) return;
-      fetch(`/api/stream/warmup?url=${encodeURIComponent(url)}`).catch(() => {});
+      fetch(`/api/stream/warmup?url=${encodeURIComponent(url)}`).catch(() => { });
     }
 
     // External Player Launch Helper (VLC / MX Player / Just Player)
@@ -13523,6 +13745,13 @@
     if (sortSelect) {
       sortSelect.addEventListener('change', e => {
         const val = e.target.value;
+        if (val === 'cinestream') {
+          openCineStreamHub();
+          return;
+        }
+        if (currentMode === 'cinestream') {
+          closeCineStreamHub(false);
+        }
         if (['all', 'isaimini', 'isaidub', 'tamilmv', 'toonplay'].includes(val)) {
           activeSource = val;
           activeSort = 'recent';
@@ -16620,7 +16849,7 @@
             }
             if (idx !== -1) initialIdx = idx;
           }
-        } catch (e) {}
+        } catch (e) { }
 
         currentToonServerIndex = initialIdx;
         const chosenServer = servers[initialIdx] || servers[0];
@@ -16665,7 +16894,7 @@
                     is_direct_audio: !!chosen.is_direct_audio,
                     is_anilist: !!chosen.is_anilist
                   }));
-                } catch (e) {}
+                } catch (e) { }
               }
               if (chosen && chosen.url && iframe) {
                 if (loader) loader.classList.remove('hidden');
@@ -17333,6 +17562,8 @@
           tvNavDock.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
           $('#dock-home')?.classList.add('active');
         }
+        const sortSelect = $('#sort-select');
+        if (sortSelect && sortSelect.value === 'cinestream') sortSelect.value = 'all';
         currentMode = 'recent';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -17537,7 +17768,7 @@
               }
             }
           })
-          .catch(() => {});
+          .catch(() => { });
       }
     }
 
@@ -17748,6 +17979,9 @@
         $('#dock-cinestream')?.classList.add('active');
       }
 
+      const sortSelect = $('#sort-select');
+      if (sortSelect) sortSelect.value = 'cinestream';
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
       loadDeskCineHome();
     }
@@ -17773,6 +18007,8 @@
           tvNavDock.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
           $('#dock-home')?.classList.add('active');
         }
+        const sortSelect = $('#sort-select');
+        if (sortSelect && sortSelect.value === 'cinestream') sortSelect.value = 'all';
         currentMode = 'recent';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -18237,7 +18473,7 @@
         btn.innerHTML = `${esc(srv.name)}${isNoAds ? ' <span style="font-size:10px;opacity:0.9;">🛡️</span>' : ''}`;
         btn.onclick = () => {
           changeDeskCineServer(idx);
-          try { btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } catch(e){}
+          try { btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } catch (e) { }
         };
         container.appendChild(btn);
       });
@@ -18333,6 +18569,8 @@
           tvNavDock.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
           $('#dock-home')?.classList.add('active');
         }
+        const sortSelect = $('#sort-select');
+        if (sortSelect && sortSelect.value === 'cinestream') sortSelect.value = 'all';
         currentMode = 'recent';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -19726,7 +19964,7 @@
                 $('#btn-watchlist')?.click();
               }
               setTimeout(() => setTvFocus(0), 120);
-                        } else if (target === 'cinestream') {
+            } else if (target === 'cinestream') {
               closeSourceHub(false);
               openCineStreamHub();
             } else if (target === 'toonplay') {
@@ -19971,25 +20209,25 @@
           window.Android.closeApp();
           return;
         }
-      } catch (e) {}
+      } catch (e) { }
 
       try {
         if (window.tizen && window.tizen.application) {
           window.tizen.application.getCurrentApplication().exit();
           return;
         }
-      } catch (e) {}
+      } catch (e) { }
 
       try {
         if (window.webOS && typeof window.webOS.platformBack === 'function') {
           window.webOS.platformBack();
           return;
         }
-      } catch (e) {}
+      } catch (e) { }
 
       try {
         window.close();
-      } catch (e) {}
+      } catch (e) { }
 
       const modal = $('#tv-quit-modal');
       if (modal) {
@@ -20904,7 +21142,7 @@
     initTvKeyboard();
     initTvSearchHeader();
     initToonplayHub();
-      setupDeskCineCategories();
+    setupDeskCineCategories();
     updateWatchlistUI();
     restorePlayerPreferences();
     fetchStats();
@@ -21085,7 +21323,7 @@
                   }
                 }
               }
-            } catch {}
+            } catch { }
           }
 
           renderSearchSuggestions(matches.slice(0, 6), query);
@@ -21243,7 +21481,7 @@
             baseOrigin = netData.network_url;
           }
         }
-      } catch {}
+      } catch { }
 
       const params = new URLSearchParams();
       if (currentHandoffMode === 'tv') params.set('mode', 'tv');
@@ -21399,7 +21637,7 @@
         if (startTime > 1) {
           const applySeek = () => {
             playerVideo.currentTime = startTime;
-            if (autoPlay) playerVideo.play().catch(() => {});
+            if (autoPlay) playerVideo.play().catch(() => { });
           };
           if (playerVideo.readyState >= 1) {
             applySeek();
@@ -21416,7 +21654,7 @@
         if (startTime > 1) {
           const applySeek = () => {
             playerVideo.currentTime = startTime;
-            if (autoPlay) playerVideo.play().catch(() => {});
+            if (autoPlay) playerVideo.play().catch(() => { });
           };
           if (playerVideo.readyState >= 1) {
             applySeek();
@@ -21870,7 +22108,7 @@
               action: data.is_playing ? 'play' : 'pause',
               time: data.current_time
             }, '*');
-          } catch (e) {}
+          } catch (e) { }
         }
         return;
       }
@@ -21913,7 +22151,7 @@
             const p = v.play();
             if (p && p.catch) {
               p.catch(() => {
-                setTimeout(() => { if (isPlay && v.paused) v.play().catch(() => {}); }, 260);
+                setTimeout(() => { if (isPlay && v.paused) v.play().catch(() => { }); }, 260);
               });
             }
           } else if (!isPlay && !v.paused) {
@@ -21927,7 +22165,7 @@
         // Safety timeout in case network stalls the seeked event
         setTimeout(() => {
           if (isRemoteSyncing && !v.seeking) {
-            if (isPlay && v.paused) v.play().catch(() => {});
+            if (isPlay && v.paused) v.play().catch(() => { });
             releaseSyncLock(200);
           }
         }, 3200);
@@ -21945,7 +22183,7 @@
       if (action === 'pause' || !isPlay) {
         if (!v.paused) v.pause();
         if (drift > 1.2) {
-          try { v.currentTime = targetTime; } catch (e) {}
+          try { v.currentTime = targetTime; } catch (e) { }
         }
         releaseSyncLock(350);
         return;
@@ -21954,12 +22192,12 @@
       // Case 3: Play / Resume Action
       if (action === 'play' || isPlay) {
         if (drift > 1.5) {
-          try { v.currentTime = targetTime; } catch (e) {}
+          try { v.currentTime = targetTime; } catch (e) { }
         }
         if (v.paused) {
           v.play().catch(e => {
             console.warn('Play resume caught:', e);
-            setTimeout(() => { if (v.paused) v.play().catch(() => {}); }, 250);
+            setTimeout(() => { if (v.paused) v.play().catch(() => { }); }, 250);
           });
         }
         releaseSyncLock(350);
@@ -22278,8 +22516,8 @@
               try {
                 const t = v.currentTime;
                 v.currentTime = t + 0.01;
-                v.play().catch(() => {});
-              } catch (e) {}
+                v.play().catch(() => { });
+              } catch (e) { }
             }
           }, 4500);
         });
@@ -22324,7 +22562,7 @@
     }
 
 
-  
+
   </script>
 
 </body>
