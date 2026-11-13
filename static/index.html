@@ -18,6 +18,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
+  <script>
+    (function() {
+      try {
+        var isTv = /SDKMovies-AndroidTV|Android TV|Leanback|Large Screen|SmartTV|Tizen|Web0S|AppleTV|AFT|Roku|HbbTV|CrKey|BRAVIA/i.test(navigator.userAgent) || 
+                   window.location.search.indexOf('mode=tv') !== -1 ||
+                   window.location.search.indexOf('tv=1') !== -1 ||
+                   sessionStorage.getItem('sdk_manual_view_mode') === 'tv';
+        if (isTv) {
+          document.documentElement.classList.add('tv-mode-html');
+          document.documentElement.style.scrollbarWidth = 'none';
+        }
+      } catch (e) {}
+    })();
+  </script>
   <style>
     :root {
       --bg: #07080d;
@@ -436,8 +450,15 @@
       overflow: hidden;
       max-height: 440px;
       overflow-y: auto;
-      scrollbar-width: thin;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       animation: fadeIn .18s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    .suggest-box::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
     }
 
     .suggest-item {
@@ -2604,7 +2625,14 @@
       gap: 12px;
       overflow-x: auto;
       padding-bottom: 6px;
-      scrollbar-width: thin;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .atv-drawer-list::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
     }
 
     .atv-drawer-item {
@@ -2922,27 +2950,16 @@
       overflow-y: auto !important;
       overflow-x: hidden !important;
       margin: 0 auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
     }
 
     .toon-info-modal::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .toon-info-modal::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .toon-info-modal::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.16);
-      border-radius: 99px;
-    }
-
-    .toon-info-modal::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.3);
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
 
     .toon-info-hero-banner {
@@ -3424,11 +3441,15 @@
       }
     }
 
-    body.tv-mode #toon-info-scrim {
+    body.tv-mode #toon-info-scrim,
+    body.tv-mode #cinestream-info-scrim,
+    body.tv-mode #cinestream-watch-scrim {
       padding: 0 !important;
     }
 
-    body.tv-mode #toon-info-scrim .toon-info-modal {
+    body.tv-mode #toon-info-scrim .toon-info-modal,
+    body.tv-mode #cinestream-info-scrim .cinestream-info-modal,
+    body.tv-mode #cinestream-watch-scrim .cinestream-watch-modal {
       width: 100vw !important;
       max-width: 100vw !important;
       height: 100vh !important;
@@ -3436,6 +3457,16 @@
       overflow-y: auto !important;
       border-radius: 0 !important;
       border: none !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    body.tv-mode #toon-info-scrim .toon-info-modal::-webkit-scrollbar,
+    body.tv-mode #cinestream-info-scrim .cinestream-info-modal::-webkit-scrollbar,
+    body.tv-mode #cinestream-watch-scrim .cinestream-watch-modal::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
 
     /* ==========================================================================
@@ -3473,27 +3504,16 @@
       overflow-y: auto !important;
       overflow-x: hidden !important;
       margin: 0 auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
     }
 
     .toonplay-watch-modal::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .toonplay-watch-modal::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .toonplay-watch-modal::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.16);
-      border-radius: 99px;
-    }
-
-    .toonplay-watch-modal::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.3);
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
 
     .toon-watch-header {
@@ -3777,26 +3797,15 @@
       max-height: 420px;
       overflow-y: auto !important;
       padding-right: 4px;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
       -webkit-overflow-scrolling: touch;
     }
 
     .toon-episodes-grid::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    .toon-episodes-grid::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .toon-episodes-grid::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.16);
-      border-radius: 99px;
-    }
-
-    .toon-episodes-grid::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.3);
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
 
     .toon-ep-item {
@@ -6200,6 +6209,94 @@
       display: none !important;
     }
 
+    /* ==========================================================================
+       STUDIO-GRADE ZERO-SCROLLBAR TV APP ENGINE
+       Completely eliminates all scrollbars (vertical, horizontal, track, thumb, indicator)
+       across EVERY page, view, hub, modal, shelf, drawer, grid, and list in TV Mode.
+       Delivers a 100% clean, native, borderless 10-foot Smart TV UI (Apple TV / Netflix standard).
+       ========================================================================== */
+    html.tv-mode-html,
+    html:has(body.tv-mode) {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      overflow-x: hidden !important;
+    }
+
+    html.tv-mode-html::-webkit-scrollbar,
+    html:has(body.tv-mode)::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      background: transparent !important;
+    }
+
+    /* Universal zero-scrollbar across all elements when in TV Mode */
+    body.tv-mode,
+    body.tv-mode *,
+    body.tv-mode *::before,
+    body.tv-mode *::after {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    body.tv-mode::-webkit-scrollbar,
+    body.tv-mode *::-webkit-scrollbar,
+    body.tv-mode *::-webkit-scrollbar-thumb,
+    body.tv-mode *::-webkit-scrollbar-track,
+    body.tv-mode *::-webkit-scrollbar-corner,
+    body.tv-mode *::-webkit-resizer {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      max-width: 0 !important;
+      max-height: 0 !important;
+      background: transparent !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* Target all specific modal & hub containers in TV Mode to ensure absolute zero-scrollbar */
+    body.tv-mode .cinestream-info-modal,
+    body.tv-mode .cinestream-watch-modal,
+    body.tv-mode .toon-info-modal,
+    body.tv-mode .toonplay-watch-modal,
+    body.tv-mode .modal,
+    body.tv-mode .m-body,
+    body.tv-mode .player-modal,
+    body.tv-mode .player-video,
+    body.tv-mode .toon-episodes-grid,
+    body.tv-mode #desk-cine-episodes-wrap,
+    body.tv-mode .tv-shelf-scroll,
+    body.tv-mode .feed,
+    body.tv-mode .wrap,
+    body.tv-mode section,
+    body.tv-mode .cinestream-hub-section,
+    body.tv-mode .toonplay-hub-section,
+    body.tv-mode .source-hub-section,
+    body.tv-mode #watchlist-hub,
+    body.tv-mode #search-view,
+    body.tv-mode .tv-search-results,
+    body.tv-mode #tv-shelves,
+    body.tv-mode .tv-shelves-container,
+    body.tv-mode .tv-shelf-track,
+    body.tv-mode .cw-shelf-track,
+    body.tv-mode .toon-shelf-track,
+    body.tv-mode .toon-recs-scroll,
+    body.tv-mode .source-filter-bar,
+    body.tv-mode .source-tabs-scroll,
+    body.tv-mode .cine-category-bar,
+    body.tv-mode .toon-category-bar,
+    body.tv-mode .party-chat-messages,
+    body.tv-mode .suggest-box,
+    body.tv-mode .atv-drawer-list,
+    body.tv-mode #vault-scrim .m-body,
+    body.tv-mode #domain-scrim .m-body,
+    body.tv-mode #shortcuts-scrim .m-body {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
     /* TV Mode Root Styling: 100% Full-Bleed Edge-to-Edge Canvas */
     body.tv-mode {
       padding: 0 !important;
@@ -6216,10 +6313,6 @@
     body.tv-mode.dock-expanded {
       padding-left: 284px !important;
       /* Smoothly pushes content when dock expands to 250px so posters are never obscured */
-    }
-
-    body.tv-mode::-webkit-scrollbar {
-      display: none !important;
     }
 
     body.tv-mode .wrap {
@@ -9996,7 +10089,239 @@
       will-change: transform;
     }
 
-    </style>
+    
+    /* ==========================================================================
+       CINESTREAM DESKTOP & TV THEME (Neon Lime #DCFC35 & Dark #141414)
+       ========================================================================== */
+    :root {
+      --cine-primary: #DCFC35;
+      --cine-primary-hover: #C8EA2E;
+      --cine-bg: #0a0a0a;
+      --cine-card: #141414;
+      --cine-border: rgba(220, 252, 53, 0.22);
+      --cine-glow: rgba(220, 252, 53, 0.25);
+    }
+
+    .cinestream-hub-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+
+    .cine-spotlight-card {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 36px 44px;
+      background: #111;
+      border: 1px solid rgba(220, 252, 53, 0.28);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7), 0 0 40px rgba(220, 252, 53, 0.08);
+    }
+
+    .cine-spotlight-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center 25%;
+      filter: brightness(0.75);
+      transition: background-image 0.5s ease;
+    }
+
+    .cine-spotlight-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.8) 45%, rgba(10,10,10,0.2) 100%),
+                  linear-gradient(0deg, rgba(10,10,10,0.9) 0%, transparent 60%);
+    }
+
+    .cine-spotlight-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cine-spotlight-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cine-spotlight-title {
+      font-size: 36px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.8);
+      margin: 0;
+    }
+
+    .cine-spotlight-desc {
+      font-size: 14.5px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .cine-spotlight-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .btn-cine-watch-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--cine-primary);
+      color: #050505;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 13px 26px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px var(--cine-glow);
+      transition: all 0.2s ease;
+    }
+    .btn-cine-watch-main:hover {
+      background: var(--cine-primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 26px var(--cine-glow);
+    }
+
+    .btn-cine-action-sec {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      font-weight: 600;
+      font-size: 14.5px;
+      padding: 13px 22px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-cine-action-sec:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Category Navigation Bar */
+    .cine-category-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 0;
+    }
+    .cine-category-bar::-webkit-scrollbar { display: none; }
+
+    .cine-tab-btn {
+      padding: 10px 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      color: #cbd5e1;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .cine-tab-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+    .cine-tab-btn.active {
+      background: var(--cine-primary);
+      color: #050505;
+      border-color: var(--cine-primary);
+      font-weight: 800;
+      box-shadow: 0 2px 14px var(--cine-glow);
+    }
+
+    /* CineStream Modals */
+    #cinestream-info-scrim,
+    #cinestream-watch-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 5, 5, 0.94);
+      backdrop-filter: blur(12px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #cinestream-info-scrim.on,
+    #cinestream-watch-scrim.on {
+      display: flex !important;
+      animation: modalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cinestream-info-modal {
+      position: relative;
+      width: 100%;
+      max-width: 1240px;
+      max-height: 90vh;
+      background: #111;
+      border: 1px solid rgba(220, 252, 53, 0.25);
+      border-radius: 20px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .cinestream-info-modal::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .cinestream-watch-modal {
+      position: relative;
+      width: 100%;
+      max-width: 1380px;
+      height: 92vh;
+      background: #0a0a0a;
+      border: 1px solid rgba(220, 252, 53, 0.25);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.9);
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .cinestream-watch-modal::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+</style>
 </head>
 
 <body>
@@ -10016,10 +10341,6 @@
     </div>
 
     <div class="dock-items">
-      <button class="dock-item" id="dock-search" data-target="search" title="Search">
-        <span class="dock-icon">🔍</span>
-        <span class="dock-label">Search</span>
-      </button>
       <button class="dock-item active" id="dock-home" data-target="home" title="Home">
         <span class="dock-icon">🏠</span>
         <span class="dock-label">Home</span>
@@ -10051,6 +10372,10 @@
       <button class="dock-item" id="dock-torrents" data-shelf="torrents" title="4K UHD Torrents">
         <span class="dock-icon">🧲</span>
         <span class="dock-label">Torrents</span>
+      </button>
+            <button class="dock-item" id="dock-cinestream" data-target="cinestream" title="🎬 CineStream Global Movies &amp; TV">
+        <span class="dock-icon">🎬</span>
+        <span class="dock-label">CineStream</span>
       </button>
       <button class="dock-item" id="dock-toonplay" data-target="toonplay" title="🎌 Anime &amp; Cartoons">
         <span class="dock-icon">🎌</span>
@@ -10097,6 +10422,12 @@
         <button class="pill pill-btn" id="btn-switch-mobile" title="Switch to Mobile App Layout" onclick="document.cookie='view_pref=mobile; path=/; max-age=31536000'; window.location.href='/?view=mobile';">
           <span>📱</span>
           <span>Mobile App</span>
+        </button>
+
+                <!-- CineStream Button -->
+        <button class="pill pill-btn tv-nav-item" id="btn-top-cinestream" title="Open CineStream Global Movies &amp; TV Hub" onclick="openCineStreamHub()" style="background:rgba(220,252,53,0.15);color:#DCFC35;border-color:rgba(220,252,53,0.35);">
+          <span>🎬</span>
+          <span>CineStream</span>
         </button>
 
         <!-- TV View Mode Switcher -->
@@ -10353,6 +10684,75 @@
         <span class="source-page-info" id="source-page-info">Page 1</span>
         <button type="button" class="btn source-page-btn tv-nav-item" id="btn-source-next-page">Next ▶</button>
       </div>
+    </section>
+
+    
+    <!-- Dedicated CineStream Hub (Global Movies & TV) -->
+    <section class="cinestream-hub-section" id="cinestream-hub" style="display:none;">
+      <!-- Hero Spotlight Banner -->
+      <div class="cine-spotlight-card" id="desk-cine-spotlight">
+        <div class="cine-spotlight-actions" style="position:absolute;top:20px;right:22px;z-index:10;display:flex;gap:10px;">
+          <button type="button" class="btn toon-action-btn tv-nav-item" id="btn-cine-back-home" onclick="closeCineStreamHub(true)"
+            title="Return to SDK Movies" style="background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);padding:8px 16px;border-radius:10px;color:#cbd5e1;font-size:13px;cursor:pointer;">
+            <span>✕ Exit CineStream</span>
+          </button>
+        </div>
+        <div class="cine-spotlight-bg" id="desk-cine-spotlight-bg"></div>
+        <div class="cine-spotlight-scrim"></div>
+        <div class="cine-spotlight-content">
+          <div class="cine-spotlight-meta-row">
+            <span class="cine-badge" id="desk-cine-spotlight-badge" style="background:var(--cine-primary);color:#050505;font-weight:900;">FEATURED</span>
+            <span class="badge-tag" style="background:rgba(220,252,53,0.15);color:var(--cine-primary);border:1px solid rgba(220,252,53,0.3);font-size:12px;padding:3px 8px;border-radius:6px;font-weight:700;">1080p Ultra HD</span>
+            <span class="badge-tag" id="desk-cine-spotlight-rating" style="background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.3);font-size:12px;padding:3px 8px;border-radius:6px;font-weight:700;">⭐ 8.5</span>
+            <span class="badge-tag" id="desk-cine-spotlight-year" style="font-size:12px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,0.1);color:#fff;">2026</span>
+          </div>
+          <h2 class="cine-spotlight-title" id="desk-cine-spotlight-title">Featured Title</h2>
+          <p class="cine-spotlight-desc" id="desk-cine-spotlight-desc">Discover thousands of global movies and TV series in HD with instant ad-free streaming.</p>
+          <div class="cine-spotlight-actions">
+            <button type="button" class="btn-cine-watch-main tv-nav-item" id="btn-desk-cine-hero-play">
+              <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <span>Watch Now</span>
+            </button>
+            <button type="button" class="btn-cine-action-sec tv-nav-item" id="btn-desk-cine-hero-details">
+              <span>Episodes &amp; Details</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="cine-category-bar" id="desk-cine-category-bar">
+        <button type="button" class="cine-tab-btn active tv-nav-item" data-cine-cat="all">⚡ All Highlights</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="trending">🔥 Trending Today</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="popular_movies">🎬 Movies</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="popular_tv">📺 TV Series</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="top_rated">⭐ Top Rated</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="28">💥 Action</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="878">🚀 Sci-Fi</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="35">😂 Comedy</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="27">👻 Horror</button>
+        <button type="button" class="cine-tab-btn tv-nav-item" data-cine-cat="16">✨ Animation</button>
+      </div>
+
+      <!-- Quick Search Strip -->
+      <div class="toon-search-strip">
+        <div class="toon-search-box" style="border-color:rgba(220,252,53,0.3);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--cine-primary);">
+            <path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z" />
+          </svg>
+          <input type="text" id="desk-cine-search-input" placeholder="Search CineStream movies, series, or actors…" autocomplete="off">
+          <button type="button" class="toon-search-clear" id="btn-desk-cine-clear-search" style="display:none;" onclick="clearDeskCineSearch()">✕</button>
+        </div>
+        <div class="toon-status-counter" id="desk-cine-status-counter" style="color:var(--cine-primary);">Ready</div>
+      </div>
+
+      <!-- Shelves Container -->
+      <div id="desk-cine-shelves-container"></div>
+
+      <!-- Catalog Grid for Category/Search Filter -->
+      <div class="toon-catalog-grid" id="desk-cine-grid" style="display:none;"></div>
     </section>
 
     <!-- Dedicated ToonPlay Clone Experience (Anime & Cartoons Hub) -->
@@ -10885,6 +11285,112 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- CineStream Dedicated Info Modal -->
+  <div class="scrim" id="cinestream-info-scrim">
+    <div class="modal cinestream-info-modal" id="cinestream-info-modal">
+      <!-- Hero Banner with Backdrop -->
+      <div class="toon-info-hero-banner" style="height:320px;">
+        <img class="toon-info-backdrop-img" id="desk-cine-info-backdrop" src="" alt="Backdrop">
+        <div class="toon-info-gradient-overlay" style="background:linear-gradient(0deg,#111 10%,rgba(17,17,17,0.7) 60%,rgba(17,17,17,0.3) 100%);"></div>
+        <button type="button" class="btn toon-info-close-btn tv-nav-item" id="btn-close-cine-info" onclick="closeCineStreamInfo()" title="Close (Esc)">✕</button>
+
+        <div class="toon-info-hero-content">
+          <div class="toon-info-poster-box">
+            <img id="desk-cine-info-poster" src="" alt="Poster" onerror="this.src='/favicon.svg'">
+          </div>
+          <div class="toon-info-details-box">
+            <h2 class="toon-info-title" id="desk-cine-info-title">Title</h2>
+            <div class="toon-info-meta-chips">
+              <span class="toon-info-badge" id="desk-cine-info-year">2026</span>
+              <span class="toon-info-badge" id="desk-cine-info-type" style="color:var(--cine-primary);">Movie</span>
+              <span class="toon-info-badge rating" id="desk-cine-info-rating">⭐ 8.4</span>
+              <span class="toon-info-badge quality" style="color:var(--cine-primary);border-color:rgba(220,252,53,0.3);">HD 1080p</span>
+            </div>
+            <div class="toon-info-actions">
+              <button type="button" class="btn-cine-watch-main tv-nav-item" id="btn-desk-cine-info-watch">
+                <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor;">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <span id="btn-desk-cine-info-watch-txt">Watch Now</span>
+              </button>
+              <button type="button" class="btn btn-toon-action-sec tv-nav-item" id="btn-desk-cine-info-fav">
+                <span>★</span> <span>Watchlist</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="toon-info-body" style="padding:24px 32px;display:flex;flex-direction:column;gap:20px;">
+        <!-- Overview -->
+        <div>
+          <h3 style="font-size:16px;font-weight:700;color:var(--cine-primary);margin-bottom:8px;">Story Overview</h3>
+          <p id="desk-cine-info-overview" style="font-size:14px;color:#cbd5e1;line-height:1.6;margin:0;"></p>
+        </div>
+
+        <!-- TV Seasons & Episodes -->
+        <div id="desk-cine-seasons-section" style="display:none;">
+          <h3 style="font-size:16px;font-weight:700;color:var(--cine-primary);margin-bottom:12px;">Seasons &amp; Episodes</h3>
+          <div class="toon-tabs-scroll" id="desk-cine-seasons-tabs" style="margin-bottom:14px;"></div>
+          <div class="toon-ep-cards-grid" id="desk-cine-ep-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;"></div>
+        </div>
+
+        <!-- Cast -->
+        <div id="desk-cine-cast-section">
+          <h3 style="font-size:16px;font-weight:700;color:var(--cine-primary);margin-bottom:12px;">Top Cast</h3>
+          <div style="display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;" id="desk-cine-cast-track"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CineStream Dedicated Watch Modal (Ad-Free Player) -->
+  <div class="scrim" id="cinestream-watch-scrim">
+    <div class="modal cinestream-watch-modal" id="cinestream-watch-modal">
+      <!-- Header -->
+      <div class="toon-watch-header" style="background:#111;border-bottom:1px solid rgba(220,252,53,0.2);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <button type="button" class="btn toon-watch-back tv-nav-item" id="btn-desk-cine-watch-back" onclick="closeCineStreamWatch()" title="Back">‹ Back</button>
+          <div>
+            <div style="font-size:17px;font-weight:800;color:#fff;" id="desk-cine-watch-title">CineStream</div>
+            <div style="font-size:12.5px;color:var(--text-muted);" id="desk-cine-watch-sub">HD Stream</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div id="desk-cine-ep-nav" style="display:none;align-items:center;gap:8px;">
+            <button type="button" class="btn toon-action-btn tv-nav-item" onclick="deskCineNavEpisode(-1)">⏮ Prev</button>
+            <button type="button" class="btn toon-action-btn tv-nav-item" onclick="deskCineNavEpisode(1)">Next ⏭</button>
+          </div>
+          <span class="cine-badge" style="background:var(--cine-primary);color:#050505;font-weight:900;">1080p HD</span>
+        </div>
+      </div>
+
+      <!-- Player Stage -->
+      <div style="flex:1;position:relative;background:#000;">
+        <div class="toon-player-loader" id="desk-cine-player-loader" style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;">
+          <div class="spinner-sm" style="border-top-color:var(--cine-primary);width:32px;height:32px;"></div>
+          <div style="font-size:13px;color:#cbd5e1;margin-top:10px;">Loading ad-free stream server…</div>
+        </div>
+        <iframe id="desk-cine-active-iframe" src="about:blank" style="width:100%;height:100%;border:none;"
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
+          allowfullscreen="true"
+          referrerpolicy="no-referrer">
+        </iframe>
+      </div>
+
+      <!-- Bottom Server Bar -->
+      <div style="background:#111;border-top:1px solid rgba(220,252,53,0.15);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:12px;font-weight:700;color:var(--cine-primary);text-transform:uppercase;">⚡ STREAM SERVERS:</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;" id="desk-cine-servers-row"></div>
+        </div>
+        <div style="font-size:11.5px;color:var(--text-dim);">🛡️ Ad-Shield Active • Zero Popups</div>
       </div>
     </div>
   </div>
@@ -11767,6 +12273,39 @@
   <div class="cinema-hype-banner" id="cinema-hype-banner">🔥 CINEMA HYPE x<span id="hype-count">3</span></div>
 
   <script>
+
+    // Universal Ad & Redirect Guard: block unauthorized popups and iframe top redirects
+    (function() {
+      const origOpen = window.open;
+      window.open = function(url, target, features) {
+        if (typeof url === 'string' && url.startsWith('magnet:')) {
+          return origOpen.call(window, url, target, features);
+        }
+        console.warn('[SDK Shield] Neutralized popup window attempt:', url);
+        return null;
+      };
+
+      // Block attempts by embedded player iframes to navigate parent away from the website
+      window.addEventListener('beforeunload', function(e) {
+        const watchModalActive = $('#cinestream-watch-scrim')?.classList.contains('active');
+        if (watchModalActive) {
+          e.preventDefault();
+          e.returnValue = '';
+          return '';
+        }
+      });
+
+      // Anti-Popunder Focus Shield
+      window.addEventListener('blur', function() {
+        const watchModalActive = $('#cinestream-watch-scrim')?.classList.contains('active');
+        if (watchModalActive) {
+          setTimeout(function() {
+            window.focus();
+          }, 30);
+        }
+      });
+    })();
+
     const $ = s => document.querySelector(s);
     const out = $('#out'), bar = $('#bar'), scrim = $('#scrim'), toast = $('#toast');
     const playerScrim = $('#player-scrim'), domainScrim = $('#domain-scrim'), vaultScrim = $('#vault-scrim'), toonplayPlayerScrim = $('#toonplay-player-scrim'), toonInfoScrim = $('#toon-info-scrim');
@@ -14175,8 +14714,11 @@
         return;
       }
 
-      if (m.is_direct || m.source === 'isaimini' || m.source === 'isaidub') {
-        const isDub = m.source === 'isaidub';
+      const topicUrlForDirect = m.topic_url || m.url || '';
+      const isDub = m.source === 'isaidub' || topicUrlForDirect.includes('isaidub');
+      const isDirectMovie = isDub || m.is_direct || m.source === 'isaimini' || m.source === 'moviesda' || topicUrlForDirect.includes('moviesda') || topicUrlForDirect.includes('isaimini') || topicUrlForDirect.includes('moviezda');
+
+      if (isDirectMovie) {
         const qTag = m.quality ? (isTv ? cleanTvQuality(m.quality) : m.quality) : '';
         mmTags.innerHTML = `
           <span class="source-badge ${isDub ? 'dubbed' : 'direct'}" style="font-size:11px;padding:3px 9px;">${isDub ? '🎙️ TamDub (Dubbed MP4)' : '⚡ TamilMov (Direct MP4)'}</span>
@@ -17172,6 +17714,577 @@
       }, 10000);
     }
 
+
+    // ==============================================================================
+    // CINESTREAM DESKTOP & TV HUB ENGINE
+    // ==============================================================================
+    let cineDeskState = {
+      homeData: null,
+      currentInfo: null,
+      activeCategory: 'all',
+      currentWatchData: { id: '', type: 'movie', seasonNum: 1, epNum: 1, servers: [], serverIndex: 0, title: '' }
+    };
+
+    function openCineStreamHub() {
+      closeToonplayHub(false);
+      closeSourceHub(false);
+      currentMode = 'cinestream';
+
+      const hub = $('#cinestream-hub');
+      const tvShelves = $('#tv-shelves');
+      const feed = $('#feed');
+      const controlsStrip = $('#controls-strip');
+      const hero = $('#tv-hero-spotlight');
+
+      if (tvShelves) tvShelves.style.display = 'none';
+      if (feed) feed.style.display = 'none';
+      if (controlsStrip) controlsStrip.style.display = 'none';
+      if (hero) hero.style.display = 'none';
+
+      if (hub) hub.style.display = 'block';
+
+      if (tvNavDock) {
+        tvNavDock.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+        $('#dock-cinestream')?.classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      loadDeskCineHome();
+    }
+
+    function closeCineStreamHub(restoreHome = true) {
+      const hub = $('#cinestream-hub');
+      if (hub) hub.style.display = 'none';
+
+      if (restoreHome) {
+        if (currentViewMode === 'tv') {
+          const tvShelves = $('#tv-shelves');
+          const hero = $('#tv-hero-spotlight');
+          if (tvShelves) tvShelves.style.display = '';
+          if (hero) hero.style.display = '';
+        } else {
+          const feed = $('#feed');
+          const controlsStrip = $('#controls-strip');
+          if (feed) feed.style.display = '';
+          if (controlsStrip) controlsStrip.style.display = '';
+        }
+
+        if (tvNavDock) {
+          tvNavDock.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+          $('#dock-home')?.classList.add('active');
+        }
+        currentMode = 'recent';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    async function loadDeskCineHome() {
+      const counter = $('#desk-cine-status-counter');
+      if (counter) counter.textContent = 'Loading highlights…';
+
+      try {
+        const res = await fetch('/api/cinestream/home');
+        if (!res.ok) throw new Error('CineStream home error');
+        const data = await res.json();
+        cineDeskState.homeData = data;
+
+        const featured = (data.hero && data.hero[0]) || (data.trending && data.trending[0]);
+        if (featured) renderDeskCineSpotlight(featured);
+        renderDeskCineShelves(data);
+        if (counter) counter.textContent = 'Catalog Connected';
+      } catch (err) {
+        console.warn('CineStream load error:', err);
+        if (counter) counter.textContent = 'Failed to load';
+      }
+    }
+
+    function renderDeskCineSpotlight(item) {
+      if (!item) return;
+      const banner = $('#desk-cine-spotlight');
+      if (!banner) return;
+      banner.style.display = 'flex';
+
+      const bg = item.backdrop || item.poster || '';
+      const bgEl = $('#desk-cine-spotlight-bg');
+      if (bgEl) bgEl.style.backgroundImage = `url('${bg}')`;
+
+      const titleEl = $('#desk-cine-spotlight-title');
+      if (titleEl) titleEl.textContent = item.title || 'Featured';
+
+      const descEl = $('#desk-cine-spotlight-desc');
+      if (descEl) descEl.textContent = item.overview || 'Discover thousands of movies and TV shows in 1080p Ultra HD with instant streaming.';
+
+      const ratingEl = $('#desk-cine-spotlight-rating');
+      if (ratingEl) ratingEl.textContent = item.rating ? `⭐ ${item.rating}` : '⭐ 8.5';
+
+      const yearEl = $('#desk-cine-spotlight-year');
+      if (yearEl) yearEl.textContent = item.year || '2026';
+
+      const isMovie = item.type !== 'tv';
+      const badgeEl = $('#desk-cine-spotlight-badge');
+      if (badgeEl) badgeEl.textContent = isMovie ? 'FEATURED MOVIE' : 'FEATURED TV SHOW';
+
+      const cleanId = String(item.id || item.tmdb_id || '').replace(/^cine_/, '');
+      const type = item.type || (isMovie ? 'movie' : 'tv');
+
+      const playBtn = $('#btn-desk-cine-hero-play');
+      if (playBtn) playBtn.onclick = () => openDeskCineWatch(cleanId, type, 1, 1, '', item.title || '');
+
+      const detailsBtn = $('#btn-desk-cine-hero-details');
+      if (detailsBtn) detailsBtn.onclick = () => openDeskCineDetails(cleanId, type);
+    }
+
+    function createDeskCineCard(item, rank = null) {
+      const card = document.createElement('div');
+      card.className = 'movie-card tv-nav-item';
+      card.setAttribute('tabindex', '0');
+      card.style.cssText = 'flex:0 0 170px;width:170px;scroll-snap-align:start;cursor:pointer;';
+
+      const cleanId = String(item.id || item.tmdb_id || item.cine_id || '').replace(/^cine_/, '');
+      const type = item.type || item.content_type || (item.first_air_date ? 'tv' : 'movie');
+      const img = item.poster || item.poster_url || item.backdrop || '/favicon.svg';
+
+      let rankHtml = '';
+      if (rank !== null && rank >= 1 && rank <= 10) {
+        rankHtml = `<span style="position:absolute;top:8px;left:8px;width:26px;height:26px;background:var(--cine-primary);color:#050505;font-weight:900;font-size:13px;border-radius:6px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.8);z-index:2;">${rank}</span>`;
+      }
+
+      card.innerHTML = `
+        <div class="poster-wrap" style="height:245px;position:relative;border-radius:12px;overflow:hidden;background:#181818;border:1px solid rgba(255,255,255,0.08);">
+          ${rankHtml}
+          <img class="poster-img" src="${esc(img)}" alt="${esc(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this)" style="width:100%;height:100%;object-fit:cover;">
+          ${item.rating ? `<span style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.75);color:#ffd700;font-weight:700;font-size:11px;padding:2px 6px;border-radius:5px;">⭐ ${item.rating}</span>` : ''}
+        </div>
+        <div class="movie-info" style="padding:10px 4px 4px 4px;">
+          <h4 class="title" style="font-size:13.5px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 0 4px 0;">${esc(item.title)}</h4>
+          <div class="meta" style="font-size:11.5px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+            <span>${item.year || (type === 'tv' ? 'Series' : 'Movie')}</span>
+            <span>•</span>
+            <span style="color:var(--cine-primary);font-weight:700;">${type === 'tv' ? 'TV' : 'Movie'}</span>
+          </div>
+        </div>
+      `;
+
+      card.onclick = () => openDeskCineDetails(cleanId, type);
+      return card;
+    }
+
+    function renderDeskCineShelves(data) {
+      const container = $('#desk-cine-shelves-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const shelves = [
+        { key: 'trending', title: '⚡ Trending Today', badge: 'Top 10', showRank: true },
+        { key: 'popular_movies', title: '🎬 Popular Movies', badge: 'HD 1080p', showRank: false },
+        { key: 'popular_tv', title: '📺 Binge-Worthy TV Shows', badge: 'Series', showRank: false },
+        { key: 'top_rated', title: '⭐ All-Time Highest Rated', badge: 'Top Rated', showRank: false },
+      ];
+
+      shelves.forEach(shelf => {
+        const items = data[shelf.key] || [];
+        if (!items || items.length === 0) return;
+
+        const sec = document.createElement('section');
+        sec.className = 'shelf-section tv-shelf-wrap';
+        sec.style.cssText = 'margin-bottom:28px;';
+        sec.innerHTML = `
+          <div class="shelf-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div class="shelf-title-wrap" style="display:flex;align-items:center;gap:10px;">
+              <h3 class="shelf-title" style="font-size:18px;font-weight:800;color:#fff;">${shelf.title}</h3>
+              <span class="shelf-count" style="background:rgba(220,252,53,0.15);color:var(--cine-primary);font-weight:700;font-size:11.5px;padding:3px 8px;border-radius:999px;">${shelf.badge}</span>
+            </div>
+          </div>
+          <div class="feed tv-shelf-scroll" id="desk-cine-shelf-${shelf.key}" style="display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;"></div>
+        `;
+
+        const track = sec.querySelector(`#desk-cine-shelf-${shelf.key}`);
+        items.forEach((item, idx) => {
+          track.appendChild(createDeskCineCard(item, shelf.showRank ? idx + 1 : null));
+        });
+
+        container.appendChild(sec);
+      });
+    }
+
+    function renderDeskCineCatalogGrid(items, title = 'Catalog') {
+      const grid = $('#desk-cine-grid');
+      const shelves = $('#desk-cine-shelves-container');
+      const spotlight = $('#desk-cine-spotlight');
+      const counter = $('#desk-cine-status-counter');
+
+      if (!items || items.length === 0) {
+        if (grid) grid.style.display = 'none';
+        if (shelves) shelves.style.display = 'block';
+        if (spotlight) spotlight.style.display = 'flex';
+        if (counter) counter.textContent = 'All Highlights';
+        return;
+      }
+
+      if (shelves) shelves.style.display = 'none';
+      if (spotlight) spotlight.style.display = 'none';
+      if (grid) {
+        grid.style.display = 'grid';
+        grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(170px, 1fr))';
+        grid.style.gap = '20px';
+        grid.style.marginTop = '20px';
+        grid.innerHTML = '';
+        items.forEach(item => grid.appendChild(createDeskCineCard(item)));
+      }
+      if (counter) counter.textContent = `${title} (${items.length})`;
+    }
+
+    function setupDeskCineCategories() {
+      const bar = $('#desk-cine-category-bar');
+      if (!bar) return;
+
+      const genreMap = {
+        '28': 'Action Hits',
+        '878': 'Sci-Fi Adventures',
+        '35': 'Comedy Favorites',
+        '27': 'Horror & Thrillers',
+        '16': 'Animation Universe'
+      };
+
+      bar.querySelectorAll('.cine-tab-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          bar.querySelectorAll('.cine-tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const cat = btn.getAttribute('data-cine-cat');
+          cineDeskState.activeCategory = cat;
+
+          if (cat === 'all') {
+            $('#desk-cine-grid').style.display = 'none';
+            $('#desk-cine-shelves-container').style.display = 'block';
+            $('#desk-cine-spotlight').style.display = 'flex';
+            $('#desk-cine-status-counter').textContent = 'All Highlights';
+            return;
+          }
+
+          if (cat === 'trending' && cineDeskState.homeData) {
+            renderDeskCineCatalogGrid(cineDeskState.homeData.trending || [], '🔥 Trending Today');
+            return;
+          }
+          if (cat === 'popular_movies' && cineDeskState.homeData) {
+            renderDeskCineCatalogGrid(cineDeskState.homeData.popular_movies || [], '🎬 Popular Movies');
+            return;
+          }
+          if (cat === 'popular_tv' && cineDeskState.homeData) {
+            renderDeskCineCatalogGrid(cineDeskState.homeData.popular_tv || [], '📺 TV Series');
+            return;
+          }
+          if (cat === 'top_rated' && cineDeskState.homeData) {
+            renderDeskCineCatalogGrid(cineDeskState.homeData.top_rated || [], '⭐ Top Rated');
+            return;
+          }
+
+          if (genreMap[cat]) {
+            $('#desk-cine-status-counter').textContent = `Loading ${genreMap[cat]}…`;
+            try {
+              const res = await fetch(`/api/cinestream/genre?genre_id=${cat}`);
+              if (res.ok) {
+                const items = await res.json();
+                renderDeskCineCatalogGrid(items, genreMap[cat]);
+              }
+            } catch (err) {
+              console.warn('Genre load error:', err);
+            }
+          }
+        });
+      });
+
+      // Quick Search
+      const searchInput = $('#desk-cine-search-input');
+      const clearBtn = $('#btn-desk-cine-clear-search');
+      let debounceTimer = null;
+
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          const q = searchInput.value.trim();
+          if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+          clearTimeout(debounceTimer);
+          if (!q) {
+            $('#desk-cine-grid').style.display = 'none';
+            $('#desk-cine-shelves-container').style.display = 'block';
+            $('#desk-cine-spotlight').style.display = 'flex';
+            $('#desk-cine-status-counter').textContent = 'All Highlights';
+            return;
+          }
+          debounceTimer = setTimeout(async () => {
+            try {
+              $('#desk-cine-status-counter').textContent = `Searching "${q}"…`;
+              const res = await fetch(`/api/cinestream/search?q=${encodeURIComponent(q)}`);
+              if (res.ok) {
+                const items = await res.json();
+                renderDeskCineCatalogGrid(items, `Search: "${q}"`);
+              }
+            } catch (err) {
+              console.warn('Search error:', err);
+            }
+          }, 300);
+        });
+      }
+    }
+
+    function clearDeskCineSearch() {
+      const input = $('#desk-cine-search-input');
+      if (input) {
+        input.value = '';
+        input.dispatchEvent(new Event('input'));
+      }
+    }
+
+    // CineStream Info Modal (Desktop)
+    async function openDeskCineDetails(itemId, type = 'movie') {
+      const scrim = $('#cinestream-info-scrim');
+      if (!scrim) return;
+
+      try {
+        const res = await fetch(`/api/cinestream/info?id=${encodeURIComponent(itemId)}&type=${type}`);
+        if (!res.ok) throw new Error('Info failed');
+        const info = await res.json();
+        cineDeskState.currentInfo = info;
+
+        scrim.classList.add('on');
+        document.body.style.overflow = 'hidden';
+
+        const bg = info.backdrop || info.poster || '';
+        $('#desk-cine-info-backdrop').src = bg;
+        $('#desk-cine-info-poster').src = info.poster || '/favicon.svg';
+        $('#desk-cine-info-title').textContent = info.title || 'Untitled';
+        $('#desk-cine-info-year').textContent = info.year || '';
+        $('#desk-cine-info-type').textContent = info.type === 'tv' ? 'TV SERIES' : 'MOVIE';
+        $('#desk-cine-info-rating').textContent = info.rating ? `⭐ ${info.rating}` : '⭐ 8.0';
+        $('#desk-cine-info-overview').textContent = info.overview || 'No overview available.';
+
+        // Watch button
+        const watchBtn = $('#btn-desk-cine-info-watch');
+        if (watchBtn) watchBtn.onclick = () => openDeskCineWatch(itemId, info.type, 1, 1, '', info.title);
+
+        // Watchlist
+        const favBtn = $('#btn-desk-cine-info-fav');
+        if (favBtn) {
+          favBtn.onclick = () => {
+            toggleWatchlist({
+              id: `cine_${itemId}`,
+              title: info.title,
+              poster_url: info.poster,
+              year: info.year,
+              source: 'cinestream',
+              source_label: 'CineStream'
+            });
+            showToast('Updated Watchlist');
+          };
+        }
+
+        // TV Seasons & Episodes
+        const seasonsSec = $('#desk-cine-seasons-section');
+        if (info.type === 'tv' && info.seasons && info.seasons.length > 0) {
+          seasonsSec.style.display = 'block';
+          renderDeskCineSeasonTabs(itemId, info.seasons);
+          loadDeskCineSeasonEpisodes(itemId, info.seasons[0].season_number);
+        } else {
+          seasonsSec.style.display = 'none';
+        }
+
+        // Cast
+        const castTrack = $('#desk-cine-cast-track');
+        castTrack.innerHTML = '';
+        const cast = info.cast || [];
+        if (cast.length > 0) {
+          $('#desk-cine-cast-section').style.display = 'block';
+          cast.forEach(c => {
+            const el = document.createElement('div');
+            el.style.cssText = 'display:flex;flex-direction:column;align-items:center;width:80px;flex:0 0 80px;text-align:center;gap:4px;';
+            const prof = c.profile || '/favicon.svg';
+            el.innerHTML = `
+              <div style="width:60px;height:60px;border-radius:50%;overflow:hidden;background:#222;border:1.5px solid rgba(220,252,53,0.3);">
+                <img src="${esc(prof)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+              </div>
+              <div style="font-size:11.5px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;">${esc(c.name)}</div>
+              <div style="font-size:10px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;">${esc(c.character)}</div>
+            `;
+            castTrack.appendChild(el);
+          });
+        } else {
+          $('#desk-cine-cast-section').style.display = 'none';
+        }
+
+      } catch (err) {
+        showToast('Error loading details');
+      }
+    }
+
+    function renderDeskCineSeasonTabs(itemId, seasons) {
+      const container = $('#desk-cine-seasons-tabs');
+      container.innerHTML = '';
+      seasons.forEach((s, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `toon-tab-btn tv-nav-item ${idx === 0 ? 'active' : ''}`;
+        btn.textContent = s.name || `Season ${s.season_number}`;
+        btn.onclick = () => {
+          container.querySelectorAll('.toon-tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          loadDeskCineSeasonEpisodes(itemId, s.season_number);
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    async function loadDeskCineSeasonEpisodes(itemId, seasonNum) {
+      const grid = $('#desk-cine-ep-grid');
+      grid.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">Loading episodes…</div>';
+
+      try {
+        const res = await fetch(`/api/cinestream/season?id=${encodeURIComponent(itemId)}&season=${seasonNum}`);
+        if (!res.ok) throw new Error('Episodes error');
+        const episodes = await res.json();
+        grid.innerHTML = '';
+
+        episodes.forEach(ep => {
+          const card = document.createElement('div');
+          card.className = 'toon-ep-card tv-nav-item';
+          card.setAttribute('tabindex', '0');
+          card.style.cssText = 'background:#181818;border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;cursor:pointer;display:flex;gap:12px;padding:8px;';
+          const fallbackImg = cineDeskState.currentInfo?.backdrop || cineDeskState.currentInfo?.poster || '';
+          const thumb = (ep.still_path && !ep.still_path.includes('/favicon.svg')) ? ep.still_path : fallbackImg;
+
+          card.innerHTML = `
+            <div style="width:100px;height:58px;border-radius:6px;overflow:hidden;background:#222;flex-shrink:0;">
+              <img src="${esc(thumb)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;if('${esc(fallbackImg)}')this.src='${esc(fallbackImg)}';">
+            </div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+              <div style="font-size:11px;font-weight:700;color:var(--cine-primary);text-transform:uppercase;">Episode ${ep.episode_number}</div>
+              <div style="font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(ep.title || `Episode ${ep.episode_number}`)}</div>
+            </div>
+          `;
+
+          card.onclick = () => {
+            openDeskCineWatch(itemId, 'tv', seasonNum, ep.episode_number, ep.title, cineDeskState.currentInfo?.title || '');
+          };
+          grid.appendChild(card);
+        });
+      } catch (err) {
+        grid.innerHTML = '';
+      }
+    }
+
+    function closeCineStreamInfo() {
+      const scrim = $('#cinestream-info-scrim');
+      if (scrim) scrim.classList.remove('on');
+      document.body.style.overflow = '';
+    }
+
+    // CineStream Watch Modal (Desktop)
+    async function openDeskCineWatch(itemId, type = 'movie', seasonNum = 1, epNum = 1, epTitle = '', seriesTitle = '') {
+      const scrim = $('#cinestream-watch-scrim');
+      if (!scrim) return;
+
+      const isTv = type === 'tv';
+      cineDeskState.currentWatchData.id = itemId;
+      cineDeskState.currentWatchData.type = type;
+      cineDeskState.currentWatchData.seasonNum = seasonNum;
+      cineDeskState.currentWatchData.epNum = epNum;
+      cineDeskState.currentWatchData.title = seriesTitle || 'CineStream';
+
+      scrim.classList.add('on');
+      document.body.style.overflow = 'hidden';
+
+      $('#desk-cine-watch-title').textContent = seriesTitle || 'CineStream';
+      $('#desk-cine-watch-sub').textContent = isTv ? `Season ${seasonNum} • Episode ${epNum}${epTitle ? ': ' + epTitle : ''}` : 'HD 1080p Movie Stream';
+
+      const navRow = $('#desk-cine-ep-nav');
+      if (navRow) navRow.style.display = isTv ? 'flex' : 'none';
+
+      $('#desk-cine-player-loader').style.display = 'flex';
+      $('#desk-cine-active-iframe').src = 'about:blank';
+
+      try {
+        let epQuery = isTv ? `&s=${seasonNum}&ep=${epNum}` : '';
+        const res = await fetch(`/api/cinestream/servers?id=${encodeURIComponent(itemId)}&type=${type}${epQuery}`);
+        if (!res.ok) throw new Error('Servers error');
+        const data = await res.json();
+        const servers = data.servers || [];
+        cineDeskState.currentWatchData.servers = servers;
+
+        let preferred = localStorage.getItem('preferred_cinestream_server') || 'vidlink';
+        let selIdx = servers.findIndex(s => s.id === preferred);
+        if (selIdx === -1) selIdx = 0;
+        cineDeskState.currentWatchData.serverIndex = selIdx;
+
+        renderDeskCineServerChips(servers, selIdx);
+        loadDeskCineServerUrl(servers[selIdx].url);
+
+      } catch (err) {
+        console.warn('CineStream stream servers notice:', err);
+      }
+    }
+
+    function renderDeskCineServerChips(servers, activeIdx) {
+      const container = $('#desk-cine-servers-row');
+      container.style.cssText = 'display:flex;gap:8px;overflow-x:auto;max-width:85vw;padding-bottom:6px;-webkit-overflow-scrolling:touch;';
+      container.innerHTML = '';
+      servers.forEach((srv, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const isActive = idx === activeIdx;
+        const isNoAds = srv.name.includes('(No Ads)');
+        btn.className = `btn toon-action-btn tv-nav-item ${isActive ? 'active' : ''}`;
+        btn.style.cssText = isActive
+          ? 'background:var(--cine-primary);color:#050505;border-color:var(--cine-primary);font-weight:800;padding:6px 14px;border-radius:8px;white-space:nowrap;flex-shrink:0;'
+          : (isNoAds ? 'background:rgba(220,252,53,0.1);color:#dcfc35;border:1px solid rgba(220,252,53,0.3);padding:6px 14px;border-radius:8px;white-space:nowrap;flex-shrink:0;' : 'background:#1a1a1a;color:#cbd5e1;border:1px solid rgba(255,255,255,0.12);padding:6px 14px;border-radius:8px;white-space:nowrap;flex-shrink:0;');
+        btn.innerHTML = `${esc(srv.name)}${isNoAds ? ' <span style="font-size:10px;opacity:0.9;">🛡️</span>' : ''}`;
+        btn.onclick = () => {
+          changeDeskCineServer(idx);
+          try { btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } catch(e){}
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function changeDeskCineServer(idx) {
+      const servers = cineDeskState.currentWatchData.servers;
+      if (!servers || !servers[idx]) return;
+      cineDeskState.currentWatchData.serverIndex = idx;
+      localStorage.setItem('preferred_cinestream_server', servers[idx].id);
+
+      $('#desk-cine-servers-row')?.querySelectorAll('.btn').forEach((b, i) => {
+        const isActive = i === idx;
+        const isNoAds = servers[i]?.name?.includes('(No Ads)');
+        b.style.cssText = isActive
+          ? 'background:var(--cine-primary);color:#050505;border-color:var(--cine-primary);font-weight:800;padding:6px 14px;border-radius:8px;white-space:nowrap;flex-shrink:0;'
+          : (isNoAds ? 'background:rgba(220,252,53,0.1);color:#dcfc35;border:1px solid rgba(220,252,53,0.3);padding:6px 14px;border-radius:8px;white-space:nowrap;flex-shrink:0;' : 'background:#1a1a1a;color:#cbd5e1;border:1px solid rgba(255,255,255,0.12);padding:6px 14px;border-radius:8px;white-space:nowrap;flex-shrink:0;');
+      });
+
+      loadDeskCineServerUrl(servers[idx].url);
+    }
+
+    function loadDeskCineServerUrl(url) {
+      const iframe = $('#desk-cine-active-iframe');
+      const loader = $('#desk-cine-player-loader');
+      if (loader) loader.style.display = 'flex';
+      iframe.src = url;
+      iframe.onload = () => {
+        setTimeout(() => { if (loader) loader.style.display = 'none'; }, 800);
+      };
+    }
+
+    function deskCineNavEpisode(delta) {
+      const data = cineDeskState.currentWatchData;
+      if (data.type !== 'tv') return;
+      const newEp = data.epNum + delta;
+      if (newEp < 1) return;
+      openDeskCineWatch(data.id, 'tv', data.seasonNum, newEp, '', data.title);
+    }
+
+    function closeCineStreamWatch() {
+      const scrim = $('#cinestream-watch-scrim');
+      if (scrim) scrim.classList.remove('on');
+      $('#desk-cine-active-iframe').src = 'about:blank';
+      document.body.style.overflow = '';
+    }
+
     function openToonplayHub() {
       closeSourceHub(false);
       currentMode = 'toonplay';
@@ -17803,6 +18916,14 @@
       // On non-TV desktop/mobile browsers, 'tv-mode' is only present if user explicitly toggled TV mode.
       const shouldKeepTvMode = isTvDetected || mode === 'tv';
       document.body.classList.toggle('tv-mode', shouldKeepTvMode);
+      document.documentElement.classList.toggle('tv-mode-html', shouldKeepTvMode);
+      if (shouldKeepTvMode) {
+        document.documentElement.style.scrollbarWidth = 'none';
+        document.body.style.scrollbarWidth = 'none';
+      } else {
+        document.documentElement.style.scrollbarWidth = '';
+        document.body.style.scrollbarWidth = '';
+      }
 
       if (isTvDetected) {
         localStorage.setItem('sdk_view_mode', mode);
@@ -18605,6 +19726,9 @@
                 $('#btn-watchlist')?.click();
               }
               setTimeout(() => setTvFocus(0), 120);
+                        } else if (target === 'cinestream') {
+              closeSourceHub(false);
+              openCineStreamHub();
             } else if (target === 'toonplay') {
               closeSourceHub(false);
               openToonplayHub();
@@ -18899,6 +20023,18 @@
       // 3. Regular single-back stack navigation
       if (currentSourceHubId) {
         closeSourceHub(true);
+        return true;
+      }
+      if (currentMode === 'cinestream') {
+        closeCineStreamHub(true);
+        return true;
+      }
+      if ($('#cinestream-watch-scrim')?.classList.contains('on')) {
+        closeCineStreamWatch();
+        return true;
+      }
+      if ($('#cinestream-info-scrim')?.classList.contains('on')) {
+        closeCineStreamInfo();
         return true;
       }
       if (currentMode === 'toonplay') {
@@ -19768,6 +20904,7 @@
     initTvKeyboard();
     initTvSearchHeader();
     initToonplayHub();
+      setupDeskCineCategories();
     updateWatchlistUI();
     restorePlayerPreferences();
     fetchStats();
@@ -21187,8 +22324,8 @@
     }
 
 
+  
   </script>
-
 
 </body>
 

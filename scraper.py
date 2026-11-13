@@ -784,10 +784,10 @@ def fetch_download_details(topic_url: str) -> dict:
     clean_url = _clean_topic_fetch_url(topic_url)
     html = ""
 
-    # 1. Direct fetch with 8s timeout (verify content contains real torrent attachment or magnet)
+    # 1. Direct fetch with fast 2.5s timeout (verify content contains real torrent attachment or magnet)
     for candidate in [clean_url, topic_url]:
         try:
-            resp = _SESSION.get(candidate, timeout=8)
+            resp = _orig_session_get(candidate, headers=HEADERS, timeout=2.5)
             if resp.status_code == 200 and ("attachment.php" in resp.text or "magnet:?" in resp.text):
                 html = resp.text
                 break

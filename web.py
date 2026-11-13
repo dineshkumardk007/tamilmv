@@ -29,6 +29,8 @@ from isaimini import db as isaimini_db
 from isaimini import scraper as isaimini_scraper
 from toonplay import db as toonplay_db
 from toonplay import scraper as toonplay_scraper
+from cinestream import db as cinestream_db
+from cinestream import scraper as cinestream_scraper
 
 BASE_DIR = Path(__file__).parent
 STATIC_DIR = BASE_DIR / "static"
@@ -224,6 +226,9 @@ def format_isaimini_card(m: dict) -> dict:
 
 
 def format_tmv_card(m: dict) -> dict:
+    url_str = (m.get("topic_url") or m.get("url") or "").lower()
+    if any(k in url_str for k in ("isaidub", "isaimini", "moviesda", "moviezda")):
+        return format_isaimini_card(m)
     m["source"] = "tamilmv"
     m["source_label"] = "Tamil(Torrents)"
     m["is_direct"] = False
@@ -286,8 +291,16 @@ def format_toonplay_card(item: dict) -> dict:
     item_id = item.get("id") or ""
     title = item.get("title") or "Untitled Anime"
     c_type = item.get("content_type") or item.get("type") or "series"
-    image = item.get("image") or ""
-    backdrop = item.get("backdrop") or image
+    image = (
+        item.get("image")
+        or item.get("poster_url")
+        or item.get("poster")
+        or item.get("thumbnail")
+        or item.get("backdrop")
+        or item.get("background")
+        or ""
+    )
+    backdrop = item.get("backdrop") or item.get("background") or image
     overview = item.get("overview") or "Anime & Cartoon series with multi-audio streams."
     year_val = item.get("year")
     year = int(year_val) if (str(year_val).isdigit()) else None
@@ -329,6 +342,53 @@ def format_toonplay_card(item: dict) -> dict:
         "is_direct": True,
         "has_direct_link": True,
         "is_toonplay": True,
+        "genres": genres,
+    }
+
+
+def format_cinestream_card(item: dict) -> dict:
+    """Format a CineStream movie or TV show into a standardized card."""
+    item_id = str(item.get("id") or item.get("tmdb_id") or "")
+    title = item.get("title") or item.get("name") or "Untitled Title"
+    c_type = item.get("type") or item.get("content_type") or ("tv" if item.get("first_air_date") else "movie")
+    poster = item.get("poster") or item.get("poster_path") or ""
+    if poster and not poster.startswith("http"):
+        poster = f"https://image.tmdb.org/t/p/w500{poster}"
+    backdrop = item.get("backdrop") or item.get("backdrop_path") or poster
+    if backdrop and not backdrop.startswith("http"):
+        backdrop = f"https://image.tmdb.org/t/p/original{backdrop}"
+    overview = item.get("overview") or ""
+    year_val = item.get("year") or (item.get("release_date") or item.get("first_air_date") or "")[:4]
+    year = int(year_val) if str(year_val).isdigit() else None
+    rating = str(round(float(item.get("rating") or item.get("vote_average") or 7.5), 1))
+    genres = item.get("genres") or []
+
+    return {
+        "id": f"cine_{item_id}",
+        "cine_id": item_id,
+        "tmdb_id": int(item_id) if item_id.isdigit() else 0,
+        "imdb_id": item.get("imdb_id") or "",
+        "title": title,
+        "clean_title": title,
+        "year": year,
+        "topic_url": f"/api/cinestream/info?id={item_id}&type={c_type}",
+        "poster_url": poster,
+        "poster": poster,
+        "background": backdrop,
+        "backdrop": backdrop,
+        "quality": "HD 1080p",
+        "language": "English / Multi",
+        "type": c_type,
+        "content_type": c_type,
+        "rating": rating,
+        "synopsis": overview,
+        "plot": overview,
+        "overview": overview,
+        "source": "cinestream",
+        "source_label": "CineStream",
+        "is_direct": True,
+        "has_direct_link": True,
+        "is_cinestream": True,
         "genres": genres,
     }
 
@@ -816,6 +876,12 @@ async def _background_auto_sync():
             except Exception as toon_err:
                 print(f"[Auto-Sync Cron] Anime timely update notice: {toon_err}")
 
+            # 4. CineStream Global Movies & TV catalog warm-up
+            try:
+                await asyncio.to_thread(cinestream_scraper.fetch_home, force_refresh=True)
+            except Exception as cine_err:
+                print(f"[Auto-Sync Cron] CineStream catalog warm-up notice: {cine_err}")
+
             total_added = tmv_added + direct_added
             _LAST_SYNC_TIME = time.time()
             _LAST_SYNC_STATUS = "ok"
@@ -842,6 +908,10 @@ async def lifespan(app: FastAPI):
         toonplay_db.init_db()
     except Exception as e:
         logger.error(f"Failed to init toonplay db: {e}")
+    try:
+        cinestream_db.init_db()
+    except Exception as e:
+        logger.error(f"Failed to init cinestream db: {e}")
 
     # Seed databases from seed_movies.json if DB is empty on fresh container boot
     try:
@@ -1046,6 +1116,14 @@ async def api_recent(
             results = [format_toonplay_card(item) for item in raw]
         except Exception as exc:
             logger.error(f"Error in toonplay recent: {exc}")
+            results = []
+    elif source == "cinestream":
+        try:
+            home_data = await asyncio.to_thread(cinestream_scraper.fetch_home)
+            items = home_data.get("trending", []) or home_data.get("popular_movies", [])
+            results = [format_cinestream_card(m) for m in items[offset:offset+limit]]
+        except Exception as exc:
+            logger.error(f"Error in cinestream recent: {exc}")
             results = []
     else:  # source == "all"
         half_limit = max(limit // 2, 1)
@@ -1696,6 +1774,13 @@ async def api_search(
         except Exception:
             return []
 
+    async def _fetch_cine():
+        try:
+            raw_cine = await asyncio.wait_for(asyncio.to_thread(cinestream_scraper.search, query), timeout=3.0)
+            return [format_cinestream_card(m) for m in raw_cine]
+        except Exception:
+            return []
+
     async def _fetch_tmv():
         try:
             # 1. Fast local database lookup first (instant < 5ms)
@@ -1728,29 +1813,39 @@ async def api_search(
         except Exception:
             return []
 
+    if source == "cinestream":
+        results = await _fetch_cine()
+        return JSONResponse(results)
+
     # Run all source queries in parallel!
-    results_toon, results_tmv, results_isai = await asyncio.gather(
+    results_toon, results_tmv, results_isai, results_cine = await asyncio.gather(
         _fetch_toon(),
         _fetch_tmv(),
         _fetch_isai(),
+        _fetch_cine(),
     )
 
     # Interleave results cleanly across sources
     combined = []
-    i, j, k = 0, 0, 0
-    while i < len(results_isai) or j < len(results_toon) or k < len(results_tmv):
+    i, j, k, c = 0, 0, 0, 0
+    while i < len(results_isai) or j < len(results_toon) or k < len(results_tmv) or c < len(results_cine):
         if i < len(results_isai):
             combined.append(results_isai[i])
             i += 1
         if j < len(results_toon):
             combined.append(results_toon[j])
             j += 1
+        if c < len(results_cine):
+            combined.append(results_cine[c])
+            c += 1
         if k < len(results_tmv):
             combined.append(results_tmv[k])
             k += 1
 
     if source == "toonplay":
         results = results_toon or combined
+    elif source == "cinestream":
+        results = results_cine or combined
     elif source == "tamilmv":
         results = results_tmv or combined
     elif source in ("isaimini", "isaidub"):
@@ -2293,7 +2388,7 @@ async def api_toonplay_search(q: str = Query(..., min_length=1), page: int = 1):
 @app.get("/api/toonplay/info")
 async def api_toonplay_info(id: str = Query(...)):
     """Retrieve full details, seasons, and episodes for a cartoon or anime."""
-    item_id = id.strip()
+    item_id = id.strip().replace("cine_", "")
     if not item_id:
         raise HTTPException(status_code=400, detail="Missing item ID")
 
@@ -2394,7 +2489,7 @@ async def api_toonplay_resolve(
     Resolve stream mirrors and multi-language audio tracks without exposing upstream domains.
     Returns clean internal player links with episode and next/prev metadata.
     """
-    item_id = id.strip()
+    item_id = id.strip().replace("cine_", "")
     if not item_id:
         raise HTTPException(status_code=400, detail="Missing item ID")
 
@@ -2575,7 +2670,7 @@ async def api_toonplay_catalog(
 @app.get("/api/toonplay/download")
 async def api_toonplay_download(id: str = Query(...), s: int = 1, ep: int = 1):
     """Fetch download links (Mega, Google Drive, 480p, 720p, 1080p) for an anime/cartoon episode."""
-    item_id = id.strip()
+    item_id = id.strip().replace("cine_", "")
     if not item_id:
         raise HTTPException(status_code=400, detail="Missing item ID")
     res = await asyncio.to_thread(toonplay_scraper.fetch_download_links, item_id, s, ep)
@@ -2639,6 +2734,147 @@ async def api_toonplay_sync(full: bool = False):
     asyncio.create_task(_run_sync())
     st = toonplay_db.get_stats()
     return JSONResponse({"status": "sync_started", "stats": st})
+
+
+# ==============================================================================
+# CineStream API (Global Movies & TV, Multi-Server, Zero Ads, Ad-Blocked Streams)
+# ==============================================================================
+
+@app.get("/api/cinestream/home")
+async def api_cinestream_home(refresh: bool = False):
+    """Retrieve curated home catalog for CineStream."""
+    data = await asyncio.to_thread(cinestream_scraper.fetch_home, refresh)
+    return JSONResponse({
+        "hero": [format_cinestream_card(m) for m in data.get("hero", [])],
+        "trending": [format_cinestream_card(m) for m in data.get("trending", [])],
+        "popular_movies": [format_cinestream_card(m) for m in data.get("popular_movies", [])],
+        "popular_tv": [format_cinestream_card(m) for m in data.get("popular_tv", [])],
+        "top_rated": [format_cinestream_card(m) for m in data.get("top_rated", [])],
+        "now_playing": [format_cinestream_card(m) for m in data.get("now_playing", [])],
+    })
+
+
+@app.get("/api/cinestream/search")
+async def api_cinestream_search(q: str = Query(..., min_length=1), page: int = 1):
+    """Search CineStream catalog via live API and fast SQLite cache."""
+    results = await asyncio.to_thread(cinestream_scraper.search, q, page)
+    return JSONResponse([format_cinestream_card(m) for m in results])
+
+
+@app.get("/api/cinestream/info")
+async def api_cinestream_info(id: str = Query(...), type: str = Query("movie")):
+    """Retrieve full details, cast, similar titles, and TV seasons for CineStream title."""
+    item_id = id.strip().replace("cine_", "")
+    if not item_id:
+        raise HTTPException(status_code=400, detail="Missing item ID")
+
+    info = await asyncio.to_thread(cinestream_scraper.fetch_info, item_id, type)
+    if not info:
+        raise HTTPException(status_code=404, detail="CineStream title not found")
+
+    return JSONResponse(info)
+
+
+@app.get("/api/cinestream/season")
+async def api_cinestream_season(id: str = Query(...), season: int = Query(1)):
+    """Retrieve episode list for a TV season."""
+    item_id = id.strip().replace("cine_", "")
+    if not item_id:
+        raise HTTPException(status_code=400, detail="Missing item ID")
+
+    episodes = await asyncio.to_thread(cinestream_scraper.fetch_season, item_id, season)
+    return JSONResponse(episodes)
+
+
+@app.get("/api/cinestream/genre")
+async def api_cinestream_genre(genre_id: str = Query(...), type: str = Query("movie"), page: int = Query(1)):
+    """Retrieve items by genre ID."""
+    items = await asyncio.to_thread(cinestream_scraper.fetch_genre, genre_id, type, page)
+    return JSONResponse([format_cinestream_card(m) for m in items])
+
+
+@app.get("/api/cinestream/genres")
+async def api_cinestream_genres(type: str = Query("movie")):
+    """Retrieve full list of genres for movie or tv."""
+    genres = await asyncio.to_thread(cinestream_scraper.fetch_genres_list, type)
+    return JSONResponse(genres)
+
+
+@app.get("/api/cinestream/filter")
+async def api_cinestream_filter(
+    type: str = Query("movie"),
+    q: Optional[str] = None,
+    genre: Optional[str] = None,
+    sort: Optional[str] = "popularity.desc",
+    year: Optional[str] = None,
+    rating: Optional[float] = None,
+    page: int = Query(1)
+):
+    """
+    Search, explore, and filter CineStream movies or TV series matching onstream.vin filters:
+    q (search text), genre, sort, year, rating, and page.
+    """
+    data = await asyncio.to_thread(
+        cinestream_scraper.discover_filter,
+        content_type=type,
+        query=q,
+        genre_id=genre,
+        sort_by=sort,
+        year=year,
+        min_rating=rating,
+        page=page
+    )
+    formatted_results = [format_cinestream_card(m) for m in data.get("results", [])]
+    return JSONResponse({
+        "results": formatted_results,
+        "page": data.get("page", page),
+        "total_pages": data.get("total_pages", 1),
+        "total_results": data.get("total_results", len(formatted_results))
+    })
+
+
+@app.get("/api/cinestream/servers")
+async def api_cinestream_servers(
+    id: str = Query(...),
+    type: str = Query("movie"),
+    s: Optional[int] = None,
+    ep: Optional[int] = None,
+    imdb: Optional[str] = None
+):
+    """
+    Generate ad-free streaming embed servers for movie or TV episode.
+    All servers are formatted for clean sandboxed iframe rendering with zero ads.
+    """
+    item_id = id.strip().replace("cine_", "")
+    if not item_id:
+        raise HTTPException(status_code=400, detail="Missing item ID")
+
+    servers = await asyncio.to_thread(
+        cinestream_scraper.get_stream_servers,
+        item_id=item_id,
+        content_type=type,
+        season=s,
+        episode=ep,
+        imdb_id=imdb
+    )
+    return JSONResponse({
+        "item_id": item_id,
+        "type": type,
+        "season": s,
+        "episode": ep,
+        "servers": servers,
+        "default_server": "cinezo"
+    })
+
+
+@app.get("/api/cinestream/stats")
+async def api_cinestream_stats():
+    """Retrieve database and service diagnostics for the admin panel."""
+    def _get():
+        st = cinestream_db.get_stats()
+        health = cinestream_scraper.ping_service()
+        return {"stats": st, "health": health}
+    return JSONResponse(await asyncio.to_thread(_get))
 
 
 @app.post("/api/refresh")
@@ -2707,7 +2943,10 @@ def strip_site_domains(text: str) -> str:
 
 @app.get("/api/downloads")
 async def api_downloads(url: str = Query(...)):
-    if "1tamilmv" not in url:
+    clean_target_url = domain_manager.rewrite_url_to_active(url)
+    if any(k in clean_target_url.lower() for k in ("moviesda", "isaidub", "isaimini", "moviezda")):
+        return await api_isaimini_files(url=url)
+    if "1tamilmv" not in url and "tamilmv" not in url:
         raise HTTPException(status_code=400, detail="Not a valid topic URL")
     try:
         details = await asyncio.to_thread(scraper.fetch_download_details, url)
@@ -3029,9 +3268,9 @@ async def api_get_domain():
     def _check_all():
         from concurrent.futures import ThreadPoolExecutor
         cfg = domain_manager.load_config()
-        sources = ["tamilmv", "moviesda", "isaidub", "toonplay"]
+        sources = ["tamilmv", "moviesda", "isaidub", "toonplay", "cinestream"]
         results = {}
-        with ThreadPoolExecutor(max_workers=4) as ex:
+        with ThreadPoolExecutor(max_workers=5) as ex:
             futures = {
                 s: ex.submit(domain_manager.check_candidate_health, s, domain_manager.get_active_host(s), 2.0)
                 for s in sources
@@ -3136,9 +3375,17 @@ async def api_stats():
     except Exception:
         pass
 
+    cine_stats = {}
+    cine_count = 0
+    try:
+        cine_stats = cinestream_db.get_stats()
+        cine_count = cine_stats.get("total_items", 0)
+    except Exception:
+        pass
+
     local_ip = get_lan_ip()
 
-    total_database_size = tmv_count + isai_count + toon_count
+    total_database_size = tmv_count + isai_count + toon_count + cine_count
     coverage_pct = "100%" if total_database_size > 0 and missing_posters == 0 else f"{round(((total_database_size - missing_posters) / max(total_database_size, 1)) * 100, 1)}%"
 
     return {
@@ -3147,10 +3394,12 @@ async def api_stats():
         "tamilmv_count": tmv_count,
         "isaimini_count": isai_count,
         "toonplay_count": toon_count,
+        "cinestream_count": cine_count,
         "missing_posters": missing_posters,
         "poster_coverage_pct": coverage_pct,
         "isaimini_stats": isai_stats,
         "toonplay_stats": toon_stats,
+        "cinestream_stats": cine_stats,
         "local_ip": local_ip,
         "port": PORT,
         "network_url": f"http://{local_ip}:{PORT}",
@@ -3161,6 +3410,7 @@ async def api_stats():
             "moviesda": getattr(isaimini_scraper, "get_moviesda_host", lambda: "moviesda.ski")(),
             "isaidub": getattr(isaimini_scraper, "get_isaidub_host", lambda: "isaidub.green")(),
             "toonplay": toonplay_scraper.get_api_host(),
+            "cinestream": cinestream_scraper.get_api_host(),
         },
         "last_sync_time": _LAST_SYNC_TIME,
         "last_sync_status": _LAST_SYNC_STATUS,

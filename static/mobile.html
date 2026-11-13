@@ -229,31 +229,32 @@
     /* HERO SPOTLIGHT BANNER */
     .spotlight-card {
       position: relative;
-      margin: 8px 16px 18px;
-      height: 220px;
-      border-radius: var(--radius-lg);
+      margin: 10px 14px 22px;
+      height: 380px;
+      min-height: 380px;
+      border-radius: 20px;
       overflow: hidden;
       border: 1px solid var(--border);
       background: var(--bg-card);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 18px;
+      padding: 22px 16px;
     }
 
     .spotlight-backdrop {
       position: absolute;
       inset: 0;
       background-size: cover;
-      background-position: center 20%;
+      background-position: center 25%;
       transition: opacity 0.5s;
     }
 
     .spotlight-scrim {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(9, 10, 15, 0.1) 0%, rgba(9, 10, 15, 0.65) 50%, rgba(9, 10, 15, 0.98) 100%);
+      background: linear-gradient(180deg, rgba(9, 10, 15, 0.1) 0%, rgba(9, 10, 15, 0.55) 50%, rgba(9, 10, 15, 0.98) 100%);
     }
 
     .spotlight-content {
@@ -265,7 +266,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .badge-tag {
@@ -301,12 +302,12 @@
     }
 
     .spotlight-title {
-      font-size: 19px;
-      font-weight: 800;
+      font-size: 24px;
+      font-weight: 900;
       color: #fff;
-      line-height: 1.25;
-      margin-bottom: 12px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      line-height: 1.22;
+      margin-bottom: 14px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -2804,6 +2805,753 @@
       flex-shrink: 0;
     }
 
+
+/* ==========================================================================
+   CINESTREAM MOBILE THEME (Neon Lime #DCFC35 & Dark Surface #141414)
+   ========================================================================== */
+:root {
+  --cine-primary: #DCFC35;
+  --cine-primary-hover: #C8EA2E;
+  --cine-bg: #0a0a0a;
+  --cine-card: #141414;
+  --cine-border: rgba(220, 252, 53, 0.22);
+  --cine-glow: rgba(220, 252, 53, 0.25);
+}
+
+.cine-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(220, 252, 53, 0.15);
+  color: var(--cine-primary);
+  border: 1px solid var(--cine-border);
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-badge.cinestream {
+  background: var(--cine-primary);
+  color: #050505;
+  font-weight: 800;
+  border: none;
+}
+
+.cine-badge-rank {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 24px;
+  height: 24px;
+  background: var(--cine-primary);
+  color: #050505;
+  font-weight: 900;
+  font-size: 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+  z-index: 2;
+}
+
+.cine-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 8px 14px;
+  margin: 12px 14px 10px 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.cine-search-bar:focus-within {
+  border-color: var(--cine-primary);
+  box-shadow: 0 0 0 2px var(--cine-glow);
+}
+.cine-search-icon {
+  font-size: 15px;
+  opacity: 0.8;
+}
+.cine-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 13.5px;
+  font-family: inherit;
+}
+.cine-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+.cine-search-clear {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CineStream Hero Spotlight & Auto-Scroll Carousel */
+.cine-spotlight-card {
+  position: relative;
+  margin: 10px 14px 22px 14px;
+  height: 380px;
+  min-height: 380px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid rgba(220, 252, 53, 0.28);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+  touch-action: pan-y;
+  user-select: none;
+}
+.cine-spotlight-backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 25%;
+  filter: brightness(0.85);
+  transition: background-image 0.5s ease-in-out;
+}
+.cine-spotlight-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #0a0a0a 15%, rgba(10,10,10,0.6) 55%, rgba(10,10,10,0.1) 100%);
+}
+.cine-spotlight-content {
+  position: relative;
+  z-index: 2;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cine-spotlight-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.cine-spotlight-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.22;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.9);
+  margin: 0;
+}
+.cine-spotlight-desc {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+.cine-spotlight-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.cine-spotlight-watch-compact {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--cine-primary);
+  color: #050505;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px var(--cine-glow);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  white-space: nowrap;
+}
+.cine-spotlight-watch-compact:active {
+  transform: scale(0.96);
+  filter: brightness(0.9);
+}
+.cine-spotlight-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 4;
+}
+.cine-spotlight-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.cine-spotlight-dot.active {
+  width: 20px;
+  border-radius: 10px;
+  background: var(--cine-primary);
+  box-shadow: 0 0 10px var(--cine-primary);
+}
+
+/* CineStream Top Navigation Tabs (Highlights, Movies, Web Series) */
+.cine-top-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 6px 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.cine-top-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.06);
+  color: var(--text-dim);
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.cine-top-tab-btn.active {
+  background: var(--cine-primary);
+  color: #0a0a0a;
+  border-color: var(--cine-primary);
+  box-shadow: 0 4px 16px var(--cine-glow);
+}
+
+/* CineStream Compact Search Pill Button (Same button-type style as Movies & Web Series) */
+.cine-search-tab-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-dim);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  white-space: nowrap;
+  width: 124px;
+  min-width: 124px;
+  box-sizing: border-box;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+
+.cine-search-tab-pill:focus-within,
+.cine-search-tab-pill.active {
+  width: 175px;
+  min-width: 175px;
+  background: #141414;
+  border-color: var(--cine-primary);
+  box-shadow: 0 0 14px rgba(220, 252, 53, 0.22);
+  color: #fff;
+}
+
+.cine-pill-search-lens {
+  font-size: 13px;
+  line-height: 1;
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.cine-search-tab-pill:focus-within .cine-pill-search-lens,
+.cine-search-tab-pill.active .cine-pill-search-lens {
+  color: var(--cine-primary);
+}
+
+.cine-pill-search-input {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 0;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.cine-pill-search-input::placeholder {
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.cine-pill-search-clear {
+  background: rgba(255, 255, 255, 0.18);
+  border: none;
+  color: #fff;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  margin-left: 2px;
+  transition: all 0.15s ease;
+}
+
+.cine-pill-search-clear:active {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0.9);
+}
+
+/* CineStream Real Website Filter Form */
+.cine-filter-container {
+  margin: 6px 14px 14px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(12px);
+  box-sizing: border-box;
+}
+.cine-filter-search-box {
+  position: relative;
+  width: 100%;
+}
+.cine-filter-search-box input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 10px 38px 10px 36px;
+  font-size: 13px;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.cine-filter-search-box input:focus {
+  border-color: var(--cine-primary);
+  box-shadow: 0 0 0 2px rgba(220,252,53,0.15);
+}
+.cine-filter-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+.cine-filter-search-clear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 14px;
+  padding: 4px;
+  cursor: pointer;
+}
+.cine-filter-grid-selects {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.cine-filter-select {
+  background: #151515;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  box-sizing: border-box;
+}
+.cine-filter-select:focus {
+  border-color: var(--cine-primary);
+}
+.cine-filter-select option {
+  background: #181818;
+  color: #fff;
+}
+.cine-filter-btn {
+  background: var(--cine-primary);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px var(--cine-glow);
+  transition: transform 0.15s ease;
+}
+.cine-filter-btn:active {
+  transform: scale(0.97);
+}
+
+.cine-load-more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(220, 252, 53, 0.1);
+  color: var(--cine-primary);
+  border: 1px solid rgba(220, 252, 53, 0.3);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.cine-load-more-btn:active {
+  transform: scale(0.96);
+  background: var(--cine-primary);
+  color: #050505;
+}
+
+.cine-btn-watch {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--cine-primary);
+  color: #050505;
+  font-weight: 800;
+  font-size: 13.5px;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px var(--cine-glow);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.cine-btn-watch:active {
+  transform: scale(0.97);
+  filter: brightness(0.9);
+}
+.cine-btn-info {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.18);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cine-btn-info:active {
+  background: rgba(255,255,255,0.2);
+}
+
+/* CineStream Modals */
+.cinestream-detail-modal,
+.cinestream-watch-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #0a0a0a;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.cinestream-detail-modal.active,
+.cinestream-watch-modal.active {
+  display: flex;
+}
+.cinestream-detail-hero {
+  position: relative;
+  width: 100%;
+  min-height: 290px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.cinestream-detail-backdrop-blur {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 25%;
+  filter: blur(24px) brightness(0.35);
+  transform: scale(1.15);
+}
+.cinestream-detail-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #0a0a0a 15%, rgba(10,10,10,0.55) 60%, rgba(10,10,10,0.2) 100%);
+}
+.cine-detail-hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+.cine-detail-poster-wrap {
+  width: 130px;
+  height: 195px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.85);
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #141414;
+  aspect-ratio: 2/3;
+}
+.cine-detail-poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cine-detail-meta-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.cinestream-detail-close,
+.cinestream-watch-back {
+  position: relative;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.cinestream-detail-body {
+  position: relative;
+  z-index: 2;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Server Chips */
+.cine-chip-btn {
+  padding: 7px 14px;
+  background: #141414;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #cbd5e1;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.cine-chip-btn:active {
+  transform: scale(0.96);
+}
+.cine-chip-btn.active {
+  background: var(--cine-primary);
+  color: #050505;
+  border-color: var(--cine-primary);
+  font-weight: 800;
+  box-shadow: 0 2px 10px var(--cine-glow);
+}
+
+/* Episode Cards in Watch & Detail */
+.cine-watch-ep-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #141414;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.cine-watch-ep-card:active {
+  background: #1a1a1a;
+}
+.cine-watch-ep-card.playing {
+  border-color: var(--cine-primary);
+  background: rgba(220, 252, 53, 0.08);
+}
+.cine-watch-ep-thumb {
+  width: 90px;
+  height: 52px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-color: #222;
+  flex-shrink: 0;
+  position: relative;
+}
+.cine-watch-ep-info {
+  flex: 1;
+  min-width: 0;
+}
+.cine-watch-ep-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cine-primary);
+  text-transform: uppercase;
+}
+.cine-watch-ep-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+
+/* CineStream Shelf & Modal Horizontal Tracks */
+#tab-cinestream .shelf-track,
+.cinestream-detail-modal .shelf-track,
+#cine-cast-track,
+#cine-recs-track,
+.shelf-scroll-track {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 0 16px !important;
+  scroll-snap-type: x mandatory !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+#tab-cinestream .shelf-track::-webkit-scrollbar,
+.cinestream-detail-modal .shelf-track::-webkit-scrollbar,
+#cine-cast-track::-webkit-scrollbar,
+#cine-recs-track::-webkit-scrollbar,
+.shelf-scroll-track::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+#tab-cinestream .shelf-track > .poster-card,
+#cine-recs-track > .poster-card {
+  flex: 0 0 120px !important;
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+  scroll-snap-align: start !important;
+}
+
+#cine-cast-track > div {
+  flex: 0 0 75px !important;
+  width: 75px !important;
+  min-width: 75px !important;
+  scroll-snap-align: start !important;
+}
+
+.cine-player-ctrl-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.cine-btn-util {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.cine-btn-util:active {
+  background: var(--cine-primary);
+  color: #050505;
+  border-color: var(--cine-primary);
+}
 </style>
 </head>
 
@@ -2910,24 +3658,6 @@
         <span class="anime-search-pill">Anime</span>
       </div>
 
-      <!-- Anime Filter Chips -->
-      <div class="filter-chips-bar" id="anime-source-chips">
-        <button class="chip-btn active" data-anime-filter="all">✨ All Universe</button>
-        <button class="chip-btn" data-anime-filter="trending">🔥 Trending Series</button>
-        <button class="chip-btn" data-anime-filter="latest">⚡ Latest Releases</button>
-        <button class="chip-btn" data-anime-filter="movies">🍿 Anime Movies</button>
-        <button class="chip-btn" data-anime-filter="kids">🧒 Kids &amp; Cartoons</button>
-      </div>
-
-      <!-- Anime Dub Audio Chips -->
-      <div class="filter-chips-bar" id="anime-dub-chips" style="padding-top: 0; padding-bottom: 8px;">
-        <button class="chip-btn active" data-anime-dub="all">All Audio</button>
-        <button class="chip-btn" data-anime-dub="tamil">⚡ Tamil Dub</button>
-        <button class="chip-btn" data-anime-dub="hindi">🇮🇳 Hindi Dub</button>
-        <button class="chip-btn" data-anime-dub="telugu">🍿 Telugu Dub</button>
-        <button class="chip-btn" data-anime-dub="english">🌐 English</button>
-      </div>
-
       <!-- Anime Hero Spotlight Banner -->
       <div class="spotlight-card" id="anime-spotlight" style="display:none;">
         <div class="spotlight-backdrop" id="anime-spotlight-bg"></div>
@@ -2966,6 +3696,115 @@
       </section>
     </div>
 
+    
+    <!-- CINESTREAM GLOBAL MOVIES & TV DECK -->
+    <div class="tab-view" id="tab-cinestream">
+      <!-- CineStream Top Nav Menu (All Highlights | Movies | Web Series | Search Pill Button) -->
+      <div class="cine-top-tabs-bar" id="cine-top-tabs">
+        <button type="button" class="cine-top-tab-btn active" id="cine-tab-btn-home" onclick="switchCineTopTab('home')">
+          <span>✨</span> <span>Highlights</span>
+        </button>
+        <button type="button" class="cine-top-tab-btn" id="cine-tab-btn-movies" onclick="switchCineTopTab('movie')">
+          <span>🎬</span> <span>Movies</span>
+        </button>
+        <button type="button" class="cine-top-tab-btn" id="cine-tab-btn-series" onclick="switchCineTopTab('tv')">
+          <span>📺</span> <span>Web Series</span>
+        </button>
+        <!-- Compact Search Bar (Same button-type style as Movies & Web Series buttons) -->
+        <div class="cine-top-tab-btn cine-search-tab-pill" id="cine-top-search-pill" onclick="focusCinePillSearch()">
+          <span class="cine-pill-search-lens">🔍</span>
+          <input type="text" id="cine-main-search-input" class="cine-pill-search-input" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <button type="button" id="cine-main-search-clear" class="cine-pill-search-clear" style="display:none;" onclick="clearCineMainSearch(event)" aria-label="Clear">✕</button>
+        </div>
+      </div>
+
+      <!-- Real Website Filter Bar: [ ALL GENRES, POPULAR, YEAR, AGE RATING, FILTER ] (Hidden on Highlights) -->
+      <form class="cine-filter-container" id="cine-filter-form" style="display:none;" onsubmit="handleCineFilterSubmit(event)">
+        <div class="cine-filter-grid-selects">
+          <!-- All Genres -->
+          <select id="cine-filter-genre" class="cine-filter-select">
+            <option value="">All Genres</option>
+          </select>
+          <!-- Popular / Sort -->
+          <select id="cine-filter-sort" class="cine-filter-select">
+            <option value="popularity.desc">Popular</option>
+            <option value="release_date.desc">Newest</option>
+            <option value="vote_average.desc">Top Rated</option>
+          </select>
+          <!-- Year -->
+          <select id="cine-filter-year" class="cine-filter-select">
+            <option value="">Year</option>
+          </select>
+          <!-- Age Rating / Stars -->
+          <select id="cine-filter-rating" class="cine-filter-select">
+            <option value="">Any Rating</option>
+            <option value="9">9+ Stars</option>
+            <option value="8">8+ Stars</option>
+            <option value="7">7+ Stars</option>
+            <option value="6">6+ Stars</option>
+            <option value="5">5+ Stars</option>
+          </select>
+        </div>
+        <button type="submit" class="cine-filter-btn" id="cine-btn-apply-filter">
+          <span>⚡</span> <span>Filter</span>
+        </button>
+      </form>
+
+      <!-- CineStream Hero Carousel (5 Trending Movies Auto-Scroll) -->
+      <div class="cine-spotlight-card" id="cine-spotlight" style="display:none;">
+        <div class="cine-spotlight-backdrop" id="cine-spotlight-bg"></div>
+        <div class="cine-spotlight-scrim"></div>
+        <div class="cine-spotlight-content">
+          <div class="cine-spotlight-meta-row">
+            <span class="cine-badge" id="cine-spotlight-badge">TRENDING NOW</span>
+            <span class="badge-tag quality" style="background:rgba(220,252,53,0.15);color:var(--cine-primary);border:1px solid rgba(220,252,53,0.3);">1080p Ultra HD</span>
+            <span class="badge-tag" id="cine-spotlight-rating" style="background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.3);">⭐ 8.5</span>
+            <span class="badge-tag" id="cine-spotlight-year">2026</span>
+          </div>
+          <h2 class="cine-spotlight-title" id="cine-spotlight-title">Featured Movie</h2>
+          <p class="cine-spotlight-desc" id="cine-spotlight-desc"></p>
+          <div class="cine-spotlight-actions" style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button type="button" class="cine-spotlight-watch-compact" id="cine-spotlight-watch">
+                <span>▶</span> <span>Watch Now</span>
+              </button>
+              <button type="button" class="cine-btn-info" id="cine-spotlight-info" title="Details &amp; Episodes">ℹ</button>
+            </div>
+            <!-- Pagination Dots (1 to 5) -->
+            <div class="cine-spotlight-dots" id="cine-spotlight-dots"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shelves Container -->
+      <div id="cine-shelves-container">
+        <!-- Rendered dynamically from /api/cinestream/home -->
+      </div>
+
+      <!-- Dynamic Full Catalog / Search Results Grid -->
+      <section class="catalog-section" id="cine-catalog-section" style="display:none;">
+        <div class="catalog-header">
+          <h3 class="catalog-title" id="cine-catalog-title">Explore Catalog</h3>
+          <span class="shelf-count" id="cine-catalog-count">CineStream</span>
+        </div>
+        <div class="catalog-grid" id="cine-catalog-grid"></div>
+
+        <!-- Infinite Scroll & Load More Container -->
+        <div id="cine-load-more-wrap" style="display:none;padding:22px 14px 44px 14px;text-align:center;">
+          <div id="cine-load-more-spinner" style="display:none;flex-direction:column;align-items:center;gap:8px;">
+            <div class="spinner-sm" style="border-top-color:var(--cine-primary);margin:0 auto;"></div>
+            <span style="font-size:12px;color:#94a3b8;font-weight:600;">Loading more titles…</span>
+          </div>
+          <button type="button" id="cine-btn-load-more" class="cine-load-more-btn" onclick="loadNextCineFilterPage()">
+            <span>⬇</span> <span>Load More</span>
+          </button>
+          <div id="cine-end-notice" style="display:none;font-size:12px;color:var(--text-muted);font-weight:600;padding:8px 0;">
+            ✓ You've reached the end of the catalog
+          </div>
+        </div>
+      </section>
+    </div>
+
     <!-- SEARCH TAB -->
     <div class="tab-view search-view" id="tab-search">
       <div class="search-input-box">
@@ -2985,6 +3824,7 @@
         <button class="chip-btn" data-search-source="direct_tamil">⚡ Tamil Direct</button>
         <button class="chip-btn" data-search-source="dubbed">🎙️ TamDub</button>
         <button class="chip-btn" data-search-source="toonplay_anime">🎌 Anime</button>
+        <button class="chip-btn" data-search-source="cinestream">🎬 CineStream</button>
       </div>
 
       <div class="quick-tags-wrap" id="m-search-tags">
@@ -3003,41 +3843,8 @@
       </div>
     </div>
 
-    <!-- HUBS TAB (Torrents 1st Order) -->
-    <div class="tab-view" id="tab-hubs">
-      <h2 class="view-heading"><span>⚡</span> OTT Streaming Hubs</h2>
-      <div class="settings-list">
-        <div class="settings-card" onclick="filterBySource('torrents')">
-          <div class="settings-info">
-            <h4>🧲 4K UHD Torrents (1TamilMV)</h4>
-            <p>1080p/4K high-bitrate torrent magnets &amp; .torrent downloads</p>
-          </div>
-          <button class="settings-btn" style="color:var(--accent-gold);border-color:rgba(255,179,64,0.3);">Browse
-            ›</button>
-        </div>
-        <div class="settings-card" onclick="filterBySource('direct_tamil')">
-          <div class="settings-info">
-            <h4>⚡ Tamil Movies (Direct MP4)</h4>
-            <p>1080p/720p direct streaming, zero torrents</p>
-          </div>
-          <button class="settings-btn">Browse ›</button>
-        </div>
-        <div class="settings-card" onclick="filterBySource('dubbed')">
-          <div class="settings-info">
-            <h4>🎙️ TamDub (Tamil Dubbed)</h4>
-            <p>Hollywood, Bollywood &amp; Korean Tamil dubs</p>
-          </div>
-          <button class="settings-btn">Browse ›</button>
-        </div>
-        <div class="settings-card" onclick="switchTab('tab-anime')">
-          <div class="settings-info">
-            <h4>🎌 Anime &amp; Cartoon Universe</h4>
-            <p>Multi-Audio Anime series, Naruto, Dragon Ball, Shinchan, Cartoons</p>
-          </div>
-          <button class="settings-btn" style="color:#ff4d8d;border-color:rgba(255,77,141,0.3);">Explore ›</button>
-        </div>
-      </div>
-    </div>
+    <!-- HUBS TAB (Preserved for backward-compat) -->
+    <div class="tab-view" id="tab-hubs" style="display:none;"></div>
 
     <!-- WATCHLIST TAB -->
     <div class="tab-view" id="tab-watchlist">
@@ -3087,6 +3894,46 @@
           <button class="settings-btn" id="m-btn-go-desktop">Switch 💻</button>
         </div>
       </div>
+
+      <!-- OTT Streaming Hubs inside Settings -->
+      <h3 class="view-heading" style="margin-top:24px;font-size:16px;"><span>⚡</span> OTT Streaming Hubs</h3>
+      <div class="settings-list">
+        <div class="settings-card" onclick="filterBySource('torrents')">
+          <div class="settings-info">
+            <h4>🧲 4K UHD Torrents (1TamilMV)</h4>
+            <p>1080p/4K high-bitrate torrent magnets &amp; .torrent downloads</p>
+          </div>
+          <button class="settings-btn" style="color:var(--accent-gold);border-color:rgba(255,179,64,0.3);">Browse ›</button>
+        </div>
+        <div class="settings-card" onclick="filterBySource('direct_tamil')">
+          <div class="settings-info">
+            <h4>⚡ Tamil Movies (Direct MP4)</h4>
+            <p>1080p/720p direct streaming, zero torrents</p>
+          </div>
+          <button class="settings-btn">Browse ›</button>
+        </div>
+        <div class="settings-card" onclick="filterBySource('dubbed')">
+          <div class="settings-info">
+            <h4>🎙️ TamDub (Tamil Dubbed)</h4>
+            <p>Hollywood, Bollywood &amp; Korean Tamil dubs</p>
+          </div>
+          <button class="settings-btn">Browse ›</button>
+        </div>
+        <div class="settings-card" onclick="switchTab('tab-anime')">
+          <div class="settings-info">
+            <h4>🎌 Anime &amp; Cartoon Universe</h4>
+            <p>Multi-Audio Anime series, Naruto, Dragon Ball, Shinchan, Cartoons</p>
+          </div>
+          <button class="settings-btn" style="color:#ff4d8d;border-color:rgba(255,77,141,0.3);">Explore ›</button>
+        </div>
+        <div class="settings-card" onclick="switchTab('tab-cinestream')">
+          <div class="settings-info">
+            <h4>🎬 CineStream Global Deck</h4>
+            <p>Movies &amp; Series with 30 fast streaming servers</p>
+          </div>
+          <button class="settings-btn" style="color:var(--cine-primary);border-color:rgba(220,252,53,0.3);">Watch ›</button>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -3101,13 +3948,9 @@
       <span class="nav-icon">🎌</span>
       <span class="nav-label">Anime &amp; Toons</span>
     </button>
-    <button class="nav-tab-btn" data-tab="tab-search">
-      <span class="nav-icon">🔍</span>
-      <span class="nav-label">Search</span>
-    </button>
-    <button class="nav-tab-btn" data-tab="tab-hubs">
-      <span class="nav-icon">⚡</span>
-      <span class="nav-label">Hubs</span>
+    <button class="nav-tab-btn" data-tab="tab-cinestream" id="btn-tab-cinestream">
+      <span class="nav-icon">🎬</span>
+      <span class="nav-label">CineStream</span>
     </button>
     <button class="nav-tab-btn" data-tab="tab-watchlist">
       <span class="nav-icon">♥</span>
@@ -3118,6 +3961,157 @@
       <span class="nav-label">Settings</span>
     </button>
   </nav>
+
+  
+  <!-- CINESTREAM DETAIL MODAL -->
+  <div class="cinestream-detail-modal" id="m-cinestream-detail-modal">
+    <div class="cinestream-detail-hero" id="cine-modal-hero">
+      <div class="cinestream-detail-backdrop-blur" id="cine-modal-hero-bg"></div>
+      <div class="cinestream-detail-scrim"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;position:relative;z-index:3;">
+        <button class="cinestream-detail-close" id="cine-modal-close" onclick="closeCineStreamDetails()" title="Close">‹</button>
+        <span class="cine-badge" id="cine-view-type-badge">1080p Ultra HD</span>
+      </div>
+      <div class="cine-detail-hero-content">
+        <div class="cine-detail-poster-wrap">
+          <img id="cine-detail-full-poster" class="cine-detail-poster-img" src="/favicon.svg" alt="Poster" referrerpolicy="no-referrer" onerror="handlePosterError(this)">
+        </div>
+        <div class="cine-detail-meta-col">
+          <div class="anime-hero-sub" style="margin-bottom:4px;">
+            <span id="cine-view-type" style="color:var(--cine-primary);font-weight:800;">MOVIE</span>
+            <span>•</span>
+            <span id="cine-view-year">2026</span>
+            <span>•</span>
+            <span id="cine-view-rating" style="color:#ffd700;">⭐ 8.4</span>
+          </div>
+          <h1 class="anime-main-title" id="cine-view-title" style="margin:0 0 8px 0;font-size:19px;line-height:1.2;">Movie Title</h1>
+          <div class="anime-actions-row" style="margin-top:auto;">
+            <button class="cine-btn-watch" id="cine-view-btn-watch" style="flex:1;padding:8px 12px;font-size:12.5px;">
+              <span>▶</span> <span>Watch Now</span>
+            </button>
+            <button class="anime-btn-fav" id="cine-view-btn-fav" style="padding:8px 10px;font-size:12.5px;">
+              <span id="cine-view-fav-heart">♥</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cinestream-detail-body">
+      <!-- Story Overview -->
+      <div class="anime-overview-box">
+        <h3 class="anime-section-title" style="color:var(--cine-primary);">Story Overview</h3>
+        <p class="anime-overview-text" id="cine-view-overview">Overview text...</p>
+      </div>
+
+      <!-- Genres Cloud -->
+      <div id="cine-view-genres-box">
+        <div class="anime-pills-wrap" id="cine-view-genres-cloud"></div>
+      </div>
+
+      <!-- TV Seasons & Episodes Picker -->
+      <div id="cine-seasons-section" style="display:none;">
+        <h3 class="anime-section-title" style="color:var(--cine-primary);display:flex;align-items:center;justify-content:space-between;">
+          <span>Episodes</span>
+          <span id="cine-ep-counter" style="font-size:12px;color:var(--text-muted);font-weight:normal;">Season 1</span>
+        </h3>
+        <div class="anime-chips-row" id="cine-seasons-chips" style="margin-bottom:12px;"></div>
+        <div style="display:flex;flex-direction:column;gap:8px;" id="cine-episodes-list"></div>
+      </div>
+
+      <!-- Cast Carousel -->
+      <div id="cine-cast-section">
+        <h3 class="anime-section-title" style="color:var(--cine-primary);margin-bottom:10px;">Top Cast</h3>
+        <div class="shelf-track" id="cine-cast-track" style="padding-bottom:6px;"></div>
+      </div>
+
+      <!-- Similar Recommendations -->
+      <div id="cine-recs-section">
+        <h3 class="anime-section-title" style="color:var(--cine-primary);margin-bottom:10px;">More Like This</h3>
+        <div class="shelf-track" id="cine-recs-track" style="padding-bottom:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CINESTREAM WATCH MODAL (Ad-Free Sandboxed Video Player) -->
+  <div class="cinestream-watch-modal" id="m-cinestream-watch-modal">
+    <!-- Header Bar -->
+    <div class="anime-watch-header" style="border-bottom:1px solid rgba(220,252,53,0.15);">
+      <button class="cinestream-watch-back" id="cine-watch-back" onclick="closeCineStreamWatch()" title="Back">‹</button>
+      <div class="anime-watch-title-block">
+        <div class="anime-watch-main-title" id="cine-watch-title">CineStream</div>
+        <div class="anime-watch-sub-title" id="cine-watch-sub">Now Playing</div>
+      </div>
+      <div class="anime-watch-header-right">
+        <span class="cine-badge" id="cine-watch-badge">HD</span>
+      </div>
+    </div>
+
+    <!-- 16:9 Aspect Ratio Video Player Stage -->
+    <div class="anime-watch-player-stage">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px 6px 8px;">
+        <div style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--cine-primary);font-weight:800;letter-spacing:0.4px;">
+          <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cine-primary);box-shadow:0 0 6px var(--cine-primary);"></span>
+          🛡️ AD-SHIELD ACTIVE • REDIRECTS &amp; POPUPS BLOCKED
+        </div>
+      </div>
+      <div class="anime-player-box" id="cine-player-box" style="border:1px solid rgba(220,252,53,0.25);">
+        <div class="anime-player-loader" id="cine-player-loader">
+          <div class="spinner-sm" style="border-top-color:var(--cine-primary);"></div>
+          <div style="font-size:11px;color:#cbd5e1;margin-top:6px;">Connecting protected stream mirror…</div>
+        </div>
+        <iframe id="m-cine-active-iframe" src="about:blank"
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
+          allowfullscreen="true"
+          referrerpolicy="no-referrer">
+        </iframe>
+      </div>
+    </div>
+
+    <!-- Controls Panel (Servers & Episode Navigation) -->
+    <div class="anime-watch-body">
+      <!-- Player Utility Strip (Reload, Fullscreen, TV Episode Navigation) -->
+      <div class="cine-player-ctrl-bar">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button type="button" class="cine-btn-util" id="cine-reload-btn" onclick="retryCurrentCineServer()" title="Reload Server">🔄 Reload</button>
+          <button type="button" class="cine-btn-util" id="cine-fs-btn" onclick="toggleCinePlayerFullscreen()" title="Fullscreen Player">⛶ Fullscreen</button>
+        </div>
+        <div class="anime-ep-nav-btns" id="cine-ep-nav-row" style="display:none;">
+          <button type="button" class="anime-nav-btn" id="cine-prev-ep-btn" onclick="cineNavEpisode(-1)">⏮ Prev Ep</button>
+          <button type="button" class="anime-nav-btn" id="cine-next-ep-btn" onclick="cineNavEpisode(1)">Next Ep ⏭</button>
+        </div>
+      </div>
+
+      <!-- Row 1: Stream Servers & Controls -->
+      <div class="anime-ctrl-section">
+        <div class="anime-ctrl-header">
+          <span class="anime-ctrl-label" style="color:var(--cine-primary);">⚡ STREAM SERVERS</span>
+          <span style="font-size:11px;color:var(--text-dim);">🛡️ Ad-Free • 1080p Ultra HD</span>
+        </div>
+        <div class="anime-chips-row" id="cine-watch-servers-chips"></div>
+      </div>
+
+      <!-- TV Up Next Episodes List (For Series) -->
+      <div id="cine-watch-episodes-wrap" style="display:none;margin-top:14px;">
+        <div class="anime-ctrl-header">
+          <span class="anime-ctrl-label" style="color:var(--cine-primary);">📺 UP NEXT EPISODES</span>
+          <span id="cine-watch-season-lbl" style="font-size:11.5px;color:var(--text-muted);">Season 1</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;" id="cine-watch-episodes-list"></div>
+      </div>
+
+      <!-- More Like This Recommendations Shelf (Matching Real Website) -->
+      <div id="cine-watch-recs-wrap" style="margin-top:20px;">
+        <div class="anime-ctrl-header" style="margin-bottom:10px;">
+          <span class="anime-ctrl-label" style="color:var(--cine-primary);display:inline-flex;align-items:center;gap:6px;">
+            <span>✨</span> <span>MORE LIKE THIS</span>
+          </span>
+          <span style="font-size:11px;color:var(--text-dim);">Recommended</span>
+        </div>
+        <div class="shelf-track" id="cine-watch-recs-track" style="display:flex !important; flex-direction:row !important; overflow-x:auto !important; gap:12px; padding:4px 0 16px 0; -webkit-overflow-scrolling:touch;"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Movie Details Bottom Sheet -->
   <!-- ANIME SHOW / MOVIE DETAIL MODAL (Matching User Specification) -->
@@ -3490,6 +4484,10 @@
               <div class="admin-stat-val" id="stat-anime" style="color:#a855f7;">542</div>
               <div class="admin-stat-lbl">ToonPlay Anime</div>
             </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-val" id="stat-cinestream" style="color:var(--cine-primary);">100</div>
+              <div class="admin-stat-lbl">CineStream Titles</div>
+            </div>
           </div>
 
           <!-- Live Domain Diagnostics -->
@@ -3517,7 +4515,7 @@
        MOBILE APPLICATION SCRIPT (PRODUCTION ENGINE)
        ========================================================================== -->
   <script>
-    // Universal ad & popup guard: prevent third-party players or iframes from opening ad tabs
+    // Universal Ad & Redirect Guard: block unauthorized popups and iframe top redirects
     (function() {
       const origOpen = window.open;
       window.open = function(url, target, features) {
@@ -3527,6 +4525,26 @@
         console.warn('[SDK Shield] Neutralized popup window attempt:', url);
         return null;
       };
+
+      // Block attempts by embedded player iframes to navigate parent away from the website
+      window.addEventListener('beforeunload', function(e) {
+        const watchModalActive = document.querySelector('.cinestream-watch-modal.active');
+        if (watchModalActive) {
+          e.preventDefault();
+          e.returnValue = '';
+          return '';
+        }
+      });
+
+      // Anti-Popunder Focus Shield: reclaim focus if an iframe click attempts to unfocus app
+      window.addEventListener('blur', function() {
+        const watchModalActive = document.querySelector('.cinestream-watch-modal.active');
+        if (watchModalActive) {
+          setTimeout(function() {
+            window.focus();
+          }, 30);
+        }
+      });
     })();
 
     const state = {
@@ -3572,7 +4590,8 @@
 
     function getPosterUrl(m) {
       if (!m) return '';
-      return m.poster_url || m.poster || m.image || m.thumbnail || '';
+      const p = m.poster_url || m.poster || m.image || m.backdrop || m.background || m.thumbnail || '';
+      return p.includes('/favicon.svg') ? '' : p;
     }
 
     function getTopicUrl(m) {
@@ -3586,6 +4605,11 @@
       if (!imgEl) return;
       title = title || imgEl.dataset.title || imgEl.alt || '';
 
+      // If source was favicon.svg, clear it so fallback can proceed
+      if (imgEl.src && imgEl.src.includes('favicon.svg')) {
+        imgEl.src = '';
+      }
+
       // Step 0: If URL has -tamil-movie.jpg suffix, try clean official CDN poster
       if (!imgEl.dataset.triedClean && imgEl.src && /-(?:tamil-dubbed-web-series|tamil-web-series|web-series|tamil-dubbed-movie|tamil-movie)\.jpg/i.test(imgEl.src)) {
         imgEl.dataset.triedClean = '1';
@@ -3598,7 +4622,7 @@
         imgEl.dataset.triedFallback = '1';
         const yr = imgEl.dataset.year || (title.match(/\b(19\d\d|20\d\d)\b/) || [])[1] || '';
         const yrParam = yr ? `&year=${encodeURIComponent(yr)}` : '';
-        const curParam = imgEl.src ? `&current_url=${encodeURIComponent(imgEl.src)}` : '';
+        const curParam = (imgEl.src && !imgEl.src.startsWith('data:')) ? `&current_url=${encodeURIComponent(imgEl.src)}` : '';
         fetch(`/api/poster-fallback?title=${encodeURIComponent(title)}${yrParam}${curParam}`)
           .then(r => r.ok ? r.json() : null)
           .then(d => {
@@ -3660,6 +4684,7 @@
       setupNavigation();
       setupPlayer();
       setupSearch();
+      setupCineFilters();
       setupSettings();
       setupEasterEgg();
 
@@ -3840,10 +4865,11 @@
 
       const poster = getPosterUrl(movie);
       const src = (movie.source || '').toLowerCase();
-      const isDirect = movie.is_direct || src === 'isaimini' || src === 'moviesda';
-      const isDubbed = src === 'isaidub' || (movie.topic_url && movie.topic_url.includes('isaidub'));
+      const mobTopicUrl = getTopicUrl(movie) || movie.topic_url || movie.url || '';
+      const isDubbed = src === 'isaidub' || mobTopicUrl.includes('isaidub');
+      const isDirect = isDubbed || movie.is_direct || src === 'isaimini' || src === 'moviesda' || mobTopicUrl.includes('moviesda') || mobTopicUrl.includes('moviezda') || mobTopicUrl.includes('isaimini');
       const isAnime = movie.is_toonplay || src === 'toonplay';
-      const isTorrent = src === 'tamilmv' || (!isDirect && !isDubbed && !isAnime);
+      const isTorrent = !isDirect && !isDubbed && !isAnime;
 
       const badgeCls = isTorrent ? 'torrent' : (isDubbed ? 'dubbed' : (isAnime ? 'anime' : 'direct'));
       const badgeText = isTorrent ? 'Torrent' : (isDubbed ? 'TamDub' : (isAnime ? 'Anime' : 'Direct'));
@@ -3890,11 +4916,7 @@
 
       card.innerHTML = `
         <div class="grid-img-wrap">
-          ${poster ? `
-            <img class="grid-img" src="${esc(poster)}" alt="${esc(movie.title)}" data-title="${esc(movie.title)}" data-year="${movie.year || ''}" referrerpolicy="no-referrer" loading="lazy" onerror="handlePosterError(this)">
-          ` : `
-            <div class="poster-placeholder"><span style="font-size:18px;font-weight:800;color:#a5b4fc;">${esc((movie.title || 'M').slice(0, 3).toUpperCase())}</span></div>
-          `}
+          <img class="grid-img" src="${poster ? esc(poster) : 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'></svg>'}" alt="${esc(movie.title)}" data-title="${esc(movie.title)}" data-year="${movie.year || ''}" referrerpolicy="no-referrer" loading="lazy" onerror="handlePosterError(this)">
           ${movie.rating ? `<div class="card-rating-pill">⭐ ${movie.rating}</div>` : ''}
         </div>
         <div class="poster-info">
@@ -3905,6 +4927,11 @@
           </div>
         </div>
       `;
+
+      if (!poster) {
+        const img = card.querySelector('.grid-img');
+        if (img) handlePosterError(img, movie.title);
+      }
 
       card.onclick = () => openDetails(movie);
       return card;
@@ -4077,10 +5104,11 @@
       $('#sheet-year-badge').textContent = movie.year || '2024';
 
       const src = (movie.source || '').toLowerCase();
-      const isDirect = movie.is_direct || src === 'isaimini' || src === 'moviesda';
-      const isDubbed = src === 'isaidub' || (movie.topic_url && movie.topic_url.includes('isaidub'));
+      const mobTopicUrl = getTopicUrl(movie) || movie.topic_url || movie.url || '';
+      const isDubbed = src === 'isaidub' || mobTopicUrl.includes('isaidub');
+      const isDirect = isDubbed || movie.is_direct || src === 'isaimini' || src === 'moviesda' || mobTopicUrl.includes('moviesda') || mobTopicUrl.includes('moviezda') || mobTopicUrl.includes('isaimini');
       const isAnime = movie.is_toonplay || src === 'toonplay';
-      const isTorrent = src === 'tamilmv' || (!isDirect && !isDubbed && !isAnime);
+      const isTorrent = !isDirect && !isDubbed && !isAnime;
 
       const srcLabel = isTorrent ? '🧲 4K Torrent' : (isDubbed ? '🎙️ TamDub' : (isAnime ? '🎌 Anime' : '⚡ Direct MP4'));
       $('#sheet-source-badge').textContent = srcLabel;
@@ -5093,13 +6121,13 @@
       const card = document.createElement('div');
       card.className = 'poster-card';
 
-      const poster = item.poster_url || item.image || item.backdrop || '/favicon.svg';
+      const poster = getPosterUrl(item);
       const cleanId = (item.toon_id || item.id || '').replace(/^toon_/, '');
       const isMovie = item.content_type === 'movie' || (item.id && String(item.id).includes('movie'));
 
       card.innerHTML = `
         <div class="poster-img-wrap">
-          <img class="poster-img" src="${esc(poster)}" alt="${esc(item.title)}" data-title="${esc(item.title)}" data-year="${item.year || ''}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this)">
+          <img class="poster-img" src="${poster ? esc(poster) : 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'></svg>'}" alt="${esc(item.title)}" data-title="${esc(item.title)}" data-year="${item.year || ''}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this)">
           <span class="card-badge anime">${isMovie ? 'Movie' : 'Series'}</span>
           ${item.rating ? `<div class="card-rating-pill">⭐ ${item.rating}</div>` : ''}
         </div>
@@ -5111,6 +6139,11 @@
           </div>
         </div>
       `;
+
+      if (!poster) {
+        const img = card.querySelector('.poster-img');
+        if (img) handlePosterError(img, item.title);
+      }
 
       card.onclick = () => openAnimeDetails(cleanId);
       return card;
@@ -5166,7 +6199,7 @@
       unique.forEach(item => {
         grid.appendChild(createGridCard({
           title: item.title,
-          poster_url: item.poster_url || item.image || item.backdrop,
+          poster_url: getPosterUrl(item),
           year: item.year || '2024',
           rating: item.rating || '8.5',
           is_toonplay: true,
@@ -6040,6 +7073,7 @@
 
     function switchTab(tabId) {
       state.activeTab = tabId;
+      if (tabId === 'tab-cinestream') fetchCineStreamHome();
       $$('.tab-view').forEach(t => t.classList.remove('active'));
       const target = $(`#${tabId}`);
       if (target) target.classList.add('active');
@@ -6160,7 +7194,7 @@
               toonItems.forEach(item => {
                 resultsGrid.appendChild(createGridCard({
                   title: item.title,
-                  poster_url: item.poster_url || item.image,
+                  poster_url: getPosterUrl(item),
                   year: item.year || '2024',
                   rating: item.rating || '8.5',
                   is_toonplay: true,
@@ -6172,6 +7206,25 @@
           }
         } catch (e) {
           console.warn('Anime search fallback to general search', e);
+        }
+      }
+
+      // Specialized search when CineStream filter is active
+      if (searchFilterSource === 'cinestream') {
+        try {
+          const cineRes = await fetch(`/api/cinestream/search?q=${encodeURIComponent(query)}`);
+          if (cineRes.ok) {
+            const cineItems = await cineRes.json();
+            if (Array.isArray(cineItems) && cineItems.length > 0) {
+              resultsGrid.innerHTML = '';
+              cineItems.forEach(item => {
+                resultsGrid.appendChild(createCineGridCard(item));
+              });
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('CineStream search error:', e);
         }
       }
 
@@ -6342,6 +7395,7 @@
         if (statsRes.tamilmv_count) $('#stat-torrents').textContent = statsRes.tamilmv_count;
         if (statsRes.isaimini_count) $('#stat-direct').textContent = Number(statsRes.isaimini_count).toLocaleString();
         if (statsRes.toonplay_count) $('#stat-anime').textContent = statsRes.toonplay_count;
+        if (statsRes.cinestream_count) $('#stat-cinestream').textContent = statsRes.cinestream_count;
 
         if (netRes.network_url) {
           $('#m-admin-ip').textContent = netRes.network_url.replace('http://', '');
@@ -6368,6 +7422,1127 @@
       } catch (err) {
         console.warn('Error loading admin data:', err);
       }
+    }
+
+    
+    // ==========================================================================
+    // CINESTREAM CLIENT ENGINE (Neon Lime #DCFC35 Identity)
+    // ==========================================================================
+    const cineState = {
+      homeData: null,
+      activeFilter: 'all',
+      activeTab: 'home', // 'home' | 'movie' | 'tv'
+      spotlightItems: [],
+      spotlightIndex: 0,
+      spotlightTimer: null,
+      touchStartX: 0,
+      touchEndX: 0,
+      movieGenres: [],
+      tvGenres: [],
+      filterPage: 1,
+      filterTotalPages: 1,
+      isFilterLoading: false,
+      currentItem: null,
+      currentInfo: null,
+      currentSeasons: [],
+      selectedSeason: 1,
+      currentWatchData: {
+        id: '',
+        type: 'movie',
+        seasonNum: 1,
+        epNum: 1,
+        title: '',
+        epTitle: '',
+        servers: [],
+        serverIndex: 0
+      }
+    };
+
+    async function fetchCineStreamHome(force = false) {
+      setupCineFilters();
+      if (cineState.homeData && !force) return;
+      try {
+        const res = await fetch('/api/cinestream/home');
+        if (!res.ok) throw new Error('CineStream home fetch failed');
+        const data = await res.json();
+        cineState.homeData = data;
+
+        // Render Hero Spotlight Carousel (5 items auto-scroll, matching onstream.vin)
+        const heroPool = (data.hero && data.hero.length > 0) ? data.hero : (data.trending || []);
+        if (heroPool && heroPool.length > 0) {
+          initCineSpotlightCarousel(heroPool);
+        }
+
+        renderCineShelves(data);
+      } catch (err) {
+        console.warn('CineStream home load notice:', err);
+      }
+    }
+
+    // 5-Movie Auto-Scroll Carousel Engine
+    function initCineSpotlightCarousel(items) {
+      if (!items || items.length === 0) return;
+      cineState.spotlightItems = items.slice(0, 5);
+      cineState.spotlightIndex = 0;
+
+      const dotsContainer = $('#cine-spotlight-dots');
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        cineState.spotlightItems.forEach((_, idx) => {
+          const dot = document.createElement('span');
+          dot.className = `cine-spotlight-dot ${idx === 0 ? 'active' : ''}`;
+          dot.title = `Item ${idx + 1}`;
+          dot.onclick = (e) => {
+            e.stopPropagation();
+            setCineSpotlightIndex(idx);
+          };
+          dotsContainer.appendChild(dot);
+        });
+      }
+
+      const banner = $('#cine-spotlight');
+      if (banner && !banner.dataset.swipeBound) {
+        banner.dataset.swipeBound = 'true';
+        banner.addEventListener('touchstart', (e) => {
+          if (e.touches && e.touches[0]) {
+            cineState.touchStartX = e.touches[0].clientX;
+          }
+        }, { passive: true });
+        banner.addEventListener('touchend', (e) => {
+          if (e.changedTouches && e.changedTouches[0]) {
+            cineState.touchEndX = e.changedTouches[0].clientX;
+            const diff = cineState.touchStartX - cineState.touchEndX;
+            if (diff > 45) {
+              nextCineSpotlight();
+            } else if (diff < -45) {
+              prevCineSpotlight();
+            }
+          }
+        }, { passive: true });
+      }
+
+      renderCineSpotlightCurrent();
+      startCineSpotlightTimer();
+    }
+
+    function startCineSpotlightTimer() {
+      if (cineState.spotlightTimer) clearInterval(cineState.spotlightTimer);
+      cineState.spotlightTimer = setInterval(() => {
+        nextCineSpotlight();
+      }, 6000);
+    }
+
+    function nextCineSpotlight() {
+      if (!cineState.spotlightItems || cineState.spotlightItems.length === 0) return;
+      cineState.spotlightIndex = (cineState.spotlightIndex + 1) % cineState.spotlightItems.length;
+      renderCineSpotlightCurrent();
+    }
+
+    function prevCineSpotlight() {
+      if (!cineState.spotlightItems || cineState.spotlightItems.length === 0) return;
+      cineState.spotlightIndex = (cineState.spotlightIndex - 1 + cineState.spotlightItems.length) % cineState.spotlightItems.length;
+      renderCineSpotlightCurrent();
+    }
+
+    function setCineSpotlightIndex(idx) {
+      cineState.spotlightIndex = idx;
+      renderCineSpotlightCurrent();
+      startCineSpotlightTimer();
+    }
+
+    function renderCineSpotlightCurrent() {
+      const items = cineState.spotlightItems;
+      if (!items || items.length === 0) return;
+      const item = items[cineState.spotlightIndex];
+      if (!item) return;
+
+      const banner = $('#cine-spotlight');
+      if (!banner) return;
+      if (cineState.activeTab === 'home') {
+        banner.style.display = 'flex';
+      }
+
+      const bg = item.backdrop || item.poster || '';
+      $('#cine-spotlight-bg').style.backgroundImage = `url('${bg}')`;
+      $('#cine-spotlight-title').textContent = item.title || 'Featured';
+      $('#cine-spotlight-desc').textContent = item.overview || '';
+      $('#cine-spotlight-rating').textContent = item.rating ? `⭐ ${item.rating}` : '⭐ 8.5';
+      $('#cine-spotlight-year').textContent = item.year || '';
+
+      const isMovie = item.type !== 'tv';
+      $('#cine-spotlight-badge').textContent = `TRENDING #${cineState.spotlightIndex + 1} ${isMovie ? 'MOVIE' : 'TV SHOW'}`;
+
+      const cleanId = String(item.id || item.tmdb_id || '').replace(/^cine_/, '');
+      const type = item.type || (isMovie ? 'movie' : 'tv');
+
+      $('#cine-spotlight-watch').onclick = (e) => {
+        e.stopPropagation();
+        openCineStreamWatch(cleanId, type, 1, 1, '', item.title || '');
+      };
+      $('#cine-spotlight-info').onclick = (e) => {
+        e.stopPropagation();
+        openCineStreamDetails(cleanId, type);
+      };
+
+      const dots = document.querySelectorAll('.cine-spotlight-dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === cineState.spotlightIndex);
+      });
+    }
+
+    function renderCineSpotlight(item) {
+      if (cineState.spotlightItems.length > 0) {
+        renderCineSpotlightCurrent();
+      } else if (item) {
+        initCineSpotlightCarousel([item]);
+      }
+    }
+
+    function createCineGridCard(item) {
+      const card = document.createElement('div');
+      card.className = 'grid-card';
+      const cleanId = String(item.id || item.tmdb_id || item.cine_id || '').replace(/^cine_/, '');
+      const type = item.type || item.content_type || (item.first_air_date ? 'tv' : 'movie');
+      const img = item.poster || item.poster_url || item.backdrop || '/favicon.svg';
+
+      card.innerHTML = `
+        <div class="grid-img-wrap">
+          <img class="grid-img" src="${esc(img)}" alt="${esc(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this)">
+          ${item.rating ? `<div class="card-rating-pill">⭐ ${item.rating}</div>` : ''}
+        </div>
+        <div class="poster-info">
+          <div class="poster-title">${esc(item.title)}</div>
+          <div class="poster-meta">
+            <span>${item.year || (type === 'tv' ? 'Series' : 'Movie')}</span>
+            <span>•</span>
+            <span style="color:var(--cine-primary);">${type === 'tv' ? 'TV' : 'Movie'}</span>
+          </div>
+        </div>
+      `;
+
+      card.onclick = () => openCineStreamDetails(cleanId, type);
+      return card;
+    }
+
+    function createCineCard(item, rank = null) {
+      const card = document.createElement('div');
+      card.className = 'poster-card';
+      const cleanId = String(item.id || item.tmdb_id || '').replace(/^cine_/, '');
+      const type = item.type || (item.first_air_date ? 'tv' : 'movie');
+      const img = item.poster || item.backdrop || '/favicon.svg';
+
+      let rankHtml = '';
+      if (rank !== null && rank >= 1 && rank <= 10) {
+        rankHtml = `<span class="cine-badge-rank">${rank}</span>`;
+      }
+
+      card.innerHTML = `
+        <div class="poster-img-wrap">
+          ${rankHtml}
+          <img class="poster-img" src="${esc(img)}" alt="${esc(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="handlePosterError(this)">
+          ${item.rating ? `<span class="card-badge rating" style="left:auto;right:6px;bottom:6px;top:auto;background:rgba(0,0,0,0.7);color:#ffd700;">⭐ ${item.rating}</span>` : ''}
+        </div>
+        <div class="poster-info">
+          <div class="poster-title">${esc(item.title)}</div>
+          <div class="poster-meta">
+            <span>${item.year || (type === 'tv' ? 'Series' : 'Movie')}</span>
+            <span>•</span>
+            <span style="color:var(--cine-primary);">${type === 'tv' ? 'TV' : 'Movie'}</span>
+          </div>
+        </div>
+      `;
+
+      card.onclick = () => openCineStreamDetails(cleanId, type);
+      return card;
+    }
+
+    function renderCineShelves(data) {
+      const container = $('#cine-shelves-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const shelves = [
+        { key: 'trending', title: '⚡ Trending Today', badge: 'Top 10', showRank: true },
+        { key: 'popular_movies', title: '🎬 Popular Movies', badge: 'HD 1080p', showRank: false },
+        { key: 'popular_tv', title: '📺 Binge-Worthy TV Shows', badge: 'Series', showRank: false },
+        { key: 'top_rated', title: '⭐ All-Time Highest Rated', badge: 'Top Rated', showRank: false },
+      ];
+
+      shelves.forEach(shelf => {
+        const items = data[shelf.key] || [];
+        if (!items || items.length === 0) return;
+
+        const sec = document.createElement('section');
+        sec.className = 'shelf-section';
+        sec.innerHTML = `
+          <div class="shelf-header">
+            <h3 class="shelf-title">${shelf.title}</h3>
+            <span class="shelf-count">${shelf.badge}</span>
+          </div>
+          <div class="shelf-track" id="cine-shelf-${shelf.key}"></div>
+        `;
+
+        const track = sec.querySelector(`#cine-shelf-${shelf.key}`);
+        items.forEach((item, idx) => {
+          track.appendChild(createCineCard(item, shelf.showRank ? idx + 1 : null));
+        });
+
+        container.appendChild(sec);
+      });
+    }
+
+    function renderCineCatalogGrid(items, title = 'Explore Catalog', searchQuery = '') {
+      const sec = $('#cine-catalog-section');
+      const grid = $('#cine-catalog-grid');
+      const titleEl = $('#cine-catalog-title');
+      const countEl = $('#cine-catalog-count');
+      const shelves = $('#cine-shelves-container');
+      const spotlight = $('#cine-spotlight');
+
+      if (!items || items.length === 0) {
+        if (searchQuery) {
+          if (shelves) shelves.style.display = 'none';
+          if (spotlight) spotlight.style.display = 'none';
+          if (sec) sec.style.display = 'block';
+          if (titleEl) titleEl.textContent = `No results for "${searchQuery}"`;
+          if (countEl) countEl.textContent = '0 titles';
+          if (grid) {
+            grid.innerHTML = `
+              <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--text-muted);">
+                <span style="font-size: 40px; display: block; margin-bottom: 10px;">🔍</span>
+                <div style="font-size: 15px; font-weight: 700; color: #fff;">No CineStream titles matching "<b>${esc(searchQuery)}</b>"</div>
+                <p style="font-size: 12px; margin-top: 6px; color: #64748b;">Try searching another title, actor, or check spelling</p>
+              </div>
+            `;
+          }
+          return;
+        }
+        if (sec) sec.style.display = 'none';
+        if (shelves) shelves.style.display = 'block';
+        if (spotlight) spotlight.style.display = 'flex';
+        return;
+      }
+
+      if (shelves) shelves.style.display = 'none';
+      if (spotlight) spotlight.style.display = 'none';
+      if (sec) sec.style.display = 'block';
+      if (titleEl) titleEl.textContent = title;
+      if (countEl) countEl.textContent = `${items.length} titles`;
+      if (grid) {
+        grid.innerHTML = '';
+        items.forEach(item => grid.appendChild(createCineGridCard(item)));
+      }
+    }
+
+    // Top Menus & Advanced Filters Engine (Matching onstream.vin)
+    function populateCineYearSelect() {
+      const sel = $('#cine-filter-year');
+      if (!sel || sel.children.length > 1) return;
+      sel.innerHTML = '<option value="">All Years</option>';
+      const curYear = new Date().getFullYear();
+      for (let y = curYear; y >= curYear - 40; y--) {
+        const opt = document.createElement('option');
+        opt.value = String(y);
+        opt.textContent = String(y);
+        sel.appendChild(opt);
+      }
+    }
+
+    async function populateCineGenreSelect(type = 'movie') {
+      const sel = $('#cine-filter-genre');
+      if (!sel) return;
+      const prevVal = sel.value;
+      sel.innerHTML = '<option value="">All Genres</option>';
+      try {
+        const cacheKey = type === 'tv' ? 'tvGenres' : 'movieGenres';
+        if (!cineState[cacheKey] || cineState[cacheKey].length === 0) {
+          const res = await fetch(`/api/cinestream/genres?type=${type}`);
+          if (res.ok) {
+            cineState[cacheKey] = await res.json();
+          }
+        }
+        const genres = cineState[cacheKey] || [];
+        genres.forEach(g => {
+          const opt = document.createElement('option');
+          opt.value = String(g.id);
+          opt.textContent = g.name;
+          sel.appendChild(opt);
+        });
+        if (prevVal) sel.value = prevVal;
+      } catch (e) {
+        console.debug('Failed to load genres:', e);
+      }
+    }
+
+    async function switchCineTopTab(tabName) {
+      cineState.activeTab = tabName;
+      triggerHaptic('light');
+
+      $('#cine-tab-btn-home')?.classList.toggle('active', tabName === 'home');
+      $('#cine-tab-btn-movies')?.classList.toggle('active', tabName === 'movie');
+      $('#cine-tab-btn-series')?.classList.toggle('active', tabName === 'tv');
+
+      const spotlight = $('#cine-spotlight');
+      const shelves = $('#cine-shelves-container');
+      const catalogSec = $('#cine-catalog-section');
+      const filterForm = $('#cine-filter-form');
+      const loadMoreWrap = $('#cine-load-more-wrap');
+      const q = ($('#cine-main-search-input')?.value || '').trim();
+
+      if (tabName === 'home') {
+        if (filterForm) filterForm.style.display = 'none';
+        if (q) {
+          if (spotlight) spotlight.style.display = 'none';
+          if (shelves) shelves.style.display = 'none';
+          if (catalogSec) catalogSec.style.display = 'block';
+          executeCineFilter(1);
+        } else {
+          if (spotlight) spotlight.style.display = 'flex';
+          if (shelves) shelves.style.display = 'block';
+          if (catalogSec) catalogSec.style.display = 'none';
+          if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+        }
+        populateCineGenreSelect('movie');
+      } else {
+        if (filterForm) filterForm.style.display = 'flex';
+        if (spotlight) spotlight.style.display = 'none';
+        if (shelves) shelves.style.display = 'none';
+        if (catalogSec) catalogSec.style.display = 'block';
+        await populateCineGenreSelect(tabName);
+        executeCineFilter(1);
+      }
+    }
+
+    async function loadNextCineFilterPage() {
+      if (cineState.isFilterLoading) return;
+      const q = ($('#cine-main-search-input')?.value || '').trim();
+      if (cineState.activeTab === 'home' && !q) return;
+      if (cineState.filterPage >= cineState.filterTotalPages) return;
+
+      const nextPage = cineState.filterPage + 1;
+      await executeCineFilter(nextPage);
+    }
+
+    async function executeCineFilter(page = 1) {
+      if (cineState.isFilterLoading) return;
+      cineState.isFilterLoading = true;
+      cineState.filterPage = page;
+
+      const q = ($('#cine-main-search-input')?.value || $('#cine-filter-search')?.value || '').trim();
+      const type = (cineState.activeTab === 'home') ? (q ? 'all' : 'movie') : (cineState.activeTab === 'tv' ? 'tv' : 'movie');
+      const isHomeSearch = (cineState.activeTab === 'home');
+      const genre = isHomeSearch ? '' : ($('#cine-filter-genre')?.value || '');
+      const sort = isHomeSearch ? 'popularity.desc' : ($('#cine-filter-sort')?.value || 'popularity.desc');
+      const year = isHomeSearch ? '' : ($('#cine-filter-year')?.value || '');
+      const rating = isHomeSearch ? '' : ($('#cine-filter-rating')?.value || '');
+
+      const sec = $('#cine-catalog-section');
+      const grid = $('#cine-catalog-grid');
+      const titleEl = $('#cine-catalog-title');
+      const countEl = $('#cine-catalog-count');
+      const spotlight = $('#cine-spotlight');
+      const shelves = $('#cine-shelves-container');
+      const loadMoreWrap = $('#cine-load-more-wrap');
+      const loadMoreBtn = $('#cine-btn-load-more');
+      const loadMoreSpinner = $('#cine-load-more-spinner');
+      const endNotice = $('#cine-end-notice');
+
+      if (spotlight) spotlight.style.display = 'none';
+      if (shelves) shelves.style.display = 'none';
+      if (sec) sec.style.display = 'block';
+
+      let displayTitle = isHomeSearch ? 'Search Results' : (type === 'tv' ? 'Web Series' : 'Movies');
+      if (q) {
+        displayTitle = isHomeSearch ? `Results for "${q}"` : `Search ${type === 'tv' ? 'Series' : 'Movies'}: "${q}"`;
+      } else if (genre) {
+        const selGenre = $('#cine-filter-genre');
+        const genreText = selGenre?.options[selGenre.selectedIndex]?.text || 'Genre';
+        displayTitle = `${genreText} ${type === 'tv' ? 'Series' : 'Movies'}`;
+      }
+      if (titleEl) titleEl.textContent = displayTitle;
+
+      if (page === 1) {
+        if (countEl) countEl.textContent = 'Loading…';
+        if (grid) {
+          grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px;"><div class="spinner-sm" style="margin: 0 auto 10px; border-top-color: var(--cine-primary);"></div><span style="font-size: 13px; color: #94a3b8;">Loading catalog…</span></div>';
+        }
+        if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+      } else {
+        if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+        if (loadMoreSpinner) loadMoreSpinner.style.display = 'flex';
+        if (endNotice) endNotice.style.display = 'none';
+      }
+
+      try {
+        const params = new URLSearchParams({
+          type: type,
+          page: page,
+          sort: sort
+        });
+        if (q) params.set('q', q);
+        if (genre) params.set('genre', genre);
+        if (year) params.set('year', year);
+        if (rating) params.set('rating', rating);
+
+        const res = await fetch(`/api/cinestream/filter?${params.toString()}`);
+        if (!res.ok) throw new Error('Filter fetch failed');
+        const data = await res.json();
+        const results = data.results || [];
+        cineState.filterTotalPages = data.total_pages || 1;
+
+        if (countEl) {
+          const totalCount = data.total_results || (results.length * data.total_pages);
+          countEl.textContent = `${totalCount} titles`;
+        }
+
+        if (page === 1) {
+          if (!results || results.length === 0) {
+            if (grid) {
+              grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--text-muted);">
+                  <span style="font-size: 40px; display: block; margin-bottom: 10px;">🔍</span>
+                  <div style="font-size: 15px; font-weight: 700; color: #fff;">No CineStream titles match your filters</div>
+                  <p style="font-size: 12px; margin-top: 6px; color: #64748b;">Try adjusting genres, release year, or rating</p>
+                </div>
+              `;
+            }
+            if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+            cineState.isFilterLoading = false;
+            return;
+          }
+          if (grid) grid.innerHTML = '';
+        }
+
+        if (grid) {
+          results.forEach(item => grid.appendChild(createCineGridCard(item)));
+        }
+
+        // Manage Load More / End notice
+        if (loadMoreWrap) {
+          loadMoreWrap.style.display = 'block';
+          if (loadMoreSpinner) loadMoreSpinner.style.display = 'none';
+          if (page >= cineState.filterTotalPages) {
+            if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+            if (endNotice) endNotice.style.display = 'block';
+          } else {
+            if (loadMoreBtn) loadMoreBtn.style.display = 'inline-flex';
+            if (endNotice) endNotice.style.display = 'none';
+          }
+        }
+
+      } catch (err) {
+        console.warn('CineStream filter error:', err);
+        if (page === 1 && grid) {
+          grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #ef4444;">Failed to load filtered results. Please try again.</div>';
+        }
+        if (loadMoreSpinner) loadMoreSpinner.style.display = 'none';
+        if (loadMoreBtn) loadMoreBtn.style.display = 'inline-flex';
+      } finally {
+        cineState.isFilterLoading = false;
+      }
+    }
+
+    function handleCineFilterSubmit(e) {
+      if (e) e.preventDefault();
+      triggerHaptic('light');
+      executeCineFilter(1);
+    }
+
+    function focusCinePillSearch() {
+      const input = $('#cine-main-search-input');
+      const pill = $('#cine-top-search-pill');
+      if (input) {
+        input.focus();
+        if (pill) pill.classList.add('active');
+      }
+    }
+
+    function clearCineMainSearch(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const input = $('#cine-main-search-input');
+      const clearBtn = $('#cine-main-search-clear');
+      const pill = $('#cine-top-search-pill');
+      if (input) input.value = '';
+      if (clearBtn) clearBtn.style.display = 'none';
+      if (pill) pill.classList.remove('active');
+
+      const legacyInput = $('#cine-filter-search');
+      const legacyClearBtn = $('#cine-filter-search-clear');
+      if (legacyInput) legacyInput.value = '';
+      if (legacyClearBtn) legacyClearBtn.style.display = 'none';
+
+      if (cineState.activeTab === 'home') {
+        const spotlight = $('#cine-spotlight');
+        const shelves = $('#cine-shelves-container');
+        const catalogSec = $('#cine-catalog-section');
+        const loadMoreWrap = $('#cine-load-more-wrap');
+
+        if (spotlight) spotlight.style.display = 'flex';
+        if (shelves) shelves.style.display = 'block';
+        if (catalogSec) catalogSec.style.display = 'none';
+        if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+      } else {
+        executeCineFilter(1);
+      }
+    }
+
+    function clearCineFilterSearch(e) {
+      clearCineMainSearch(e);
+    }
+
+    let cineSearchDebounce = null;
+
+    function setupCineFilters() {
+      populateCineYearSelect();
+      populateCineGenreSelect('movie');
+      setupCineInfiniteScroll();
+
+      const searchInput = $('#cine-main-search-input') || $('#cine-filter-search');
+      const clearBtn = $('#cine-main-search-clear') || $('#cine-filter-search-clear');
+      const pill = $('#cine-top-search-pill');
+
+      if (searchInput && !searchInput.dataset.initialized) {
+        searchInput.dataset.initialized = 'true';
+
+        searchInput.addEventListener('focus', () => {
+          if (pill) pill.classList.add('active');
+        });
+
+        searchInput.addEventListener('blur', () => {
+          if (pill && !searchInput.value.trim()) {
+            pill.classList.remove('active');
+          }
+        });
+
+        searchInput.addEventListener('input', () => {
+          const q = searchInput.value.trim();
+          if (clearBtn) clearBtn.style.display = q ? 'flex' : 'none';
+          if (pill) pill.classList.toggle('active', !!q);
+          clearTimeout(cineSearchDebounce);
+          if (!q) {
+            if (cineState.activeTab === 'home') {
+              const spotlight = $('#cine-spotlight');
+              const shelves = $('#cine-shelves-container');
+              const catalogSec = $('#cine-catalog-section');
+              const loadMoreWrap = $('#cine-load-more-wrap');
+
+              if (spotlight) spotlight.style.display = 'flex';
+              if (shelves) shelves.style.display = 'block';
+              if (catalogSec) catalogSec.style.display = 'none';
+              if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+            } else {
+              executeCineFilter(1);
+            }
+            return;
+          }
+          cineSearchDebounce = setTimeout(() => {
+            executeCineFilter(1);
+          }, 350);
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(cineSearchDebounce);
+            searchInput.blur();
+            executeCineFilter(1);
+          }
+        });
+      }
+
+      // Auto-trigger filter when changing dropdowns
+      ['#cine-filter-genre', '#cine-filter-sort', '#cine-filter-year', '#cine-filter-rating'].forEach(selId => {
+        const el = $(selId);
+        if (el && !el.dataset.bound) {
+          el.dataset.bound = 'true';
+          el.addEventListener('change', () => {
+            executeCineFilter(1);
+          });
+        }
+      });
+    }
+
+    function setupCineInfiniteScroll() {
+      const target = $('#cine-load-more-wrap');
+      if (target && window.IntersectionObserver && !target.dataset.observerAttached) {
+        target.dataset.observerAttached = 'true';
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              if (cineState.activeTab !== 'home' && !cineState.isFilterLoading && cineState.filterPage < cineState.filterTotalPages) {
+                loadNextCineFilterPage();
+              }
+            }
+          });
+        }, { rootMargin: '350px 0px' });
+        observer.observe(target);
+      }
+
+      if (!window.__cineScrollAttached) {
+        window.__cineScrollAttached = true;
+        let scrollThrottle = null;
+        window.addEventListener('scroll', () => {
+          if (scrollThrottle) return;
+          scrollThrottle = setTimeout(() => {
+            scrollThrottle = null;
+            if (cineState.activeTab === 'home' || cineState.isFilterLoading) return;
+            if (cineState.filterPage >= cineState.filterTotalPages) return;
+
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+
+            if (scrollY + windowHeight >= docHeight - 400) {
+              loadNextCineFilterPage();
+            }
+          }, 150);
+        }, { passive: true });
+      }
+    }
+
+    function clearCineSearch() {
+      clearCineFilterSearch();
+    }
+
+    // ==========================================================================
+    // CINESTREAM DETAIL MODAL ENGINE
+    // ==========================================================================
+    async function openCineStreamDetails(itemId, type = 'movie') {
+      const modal = $('#m-cinestream-detail-modal');
+      if (!modal) return;
+      triggerHaptic('medium');
+
+      try {
+        const res = await fetch(`/api/cinestream/info?id=${encodeURIComponent(itemId)}&type=${type}`);
+        if (!res.ok) throw new Error('Failed to fetch details');
+        const info = await res.json();
+        cineState.currentInfo = info;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        const posterImg = info.poster || info.backdrop || '';
+        const posterEl = $('#cine-detail-full-poster');
+        if (posterEl) posterEl.src = posterImg;
+
+        const bg = info.backdrop || info.poster || '';
+        const heroBg = $('#cine-modal-hero-bg');
+        if (heroBg) heroBg.style.backgroundImage = `url('${bg}')`;
+
+        $('#cine-view-type').textContent = info.type === 'tv' ? 'TV SERIES' : 'MOVIE';
+        $('#cine-view-year').textContent = info.year || '';
+        $('#cine-view-rating').textContent = info.rating ? `⭐ ${info.rating}` : '⭐ 8.0';
+        $('#cine-view-title').textContent = info.title || 'Untitled';
+        $('#cine-view-overview').textContent = info.overview || 'No overview available.';
+
+        // Genres
+        const genresCloud = $('#cine-view-genres-cloud');
+        genresCloud.innerHTML = '';
+        (info.genres || []).forEach(g => {
+          const pill = document.createElement('span');
+          pill.className = 'anime-genre-pill';
+          pill.style.cssText = 'border-color:rgba(220,252,53,0.3);color:var(--cine-primary);';
+          pill.textContent = g;
+          genresCloud.appendChild(pill);
+        });
+
+        // Watch button
+        $('#cine-view-btn-watch').onclick = () => {
+          openCineStreamWatch(itemId, info.type, 1, 1, '', info.title);
+        };
+
+        // Watchlist toggle
+        const favBtn = $('#cine-view-btn-fav');
+        const isFav = state.watchlist.some(w => String(w.id) === `cine_${itemId}`);
+        favBtn.classList.toggle('active', isFav);
+        $('#cine-view-fav-heart').textContent = isFav ? '♥' : '♡';
+        favBtn.onclick = () => {
+          toggleWatchlist({
+            id: `cine_${itemId}`,
+            title: info.title,
+            poster_url: info.poster,
+            year: info.year,
+            source: 'cinestream',
+            source_label: 'CineStream'
+          });
+          const nowFav = state.watchlist.some(w => String(w.id) === `cine_${itemId}`);
+          favBtn.classList.toggle('active', nowFav);
+          $('#cine-view-fav-heart').textContent = nowFav ? '♥' : '♡';
+          showToast(nowFav ? 'Added to Watchlist' : 'Removed from Watchlist');
+        };
+
+        // TV Seasons & Episodes
+        const seasonsSec = $('#cine-seasons-section');
+        if (info.type === 'tv' && info.seasons && info.seasons.length > 0) {
+          seasonsSec.style.display = 'block';
+          cineState.currentSeasons = info.seasons;
+          renderCineSeasonTabs(itemId, info.seasons);
+          loadCineSeasonEpisodes(itemId, info.seasons[0].season_number);
+        } else {
+          seasonsSec.style.display = 'none';
+        }
+
+        // Cast
+        const castTrack = $('#cine-cast-track');
+        castTrack.innerHTML = '';
+        const cast = info.cast || [];
+        if (cast.length > 0) {
+          $('#cine-cast-section').style.display = 'block';
+          cast.forEach(c => {
+            const el = document.createElement('div');
+            el.style.cssText = 'display:flex;flex-direction:column;align-items:center;width:75px;flex-shrink:0;text-align:center;gap:4px;';
+            const prof = c.profile || '/favicon.svg';
+            el.innerHTML = `
+              <div style="width:58px;height:58px;border-radius:50%;overflow:hidden;background:#222;border:1.5px solid rgba(220,252,53,0.3);">
+                <img src="${esc(prof)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+              </div>
+              <div style="font-size:11px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;">${esc(c.name)}</div>
+              <div style="font-size:9.5px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;">${esc(c.character)}</div>
+            `;
+            castTrack.appendChild(el);
+          });
+        } else {
+          $('#cine-cast-section').style.display = 'none';
+        }
+
+        // Similar
+        const recsTrack = $('#cine-recs-track');
+        recsTrack.innerHTML = '';
+        const recs = info.similar || [];
+        if (recs.length > 0) {
+          $('#cine-recs-section').style.display = 'block';
+          recs.forEach(r => recsTrack.appendChild(createCineCard(r)));
+        } else {
+          $('#cine-recs-section').style.display = 'none';
+        }
+
+      } catch (err) {
+        showToast('Error loading CineStream details');
+      }
+    }
+
+    function renderCineSeasonTabs(itemId, seasons) {
+      const container = $('#cine-seasons-chips');
+      container.innerHTML = '';
+      seasons.forEach((s, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `anime-chip-btn ${idx === 0 ? 'active' : ''}`;
+        btn.style.cssText = idx === 0 ? 'background:var(--cine-primary);color:#050505;border-color:var(--cine-primary);font-weight:800;' : '';
+        btn.textContent = s.name || `Season ${s.season_number}`;
+        btn.onclick = () => {
+          $$('#cine-seasons-chips .anime-chip-btn').forEach(b => {
+            b.classList.remove('active');
+            b.style.cssText = '';
+          });
+          btn.classList.add('active');
+          btn.style.cssText = 'background:var(--cine-primary);color:#050505;border-color:var(--cine-primary);font-weight:800;';
+          $('#cine-ep-counter').textContent = `Season ${s.season_number}`;
+          loadCineSeasonEpisodes(itemId, s.season_number);
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    async function loadCineSeasonEpisodes(itemId, seasonNum) {
+      const list = $('#cine-episodes-list');
+      list.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px 0;">Loading episodes…</div>';
+
+      try {
+        const res = await fetch(`/api/cinestream/season?id=${encodeURIComponent(itemId)}&season=${seasonNum}`);
+        if (!res.ok) throw new Error('Failed to load season');
+        const episodes = await res.json();
+        list.innerHTML = '';
+
+        episodes.forEach(ep => {
+          const card = document.createElement('div');
+          card.className = 'cine-watch-ep-card';
+          const parentImg = cineState.currentInfo?.backdrop || cineState.currentInfo?.poster || '';
+          const thumb = (ep.still_path && !ep.still_path.includes('/favicon.svg')) ? ep.still_path : parentImg;
+
+          card.innerHTML = `
+            <div class="cine-watch-ep-thumb" style="background-image:url('${esc(thumb)}');background-size:cover;background-position:center;">
+              <span style="position:absolute;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;">▶</span>
+            </div>
+            <div class="cine-watch-ep-info">
+              <div class="cine-watch-ep-num">Episode ${ep.episode_number}</div>
+              <div class="cine-watch-ep-title">${esc(ep.title || `Episode ${ep.episode_number}`)}</div>
+              ${ep.overview ? `<div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px;">${esc(ep.overview)}</div>` : ''}
+            </div>
+          `;
+
+          card.onclick = () => {
+            openCineStreamWatch(itemId, 'tv', seasonNum, ep.episode_number, ep.title, cineState.currentInfo?.title || '');
+          };
+          list.appendChild(card);
+        });
+      } catch (err) {
+        list.innerHTML = '<div style="color:#ff6b6b;font-size:12px;">Failed to load episodes.</div>';
+      }
+    }
+
+    function closeCineStreamDetails() {
+      const modal = $('#m-cinestream-detail-modal');
+      if (modal) modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ==========================================================================
+    // CINESTREAM WATCH MODAL ENGINE (AD-FREE STREAM PLAYBACK)
+    // ==========================================================================
+    async function openCineStreamWatch(itemId, type = 'movie', seasonNum = 1, epNum = 1, epTitle = '', seriesTitle = '') {
+      const modal = $('#m-cinestream-watch-modal');
+      if (!modal) return;
+      triggerHaptic('heavy');
+
+      const isTv = type === 'tv';
+      cineState.currentWatchData.id = itemId;
+      cineState.currentWatchData.type = type;
+      cineState.currentWatchData.seasonNum = seasonNum;
+      cineState.currentWatchData.epNum = epNum;
+      cineState.currentWatchData.title = seriesTitle || 'CineStream';
+      cineState.currentWatchData.epTitle = epTitle;
+
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      $('#cine-watch-title').textContent = seriesTitle || 'CineStream';
+      $('#cine-watch-sub').textContent = isTv ? `Season ${seasonNum} • Episode ${epNum}${epTitle ? ': ' + epTitle : ''}` : 'Movie Stream • HD 1080p';
+      $('#cine-watch-badge').textContent = isTv ? `S${seasonNum} E${epNum}` : 'HD';
+
+      const navRow = $('#cine-ep-nav-row');
+      if (navRow) navRow.style.display = isTv ? 'flex' : 'none';
+
+      // Show loader
+      $('#cine-player-loader').classList.remove('hidden');
+      $('#m-cine-active-iframe').src = 'about:blank';
+
+      // Fetch servers list
+      try {
+        let epQuery = isTv ? `&s=${seasonNum}&ep=${epNum}` : '';
+        const res = await fetch(`/api/cinestream/servers?id=${encodeURIComponent(itemId)}&type=${type}${epQuery}`);
+        if (!res.ok) throw new Error('Servers fetch failed');
+        const srvData = await res.json();
+        const servers = srvData.servers || [];
+        cineState.currentWatchData.servers = servers;
+
+        // Preferred server restoration (support any of the 30 CineStream servers)
+        let preferred = localStorage.getItem('preferred_cinestream_server') || 'vidlink';
+        let selIdx = servers.findIndex(s => s.id === preferred);
+        if (selIdx === -1) selIdx = 0;
+        cineState.currentWatchData.serverIndex = selIdx;
+
+        renderCineServerChips(servers, selIdx);
+        loadCineServerUrl(servers[selIdx].url);
+
+        // TV Up Next Episodes in Watch View
+        const epWrap = $('#cine-watch-episodes-wrap');
+        if (isTv) {
+          epWrap.style.display = 'block';
+          $('#cine-watch-season-lbl').textContent = `Season ${seasonNum}`;
+          renderCineWatchEpisodesList(itemId, seasonNum, epNum);
+        } else {
+          epWrap.style.display = 'none';
+        }
+
+        // Track in Continue Watching safely
+        try {
+          const cwId = `cine_${itemId}`;
+          const cwEntry = {
+            id: cwId,
+            title: seriesTitle || 'CineStream Movie',
+            poster_url: cineState.currentInfo?.poster || '',
+            topic_url: `/api/cinestream/info?id=${itemId}&type=${type}`,
+            source: 'cinestream',
+            source_label: 'CineStream',
+            season: isTv ? seasonNum : null,
+            episode: isTv ? epNum : null,
+            progress_pct: 10
+          };
+          if (!state.continueWatching) state.continueWatching = [];
+          const existingIdx = state.continueWatching.findIndex(c => c.id === cwId || c.title === cwEntry.title);
+          if (existingIdx !== -1) {
+            state.continueWatching[existingIdx] = cwEntry;
+          } else {
+            state.continueWatching.unshift(cwEntry);
+          }
+          setLocalCw(state.continueWatching);
+        } catch (cwErr) {
+          console.debug('CW track notice:', cwErr);
+        }
+
+        // Render More Like This Recommendations Shelf
+        renderCineWatchRecommendations(itemId, type);
+
+      } catch (err) {
+        console.warn('CineStream watch servers notice:', err);
+      }
+    }
+
+    async function renderCineWatchRecommendations(itemId, type) {
+      const track = $('#cine-watch-recs-track');
+      if (!track) return;
+      track.innerHTML = '<div style="font-size:12px;color:var(--text-dim);padding:8px;">Loading recommendations…</div>';
+
+      try {
+        let recs = cineState.currentInfo?.similar || [];
+        if (!recs || recs.length === 0) {
+          const res = await fetch(`/api/cinestream/info?id=${encodeURIComponent(itemId)}&type=${type}`);
+          if (res.ok) {
+            const info = await res.json();
+            recs = info.similar || [];
+          }
+        }
+        track.innerHTML = '';
+        if (!recs || recs.length === 0) {
+          track.innerHTML = '<div style="font-size:12px;color:var(--text-dim);padding:8px;">No recommendations found</div>';
+          return;
+        }
+        recs.forEach(item => {
+          const card = createCineCard(item);
+          card.onclick = () => {
+            triggerHaptic('light');
+            const cleanId = String(item.id || item.tmdb_id || '').replace(/^cine_/, '');
+            const itType = item.type || (item.first_air_date ? 'tv' : 'movie');
+            openCineStreamWatch(cleanId, itType, 1, 1, '', item.title || '');
+          };
+          track.appendChild(card);
+        });
+      } catch (err) {
+        console.debug('Watch recs notice:', err);
+        track.innerHTML = '';
+      }
+    }
+
+    function renderCineServerChips(servers, activeIdx) {
+      const container = $('#cine-watch-servers-chips');
+      container.innerHTML = '';
+      servers.forEach((srv, idx) => {
+        const btn = document.createElement('button');
+        const isActive = idx === activeIdx;
+        btn.className = `anime-chip-btn ${isActive ? 'active' : ''}`;
+        const isNoAds = srv.name.includes('(No Ads)');
+        btn.style.cssText = isActive
+          ? 'background:var(--cine-primary);color:#050505;border-color:var(--cine-primary);font-weight:800;white-space:nowrap;flex-shrink:0;'
+          : (isNoAds ? 'background:rgba(220,252,53,0.1);border-color:rgba(220,252,53,0.25);color:#dcfc35;white-space:nowrap;flex-shrink:0;' : 'white-space:nowrap;flex-shrink:0;');
+        btn.innerHTML = `${esc(srv.name)}${isNoAds ? ' <span style="font-size:9.5px;opacity:0.9;">🛡️</span>' : ''}`;
+        btn.onclick = () => {
+          changeCineStreamServer(idx);
+          try { btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } catch(e){}
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function changeCineStreamServer(idx) {
+      const servers = cineState.currentWatchData.servers;
+      if (!servers || !servers[idx]) return;
+      cineState.currentWatchData.serverIndex = idx;
+      localStorage.setItem('preferred_cinestream_server', servers[idx].id);
+
+      $$('#cine-watch-servers-chips .anime-chip-btn').forEach((b, i) => {
+        const isActive = i === idx;
+        const isNoAds = servers[i]?.name?.includes('(No Ads)');
+        b.classList.toggle('active', isActive);
+        b.style.cssText = isActive
+          ? 'background:var(--cine-primary);color:#050505;border-color:var(--cine-primary);font-weight:800;white-space:nowrap;flex-shrink:0;'
+          : (isNoAds ? 'background:rgba(220,252,53,0.1);border-color:rgba(220,252,53,0.25);color:#dcfc35;white-space:nowrap;flex-shrink:0;' : 'white-space:nowrap;flex-shrink:0;');
+      });
+
+      loadCineServerUrl(servers[idx].url);
+    }
+
+    function loadCineServerUrl(url) {
+      const iframe = $('#m-cine-active-iframe');
+      const loader = $('#cine-player-loader');
+      loader.classList.remove('hidden');
+      iframe.src = url;
+
+      iframe.onload = () => {
+        setTimeout(() => loader.classList.add('hidden'), 800);
+      };
+    }
+
+    function toggleCinePlayerFullscreen() {
+      const el = $('#cine-player-box') || $('#m-cine-active-iframe');
+      if (!el) return;
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (el.requestFullscreen) {
+          el.requestFullscreen().catch(() => {});
+        } else if (el.webkitRequestFullscreen) {
+          el.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function retryCurrentCineServer() {
+      const servers = cineState.currentWatchData.servers;
+      const idx = cineState.currentWatchData.serverIndex;
+      if (servers && servers[idx]) {
+        showToast(`Reloading ${servers[idx].name}…`);
+        loadCineServerUrl(servers[idx].url);
+      }
+    }
+
+    async function cineNavEpisode(delta) {
+      const data = cineState.currentWatchData;
+      if (data.type !== 'tv') return;
+      const newEp = data.epNum + delta;
+      if (newEp < 1) return;
+
+      openCineStreamWatch(data.id, 'tv', data.seasonNum, newEp, '', data.title);
+    }
+
+    async function renderCineWatchEpisodesList(itemId, seasonNum, currentEpNum) {
+      const list = $('#cine-watch-episodes-list');
+      list.innerHTML = '<div style="color:var(--text-muted);font-size:11.5px;">Loading episodes…</div>';
+
+      try {
+        const res = await fetch(`/api/cinestream/season?id=${encodeURIComponent(itemId)}&season=${seasonNum}`);
+        if (!res.ok) throw new Error('Failed');
+        const episodes = await res.json();
+        list.innerHTML = '';
+
+        episodes.forEach(ep => {
+          const card = document.createElement('div');
+          const isPlaying = ep.episode_number === currentEpNum;
+          card.className = `cine-watch-ep-card ${isPlaying ? 'playing' : ''}`;
+          const parentImg = (cineState.currentInfo ? (cineState.currentInfo.backdrop || cineState.currentInfo.poster) : '') || '';
+          const thumb = (ep.still_path && !ep.still_path.includes('/favicon.svg')) ? ep.still_path : parentImg;
+
+          card.innerHTML = `
+            <div class="cine-watch-ep-thumb" style="background-image:url('${esc(thumb)}');background-size:cover;background-position:center;">
+              <span style="position:absolute;inset:0;background:${isPlaying ? 'rgba(220,252,53,0.3)' : 'rgba(0,0,0,0.3)'};display:flex;align-items:center;justify-content:center;font-size:13px;color:${isPlaying ? 'var(--cine-primary)' : '#fff'};">${isPlaying ? '▶' : ''}</span>
+            </div>
+            <div class="cine-watch-ep-info">
+              <div class="cine-watch-ep-num" style="${isPlaying ? 'color:var(--cine-primary);font-weight:900;' : ''}">Episode ${ep.episode_number} ${isPlaying ? '• PLAYING' : ''}</div>
+              <div class="cine-watch-ep-title">${esc(ep.title || `Episode ${ep.episode_number}`)}</div>
+            </div>
+          `;
+
+          card.onclick = () => {
+            openCineStreamWatch(itemId, 'tv', seasonNum, ep.episode_number, ep.title, cineState.currentWatchData.title);
+          };
+          list.appendChild(card);
+        });
+      } catch (err) {
+        list.innerHTML = '';
+      }
+    }
+
+    function closeCineStreamWatch() {
+      const modal = $('#m-cinestream-watch-modal');
+      if (modal) modal.classList.remove('active');
+      $('#m-cine-active-iframe').src = 'about:blank';
+      document.body.style.overflow = '';
     }
 
     // ==========================================================================

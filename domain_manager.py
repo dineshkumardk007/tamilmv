@@ -88,6 +88,14 @@ DEFAULT_DOMAINS = {
             "https://toonplay.in/api",
         ],
     },
+    "cinestream": {
+        "active_host": "https://onstream.vin",
+        "protocol": "https",
+        "label": "CineStream (Global Movies & TV)",
+        "mirrors": [
+            "https://onstream.vin",
+        ],
+    },
 }
 
 _DOMAINS_STATE = {}
@@ -208,7 +216,7 @@ def set_active_host(source: str, host: str, persist: bool = True) -> str:
         load_config()
 
     clean_host = host.strip()
-    if src != "toonplay":
+    if src not in ("toonplay", "cinestream"):
         clean_host = clean_host.replace("https://", "").replace("http://", "").strip("/")
     else:
         clean_host = clean_host.rstrip("/")
@@ -253,6 +261,9 @@ def _sync_to_scrapers(source: str, host: str):
         elif src == "toonplay":
             from toonplay import scraper as toon_scraper
             toon_scraper.set_api_host(host)
+        elif src == "cinestream":
+            from cinestream import scraper as cine_scraper
+            cine_scraper.set_api_host(host)
     except Exception as exc:
         logger.warning("[Domain Manager] Error syncing '%s' to scraper module: %s", src, exc)
 
@@ -267,6 +278,8 @@ def _normalize_source_key(source: str) -> str:
         return "moviesda"
     if s in ("toonplay", "anime", "toon", "cartoons"):
         return "toonplay"
+    if s in ("cinestream", "cine", "onstream"):
+        return "cinestream"
     return s
 
 
@@ -332,6 +345,8 @@ def check_candidate_health(source: str, host_or_url: str, timeout: float = 2.5) 
     check_url = target
     if src == "toonplay" and not target.endswith("/home"):
         check_url = f"{target.rstrip('/')}/home"
+    elif src == "cinestream" and not target.endswith("/api/tmdb/trending/all/day"):
+        check_url = f"{target.rstrip('/')}/api/tmdb/trending/all/day"
 
     start_t = time.time()
     try:
@@ -365,9 +380,11 @@ def check_candidate_health(source: str, host_or_url: str, timeout: float = 2.5) 
                 is_valid = ("moviesda" in html_low or "isaimini" in html_low or "moviezda" in html_low or "tamil" in html_low)
             elif src == "toonplay":
                 is_valid = ("success" in html_low or "data" in html_low or "_fromcache" in html_low)
+            elif src == "cinestream":
+                is_valid = ("results" in html_low or "page" in html_low)
 
             if is_valid:
-                active_res = host_or_url if src == "toonplay" else (final_host or host_or_url)
+                active_res = host_or_url if src in ("toonplay", "cinestream") else (final_host or host_or_url)
                 return {
                     "online": True,
                     "status": "online",
@@ -456,12 +473,12 @@ def auto_resolve_source(source: str, force: bool = False) -> dict:
 
 
 def auto_resolve_all() -> dict:
-    """Auto-resolve all 4 media sources in parallel."""
+    """Auto-resolve all 5 media sources in parallel."""
     results = {}
-    with ThreadPoolExecutor(max_workers=4) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         futures = {
             executor.submit(auto_resolve_source, src): src
-            for src in ("tamilmv", "isaidub", "moviesda", "toonplay")
+            for src in ("tamilmv", "isaidub", "moviesda", "toonplay", "cinestream")
         }
         for future in as_completed(futures):
             src = futures[future]
@@ -500,7 +517,7 @@ def intercept_redirect_and_update(source: str, resp: requests.Response) -> str |
 def init_domains():
     """Initialize domains state on app boot and sync to scrapers."""
     cfg = load_config()
-    for src in ("tamilmv", "isaidub", "moviesda", "toonplay"):
+    for src in ("tamilmv", "isaidub", "moviesda", "toonplay", "cinestream"):
         host = cfg.get(src, {}).get("active_host")
         if host:
             _sync_to_scrapers(src, host)

@@ -61,5 +61,13 @@
       "https://anime.streamindia.co.in/api",
       "https://toonplay.in/api"
     ]
+  },
+  "cinestream": {
+    "active_host": "https://onstream.vin",
+    "protocol": "https",
+    "label": "CineStream (Global Movies & TV)",
+    "mirrors": [
+      "https://onstream.vin"
+    ]
   }
 }
