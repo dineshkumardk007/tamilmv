@@ -103,6 +103,27 @@ HEADERS = {
 }
 
 
+def is_gateway_or_cdn_host(host_or_url: str) -> bool:
+    """Detect if a host/URL belongs to a CDN, file-server, or intermediate download gateway rather than a main site."""
+    if not host_or_url:
+        return False
+    h = str(host_or_url).strip().lower()
+    if h.startswith("http://") or h.startswith("https://"):
+        try:
+            parsed = urlparse(h)
+            if (parsed.path or "").lower().startswith("/download.php"):
+                return True
+            h = (parsed.netloc or "").lower()
+        except Exception:
+            pass
+    return (
+        h.startswith("download.")
+        or h.startswith("cdn.")
+        or h.startswith("stream.")
+        or any(k in h for k in ("dubpage", "dubmv", "dubshare", "uptodub", "onestream", "uptomkv", "moviespage", "downloadpage", "r2.cloudflarestorage.com", "googleusercontent"))
+    )
+
+
 def load_config() -> dict:
     """Load persisted domains configuration from domains.json or populate with defaults."""
     global _DOMAINS_STATE
@@ -129,6 +150,15 @@ def load_config() -> dict:
                         ]
                         if "1tamilmv.win" in merged["tamilmv"].get("active_host", "").lower():
                             merged["tamilmv"]["active_host"] = "www.1tamilmv.io"
+
+                    # Sanitize isaidub (never allow CDN download gateways as main browsing host)
+                    if "isaidub" in merged:
+                        merged["isaidub"]["mirrors"] = [
+                            m for m in merged["isaidub"].get("mirrors", [])
+                            if not is_gateway_or_cdn_host(m)
+                        ]
+                        if is_gateway_or_cdn_host(merged["isaidub"].get("active_host", "")) or not merged["isaidub"].get("active_host"):
+                            merged["isaidub"]["active_host"] = "isaidub.green"
 
                     _DOMAINS_STATE = merged
                     return _DOMAINS_STATE
@@ -185,6 +215,10 @@ def set_active_host(source: str, host: str, persist: bool = True) -> str:
 
     if not clean_host:
         raise ValueError(f"Invalid host for {source}: '{host}'")
+
+    if is_gateway_or_cdn_host(clean_host):
+        logger.warning("[Domain Manager] Rejected setting CDN/gateway domain '%s' as active host for %s", clean_host, source)
+        return get_active_host(source)
 
     if src not in _DOMAINS_STATE:
         _DOMAINS_STATE[src] = {"active_host": clean_host, "mirrors": [clean_host]}
@@ -245,6 +279,10 @@ def rewrite_url_to_active(raw_url: str, source: str | None = None) -> str:
         return ""
     u = raw_url.strip()
 
+    # Never rewrite CDN, file-server, or intermediate download gateways
+    if is_gateway_or_cdn_host(u):
+        return u
+
     # Identify source if not provided
     src = _normalize_source_key(source) if source else None
     if not src:
@@ -279,6 +317,14 @@ def check_candidate_health(source: str, host_or_url: str, timeout: float = 2.5) 
     Follows redirects and detects if the site moved to a new TLD.
     """
     src = _normalize_source_key(source)
+    if is_gateway_or_cdn_host(host_or_url):
+        return {
+            "online": False,
+            "status": "gateway_excluded",
+            "initial_host": host_or_url,
+            "latency_ms": None,
+        }
+
     target = host_or_url.strip()
     if not target.startswith("http"):
         target = f"https://{target}"
@@ -437,7 +483,7 @@ def intercept_redirect_and_update(source: str, resp: requests.Response) -> str |
     try:
         final_parsed = urlparse(resp.url)
         final_host = final_parsed.netloc.lower()
-        if not final_host:
+        if not final_host or is_gateway_or_cdn_host(final_host):
             return None
 
         current = get_active_host(src).lower()

@@ -4180,18 +4180,25 @@
       showToast('Resolving high-speed stream…');
       try {
         let directUrl = file.direct_url;
+        let watchOnlineUrl = file.watch_online_url;
         if (!directUrl) {
           const pageUrl = file.download_page_url || file.url || file.link;
           const res = await fetch(`/api/isaimini/resolve?download_page_url=${encodeURIComponent(pageUrl)}`);
           if (!res.ok) throw new Error('HTTP ' + res.status);
           const data = await res.json();
           directUrl = data.direct_url || data.download_url;
+          watchOnlineUrl = data.watch_online_url || watchOnlineUrl;
         }
 
-        if (!directUrl) throw new Error('Could not resolve direct streaming link');
+        if (!directUrl && !watchOnlineUrl) throw new Error('Could not resolve direct streaming link');
 
-        const streamUrl = `/api/direct-stream?url=${encodeURIComponent(directUrl)}`;
-        playVideoStream(streamUrl, title, file.quality_label || '1080p FHD', directUrl);
+        if (directUrl) {
+          const streamUrl = `/api/direct-stream?url=${encodeURIComponent(directUrl)}`;
+          playVideoStream(streamUrl, title, file.quality_label || '1080p FHD', directUrl);
+        } else if (watchOnlineUrl) {
+          showToast('Opening streaming mirror…');
+          window.open(watchOnlineUrl, '_blank');
+        }
       } catch (err) {
         showToast('Stream error: ' + err.message);
       }

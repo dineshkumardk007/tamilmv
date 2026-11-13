@@ -31,17 +31,42 @@ USER_AGENT = (
 DEFAULT_TIMEOUT = 20.0
 
 
+def is_gateway_or_cdn_host(host_or_url: str) -> bool:
+    """Detect if a host/URL belongs to a CDN or intermediate download gateway rather than a browsing site."""
+    if not host_or_url:
+        return False
+    h = str(host_or_url).strip().lower()
+    if h.startswith("http://") or h.startswith("https://"):
+        try:
+            parsed = urlparse(h)
+            if (parsed.path or "").lower().startswith("/download.php"):
+                return True
+            h = (parsed.netloc or "").lower()
+        except Exception:
+            pass
+    return (
+        h.startswith("download.")
+        or h.startswith("cdn.")
+        or h.startswith("stream.")
+        or any(k in h for k in ("dubpage", "dubmv", "dubshare", "uptodub", "onestream", "uptomkv", "moviespage", "downloadpage", "r2.cloudflarestorage.com"))
+    )
+
+
 def rewrite_url(raw_url: str) -> str:
     """Rewrite obsolete or old domains to the active live domain."""
     if not raw_url or not isinstance(raw_url, str):
         return ""
     u = raw_url.strip()
+    if is_gateway_or_cdn_host(u):
+        return u
     try:
         from urllib.parse import urlparse, urlunparse
         parsed = urlparse(u)
         if not parsed.netloc:
             return u
         netloc_low = parsed.netloc.lower()
+        if is_gateway_or_cdn_host(netloc_low):
+            return u
         if "isaidub" in netloc_low:
             active = get_isaidub_host()
             if active and netloc_low != active.lower():
@@ -61,7 +86,7 @@ def check_response_redirect(resp: requests.Response):
         return
     try:
         final_host = urlparse(resp.url).netloc.lower()
-        if not final_host:
+        if not final_host or is_gateway_or_cdn_host(final_host):
             return
         if "isaidub" in resp.url.lower():
             if final_host != get_isaidub_host().lower():
@@ -987,8 +1012,51 @@ def resolve_download_link(
             elif r3.status_code == 200:
                 # Direct download stream returned immediately
                 direct_mp4_url = cdn_url
+            elif (r3.status_code == 404 or not direct_mp4_url) and "stream=1" not in cdn_url:
+                # Some gateways (like download.isaidub.dad) require stream=1
+                sep = "&" if "?" in cdn_url else "?"
+                alt_url = f"{cdn_url}{sep}stream=1"
+                stage2_parsed = urlparse(stage2_url)
+                r3_alt = s.get(
+                    alt_url,
+                    headers={"Referer": f"{stage2_parsed.scheme}://{stage2_parsed.netloc}/"},
+                    allow_redirects=False,
+                    timeout=DEFAULT_TIMEOUT,
+                )
+                if r3_alt.status_code in (301, 302, 303, 307, 308) and "Location" in r3_alt.headers:
+                    direct_mp4_url = r3_alt.headers["Location"]
+                elif r3_alt.status_code == 200:
+                    direct_mp4_url = alt_url
         except Exception as cdn_req_err:
             logger.warning("Could not resolve final 302 location: %s", cdn_req_err)
+
+    # Fallback: if direct_mp4_url is still None, scrape watch_online_url player
+    if not direct_mp4_url and watch_online_url:
+        try:
+            r_watch = s.get(
+                watch_online_url,
+                headers={"Referer": stage2_url},
+                timeout=DEFAULT_TIMEOUT,
+            )
+            if r_watch.ok:
+                soup_watch = BeautifulSoup(r_watch.text, "html.parser")
+                for src_tag in soup_watch.select("video source, video, source"):
+                    candidate_src = src_tag.get("src")
+                    if candidate_src:
+                        r_stream = s.get(
+                            candidate_src,
+                            headers={"Referer": watch_online_url},
+                            allow_redirects=False,
+                            timeout=DEFAULT_TIMEOUT,
+                        )
+                        if r_stream.status_code in (301, 302, 303, 307, 308) and "Location" in r_stream.headers:
+                            direct_mp4_url = r_stream.headers["Location"]
+                            break
+                        elif r_stream.status_code == 200:
+                            direct_mp4_url = candidate_src
+                            break
+        except Exception as watch_err:
+            logger.debug("Could not resolve from watch_online_url: %s", watch_err)
 
     return {
         "file_name": meta_info.get("file name") or (raw_cdn_params.get("path", [None])[0] if raw_cdn_params else None),
