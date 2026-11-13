@@ -14217,7 +14217,9 @@
             renderLoadingScreen();
           }
           try {
-            const r = await fetch('/api/isaimini/files?url=' + encodeURIComponent(m.topic_url) + (isRefresh ? '&refresh=true' : ''));
+            const targetUrl = m.topic_url || m.url;
+            if (!targetUrl) throw new Error('Missing movie URL');
+            const r = await fetch('/api/isaimini/files?url=' + encodeURIComponent(targetUrl) + (isRefresh ? '&refresh=true' : ''));
             if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || 'HTTP ' + r.status);
             const data = await r.json();
             const files = data.files || [];
@@ -14612,7 +14614,9 @@
       }
 
       try {
-        const r = await fetch('/api/downloads?url=' + encodeURIComponent(m.topic_url));
+        const targetUrl = m.topic_url || m.url;
+        if (!targetUrl) throw new Error('Missing movie URL');
+        const r = await fetch('/api/downloads?url=' + encodeURIComponent(targetUrl));
         if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || 'HTTP ' + r.status);
         const data = await r.json();
         const opts = Array.isArray(data) ? data : (data.options || []);
@@ -15346,7 +15350,9 @@
         let watchOnlineUrl = file.watch_online_url || null;
 
         if (!directUrl) {
-          const r = await fetch('/api/isaimini/resolve?download_page_url=' + encodeURIComponent(file.url || file.download_page_url));
+          const resolveTarget = file.url || file.download_page_url || file.download_url || file.link;
+          if (!resolveTarget) throw new Error('Missing download page URL');
+          const r = await fetch('/api/isaimini/resolve?download_page_url=' + encodeURIComponent(resolveTarget));
           if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || 'HTTP ' + r.status);
           const data = await r.json();
           directUrl = data.direct_url;
@@ -15354,37 +15360,42 @@
           file.direct_url = directUrl;
         }
 
-        if (!directUrl) {
+        if (!directUrl && !watchOnlineUrl) {
           throw new Error('No direct stream URL returned from gateway');
         }
 
-        const streamUrl = file.is_vault ? directUrl : ('/api/direct-stream?url=' + encodeURIComponent(directUrl));
-        playerVideo.src = streamUrl;
-        restorePlayerPreferences();
-        playerVideo.load();
-        playerVideo.play().catch(() => { });
-        updatePlayerPlaybackUI();
-
-        playerVideo.onplaying = () => {
-          playerLoader.style.opacity = '0';
-          playerLoader.style.pointerEvents = 'none';
-          setTimeout(() => {
-            if (!playerVideo.paused) playerLoader.style.display = 'none';
-          }, 350);
+        if (directUrl) {
+          const streamUrl = file.is_vault ? directUrl : ('/api/direct-stream?url=' + encodeURIComponent(directUrl));
+          playerVideo.src = streamUrl;
+          restorePlayerPreferences();
+          playerVideo.load();
+          playerVideo.play().catch(() => { });
           updatePlayerPlaybackUI();
-        };
 
-        playerVideo.onerror = () => {
-          $('#player-loader-msg').textContent = 'Direct Stream Playback Notice';
-          let fallbackHtml = `Could not auto-play in this browser frame.`;
-          if (data.watch_online_url) {
-            fallbackHtml += `<br><br><a class="btn play" href="${esc(data.watch_online_url)}" target="_blank" rel="noopener noreferrer">Open Web Player Mirror ↗</a>`;
-          }
-          if (data.direct_url) {
-            fallbackHtml += ` <a class="btn" href="${esc(data.direct_url)}" target="_blank" rel="noopener noreferrer">Direct Link ↗</a>`;
-          }
-          $('#player-loader-sub').innerHTML = fallbackHtml;
-        };
+          playerVideo.onplaying = () => {
+            playerLoader.style.opacity = '0';
+            playerLoader.style.pointerEvents = 'none';
+            setTimeout(() => {
+              if (!playerVideo.paused) playerLoader.style.display = 'none';
+            }, 350);
+            updatePlayerPlaybackUI();
+          };
+
+          playerVideo.onerror = () => {
+            $('#player-loader-msg').textContent = 'Direct Stream Playback Notice';
+            let fallbackHtml = `Could not auto-play in this browser frame.`;
+            if (watchOnlineUrl) {
+              fallbackHtml += `<br><br><a class="btn play" href="${esc(watchOnlineUrl)}" target="_blank" rel="noopener noreferrer">Open Web Player Mirror ↗</a>`;
+            }
+            if (directUrl) {
+              fallbackHtml += ` <a class="btn" href="${esc(directUrl)}" target="_blank" rel="noopener noreferrer">Direct Link ↗</a>`;
+            }
+            $('#player-loader-sub').innerHTML = fallbackHtml;
+          };
+        } else if (watchOnlineUrl) {
+          $('#player-loader-msg').textContent = 'Direct Stream Gateway Notice';
+          $('#player-loader-sub').innerHTML = `Direct stream is served via web mirror.<br><br><a class="btn play" href="${esc(watchOnlineUrl)}" target="_blank" rel="noopener noreferrer">Open Web Player Mirror ↗</a>`;
+        }
 
       } catch (err) {
         $('#player-loader-msg').textContent = 'Failed to Resolve Stream';

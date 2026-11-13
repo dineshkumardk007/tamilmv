@@ -322,16 +322,24 @@ def fetch_categories(base_url: str | None = None, session: requests.Session | No
 
 def fetch_latest_updates(site_url: str = BASE_URL, session: requests.Session | None = None) -> list[dict]:
     """
-    Parse homepage `<div class="latest">` news ticker / recent release additions.
-    Supports Moviesda or isaiDub base URLs.
+    Parse homepage / recent release additions.
+    Supports Moviesda (`div.latest`) or isaiDub (`/recent-updates/` or `.line, li.movie-list-item`).
     """
     s = session or create_session()
-    target_base = site_url or BASE_URL
-    r = s.get(target_base, timeout=DEFAULT_TIMEOUT)
+    target_base = (site_url or BASE_URL).rstrip("/")
+    if not target_base.startswith("http"):
+        target_base = f"https://{target_base}"
+
+    fetch_url = target_base
+    if "isaidub" in target_base and not target_base.endswith("/recent-updates/"):
+        fetch_url = f"{target_base}/recent-updates/"
+
+    r = s.get(fetch_url, timeout=DEFAULT_TIMEOUT)
     r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
 
     updates = []
+    # 1. Try standard Moviesda div.latest
     for item in soup.select("div.latest"):
         b_tag = item.find("b")
         raw_title = clean_text(b_tag.text if b_tag else item.text)
@@ -348,6 +356,23 @@ def fetch_latest_updates(site_url: str = BASE_URL, session: requests.Session | N
             "description": desc,
             "content_type": "series" if is_series(raw_title) else "movie",
         })
+
+    # 2. Try isaiDub /recent-updates/ links if div.latest is empty
+    if not updates:
+        for a_tag in soup.select("a[href*='/movie/'], li.movie-list-item a, div.f a, div.line a"):
+            href = urljoin(target_base, a_tag["href"]) if a_tag.get("href") else ""
+            raw_title = clean_text(a_tag.text)
+            if not href or not raw_title or "telegram" in raw_title.lower() or "download now" in raw_title.lower():
+                continue
+            clean_name, year = parse_clean_title(raw_title)
+            updates.append({
+                "title": raw_title,
+                "clean_title": clean_name,
+                "year": year,
+                "url": href,
+                "description": raw_title,
+                "content_type": "series" if is_series(raw_title) else "movie",
+            })
 
     return updates
 
@@ -377,8 +402,10 @@ def fetch_category_movies(
     soup = BeautifulSoup(r.text, "html.parser")
 
     movies = []
-    for f in soup.select("div.f, div.folder"):
-        a = f.find("a")
+    # Support div.f, div.folder (Moviesda) as well as li.movie-list-item, div.line, a[href*='/movie/'] (isaiDub)
+    selectors = "div.f, div.folder, li.movie-list-item, div.line"
+    for f in soup.select(selectors):
+        a = f.find("a") if f.name != "a" else f
         if not a or not a.get("href"):
             continue
         href = urljoin(page_url, a["href"])
@@ -386,6 +413,8 @@ def fetch_category_movies(
 
         # Ignore navigation loops (e.g. A-Z header or parent folders)
         if "(" in raw_title and "திரைப்படங்களுக்கு" in raw_title:
+            continue
+        if not raw_title or "telegram" in raw_title.lower() or "download now" in raw_title.lower():
             continue
 
         clean_name, year = parse_clean_title(raw_title)
