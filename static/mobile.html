@@ -1111,6 +1111,46 @@
       margin-top: 2px;
     }
 
+    .btn-opt-play {
+      background: linear-gradient(135deg, #7c5cff, #9061f9);
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: transform 0.1s, opacity 0.15s;
+    }
+
+    .btn-opt-play:active {
+      transform: scale(0.94);
+      opacity: 0.9;
+    }
+
+    .btn-opt-download {
+      background: rgba(18, 216, 180, 0.12);
+      border: 1px solid rgba(18, 216, 180, 0.35);
+      color: #12d8b4;
+      padding: 6px 11px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: transform 0.1s, background 0.15s;
+    }
+
+    .btn-opt-download:active {
+      transform: scale(0.94);
+      background: rgba(18, 216, 180, 0.25);
+    }
+
     .episodes-track {
       display: flex;
       gap: 8px;
@@ -4138,14 +4178,29 @@
           const cleanName = file.file_name || `${movie.title} [${qLabel}]`;
 
           card.innerHTML = `
-            <div style="flex:1;overflow:hidden;padding-right:10px;">
+            <div style="flex:1;overflow:hidden;padding-right:8px;">
               <div class="stream-opt-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(cleanName)}</div>
               <div class="stream-opt-sub">${esc(sizeLabel)} • ${esc(file.resolution || qLabel)}</div>
             </div>
-            <div style="display:flex;gap:6px;">
-              <button class="settings-btn" style="background:linear-gradient(135deg,#7c5cff,#9061f9);border:none;">▶ Play</button>
+            <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+              <button class="btn-opt-play" title="Play stream">▶ Play</button>
+              <button class="btn-opt-download" title="Download direct file">⬇ Download</button>
             </div>
           `;
+
+          const playBtn = card.querySelector('.btn-opt-play');
+          const dlBtn = card.querySelector('.btn-opt-download');
+
+          playBtn.onclick = async (e) => {
+            e.stopPropagation();
+            closeDetails();
+            await playDirectFile(file, movie.title);
+          };
+
+          dlBtn.onclick = async (e) => {
+            e.stopPropagation();
+            await downloadDirectFile(file, movie.title);
+          };
 
           card.onclick = async () => {
             closeDetails();
@@ -4201,6 +4256,45 @@
         }
       } catch (err) {
         showToast('Stream error: ' + err.message);
+      }
+    }
+
+    async function downloadDirectFile(file, title) {
+      triggerHaptic('medium');
+      showToast('Resolving high-speed download…');
+      try {
+        let directUrl = file.direct_url;
+        let fileName = file.download_filename || file.clean_title || file.file_name || `${title || 'movie'}.mp4`;
+        if (!fileName.endsWith('.mp4') && !fileName.endsWith('.mkv') && !fileName.endsWith('.avi')) {
+          fileName += '.mp4';
+        }
+
+        if (!directUrl) {
+          const pageUrl = file.download_page_url || file.url || file.link;
+          const res = await fetch(`/api/isaimini/resolve?download_page_url=${encodeURIComponent(pageUrl)}`);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          directUrl = data.direct_url || data.download_url;
+          if (data.file_name && !file.download_filename) {
+            fileName = data.file_name;
+          }
+        }
+
+        if (!directUrl) throw new Error('Could not resolve direct download link');
+
+        showToast(`Starting download: ${fileName}`);
+        triggerHaptic('success');
+        const dlProxyUrl = `/api/direct-download?url=${encodeURIComponent(directUrl)}&filename=${encodeURIComponent(fileName)}`;
+        const a = document.createElement('a');
+        a.href = dlProxyUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (err) {
+        showToast('Download error: ' + err.message);
       }
     }
 
