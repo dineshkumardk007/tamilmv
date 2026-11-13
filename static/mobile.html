@@ -3012,15 +3012,8 @@
 
     <!-- SETTINGS TAB -->
     <div class="tab-view" id="tab-settings">
-      <h2 class="view-heading"><span>⚙️</span> Settings &amp; Server</h2>
+      <h2 class="view-heading"><span>⚙️</span> Settings</h2>
       <div class="settings-list">
-        <div class="settings-card">
-          <div class="settings-info">
-            <h4>Domain / Source Health</h4>
-            <p id="m-settings-domain">Checking domains…</p>
-          </div>
-          <button class="settings-btn" id="m-btn-test-domains">Test</button>
-        </div>
         <div class="settings-card">
           <div class="settings-info">
             <h4>OLED Pure Black Mode</h4>
@@ -3045,13 +3038,6 @@
           </div>
           <button class="settings-btn" id="m-btn-clear-history"
             style="color:#ff6b6b;border-color:rgba(255,107,107,0.3);">🗑️ Clear</button>
-        </div>
-        <div class="settings-card">
-          <div class="settings-info">
-            <h4>Easter Egg Admin Page</h4>
-            <p>System diagnostics &amp; live domain control center</p>
-          </div>
-          <button class="settings-btn" id="m-btn-open-admin">Admin ⚡</button>
         </div>
         <div class="settings-card">
           <div class="settings-info">
@@ -3655,7 +3641,8 @@
         if (res.ok) {
           const data = await res.json();
           $('#header-status-dot').classList.remove('offline');
-          $('#m-settings-domain').textContent = `Active Host: ${data.host || 'Online'}`;
+          const domainEl = $('#m-settings-domain');
+          if (domainEl) domainEl.textContent = `Active Host: ${data.host || 'Online'}`;
         } else {
           $('#header-status-dot').classList.add('offline');
         }
@@ -6181,7 +6168,6 @@
         switchTab('tab-home');
       });
 
-      $('#m-btn-open-admin').onclick = openEasterEggAdmin;
       $('#m-admin-close').onclick = closeEasterEggAdmin;
 
       // Password Validation: 'asdk24', 'sdk24', 'dk24'
@@ -6334,13 +6320,6 @@
           }
         };
       }
-
-      $('#m-btn-test-domains').onclick = async () => {
-        triggerHaptic('light');
-        showToast('Testing mirrors…');
-        await checkServerHealth();
-        showToast('Domains active!');
-      };
     }
 
     function switchToDesktop() {
