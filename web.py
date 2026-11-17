@@ -6,7 +6,11 @@ Run:
 then open http://127.0.0.1:8777
 """
 import asyncio
+import json
+import logging
 from typing import Optional
+
+logger = logging.getLogger("web")
 from contextlib import asynccontextmanager
 import os
 from pathlib import Path
@@ -1124,6 +1128,16 @@ async def api_recent(
             results = [format_cinestream_card(m) for m in items[offset:offset+limit]]
         except Exception as exc:
             logger.error(f"Error in cinestream recent: {exc}")
+            results = []
+    elif source in ("vault", "cloud_vault"):
+        try:
+            raw = db.get_vault_movies()
+            results = [format_vault_card(m) for m in raw]
+            if parsed_year:
+                results = [m for m in results if m.get("year") == parsed_year]
+            results = results[offset:offset+limit]
+        except Exception as exc:
+            logger.error(f"Error in vault recent: {exc}")
             results = []
     else:  # source == "all"
         half_limit = max(limit // 2, 1)
@@ -2359,6 +2373,156 @@ async def api_vault_stream_gdrive(request: Request, id: str = Query(...)):
         iter_content(),
         status_code=upstream.status_code,
         headers=response_headers,
+    )
+
+
+# ==============================================================================
+# Multi-Audio Tracks & Remux Engine (Cloud Vault & Direct Streams)
+# ==============================================================================
+
+@app.get("/api/media/audio-tracks")
+async def api_media_audio_tracks(request: Request, url: str = Query(...)):
+    """Inspect and return available audio tracks in a media stream using ffprobe."""
+    target_url = url.strip()
+    if not target_url:
+        return JSONResponse({"tracks": [], "count": 0})
+
+    # Resolve local files or relative URLs
+    if os.path.exists(target_url):
+        target_url = os.path.abspath(target_url)
+    elif target_url.startswith("/"):
+        base = str(request.base_url).rstrip("/")
+        target_url = f"{base}{target_url}"
+
+    def _probe():
+        try:
+            cmd = [
+                "ffprobe",
+                "-v", "error",
+                "-analyzeduration", "8000000",
+                "-probesize", "8000000",
+                "-print_format", "json",
+                "-show_streams",
+                "-select_streams", "a",
+                target_url
+            ]
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=8)
+            if res.returncode != 0:
+                logger.debug(f"[ffprobe] Non-zero return: {res.stderr[:200]}")
+                return []
+            data = json.loads(res.stdout)
+            streams = data.get("streams", [])
+            tracks = []
+            lang_names = {
+                "tam": "Tamil", "ta": "Tamil",
+                "eng": "English", "en": "English",
+                "hin": "Hindi", "hi": "Hindi",
+                "tel": "Telugu", "te": "Telugu",
+                "kan": "Kannada", "kn": "Kannada",
+                "mal": "Malayalam", "ml": "Malayalam",
+                "jpn": "Japanese", "ja": "Japanese",
+                "kor": "Korean", "ko": "Korean",
+                "fre": "French", "fra": "French", "fr": "French",
+                "spa": "Spanish", "es": "Spanish",
+                "und": "Default Audio"
+            }
+            for idx, s in enumerate(streams):
+                tags = s.get("tags") or {}
+                lang_code = (tags.get("language") or tags.get("LANGUAGE") or "").lower()
+                lang_title = tags.get("title") or tags.get("TITLE") or ""
+                lang_display = lang_names.get(lang_code, lang_code.upper() if lang_code else "")
+
+                codec = (s.get("codec_name") or "aac").upper()
+                channels = s.get("channels") or 2
+                ch_desc = "Stereo" if channels == 2 else ("5.1 Surround" if channels == 6 else f"{channels}ch")
+
+                if lang_title:
+                    lbl = lang_title
+                elif lang_display:
+                    lbl = f"{lang_display} ({ch_desc})"
+                else:
+                    lbl = f"Track {idx + 1} ({codec} {ch_desc})"
+
+                tracks.append({
+                    "stream_index": s.get("index", idx),
+                    "audio_index": idx,
+                    "codec": codec,
+                    "channels": channels,
+                    "channel_layout": s.get("channel_layout") or ch_desc,
+                    "language": lang_code,
+                    "language_name": lang_display,
+                    "title": lang_title,
+                    "label": lbl
+                })
+            return tracks
+        except Exception as exc:
+            logger.debug(f"[ffprobe] Probe exception: {exc}")
+            return []
+
+    tracks = await asyncio.to_thread(_probe)
+    return JSONResponse({"tracks": tracks, "count": len(tracks)})
+
+
+@app.get("/api/media/stream-remux")
+async def api_media_stream_remux(request: Request, url: str = Query(...), audio_index: int = Query(0), ss: float = Query(0.0)):
+    """Fast on-the-fly MP4 remuxing to select specific audio track without re-encoding video."""
+    target_url = url.strip()
+    if not target_url:
+        raise HTTPException(status_code=400, detail="Missing stream URL")
+
+    # Resolve local files or relative URLs
+    if os.path.exists(target_url):
+        target_url = os.path.abspath(target_url)
+    elif target_url.startswith("/"):
+        base = str(request.base_url).rstrip("/")
+        target_url = f"{base}{target_url}"
+
+    cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error"]
+    if ss > 0:
+        cmd.extend(["-ss", str(round(ss, 2))])
+    cmd.extend([
+        "-i", target_url,
+        "-map", "0:v:0?",
+        "-map", f"0:a:{audio_index}?",
+        "-c:v", "copy",
+        "-c:a", "aac",
+        "-b:a", "192k",
+        "-movflags", "frag_keyframe+empty_moov+default_base_moof",
+        "-f", "mp4",
+        "pipe:1"
+    ])
+
+    try:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=256 * 1024
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to start audio remuxer: {exc}")
+
+    def iter_stream():
+        try:
+            while True:
+                chunk = proc.stdout.read(64 * 1024)
+                if not chunk:
+                    break
+                yield chunk
+        finally:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+
+    return StreamingResponse(
+        iter_stream(),
+        media_type="video/mp4",
+        headers={
+            "Accept-Ranges": "none",
+            "Access-Control-Allow-Origin": "*",
+            "Cache-Control": "no-cache"
+        }
     )
 
 

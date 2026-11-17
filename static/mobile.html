@@ -3552,6 +3552,258 @@
   color: #050505;
   border-color: var(--cine-primary);
 }
+
+/* ==========================================================================
+   MY CLOUD VAULT & MOBILE AUDIO SWITCHER STYLES
+   ========================================================================== */
+.vault-header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0 14px 0;
+}
+.vault-mobile-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(18, 216, 180, 0.15);
+  color: #12d8b4;
+  border: 1px solid rgba(18, 216, 180, 0.4);
+  border-radius: 20px;
+  padding: 7px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.vault-mobile-add-btn:active {
+  transform: scale(0.95);
+  background: rgba(18, 216, 180, 0.28);
+}
+.vault-fallback-art {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  text-align: center;
+  background: radial-gradient(circle at center, rgba(18, 216, 180, 0.15) 0%, rgba(13, 15, 23, 0.95) 75%);
+}
+
+/* Mobile Player Audio Bottom Sheet & Backdrop */
+.m-audio-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10005;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.m-audio-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.m-audio-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 82vh;
+  max-height: 82dvh;
+  background: #12141f;
+  border-radius: 22px 22px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.95);
+  z-index: 10006;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: max(16px, var(--safe-bottom));
+}
+.m-audio-sheet.active {
+  transform: translateY(0);
+}
+.m-audio-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 18px 12px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.m-audio-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+.m-audio-close:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+.m-audio-content {
+  overflow-y: auto;
+  padding: 14px 18px 24px 18px;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.m-audio-sec {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.m-audio-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.m-audio-sec-sub {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.m-audio-ch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+.m-audio-ch-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  min-height: 72px;
+}
+.m-audio-ch-btn.active {
+  background: rgba(18, 216, 180, 0.15);
+  border-color: #12d8b4;
+}
+.m-audio-ch-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.m-audio-ch-icon {
+  font-size: 16px;
+}
+.m-audio-ch-chk {
+  color: #12d8b4;
+  font-weight: 800;
+  font-size: 13px;
+}
+.m-audio-ch-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+.m-audio-ch-btn.active .m-audio-ch-name {
+  color: #12d8b4;
+}
+.m-audio-ch-desc {
+  font-size: 9.5px;
+  color: var(--text-dim);
+  line-height: 1.25;
+}
+.m-audio-boost-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.m-boost-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.m-boost-btn.active {
+  background: rgba(18, 216, 180, 0.15);
+  border-color: #12d8b4;
+  color: #12d8b4;
+  font-weight: 700;
+}
+.m-tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+.m-track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.m-track-item.active {
+  background: rgba(18, 216, 180, 0.15);
+  border-color: #12d8b4;
+  color: #12d8b4;
+}
+.m-ext-audio-file-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+body.oled-theme .m-audio-sheet {
+  background: #000000;
+  border-top-color: #222;
+}
+body.oled-theme .m-audio-sec {
+  background: #090909;
+  border-color: #181818;
+}
 </style>
 </head>
 
@@ -3594,7 +3846,7 @@
         <button class="chip-btn" data-source="all">🔥 All Releases</button>
         <button class="chip-btn" data-source="direct_tamil">⚡ Tamil Direct MP4</button>
         <button class="chip-btn" data-source="dubbed">🎙️ TamDub</button>
-
+        <button class="chip-btn" data-source="cloud_vault">☁️ Cloud Vault</button>
       </div>
 
       <!-- Hero Spotlight Banner -->
@@ -3825,6 +4077,7 @@
         <button class="chip-btn" data-search-source="dubbed">🎙️ TamDub</button>
         <button class="chip-btn" data-search-source="toonplay_anime">🎌 Anime</button>
         <button class="chip-btn" data-search-source="cinestream">🎬 CineStream</button>
+        <button class="chip-btn" data-search-source="cloud_vault">☁️ Vault</button>
       </div>
 
       <div class="quick-tags-wrap" id="m-search-tags">
@@ -3845,6 +4098,38 @@
 
     <!-- HUBS TAB (Preserved for backward-compat) -->
     <div class="tab-view" id="tab-hubs" style="display:none;"></div>
+
+    <!-- CLOUD VAULT TAB -->
+    <div class="tab-view" id="tab-vault">
+      <div class="vault-header-wrap">
+        <div>
+          <h2 class="view-heading" style="margin:0;padding:0;"><span>☁️</span> My Cloud Vault</h2>
+          <p style="margin:4px 0 0 0;font-size:12px;color:var(--text-dim);font-weight:500;">
+            Direct streams &amp; cloud links with audio track switcher
+          </p>
+        </div>
+        <button type="button" class="vault-mobile-add-btn" id="m-btn-open-vault-add">
+          <span>➕ Add Stream</span>
+        </button>
+      </div>
+
+      <!-- Quick Search / Filter Bar for Vault -->
+      <div class="vault-search-row" style="margin-bottom:14px;position:relative;">
+        <input type="text" id="m-vault-search-input" class="search-input" style="padding:10px 14px 10px 36px;font-size:13px;border-radius:12px;" placeholder="Search your vault…">
+        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text-dim);pointer-events:none;">🔍</span>
+        <button id="m-vault-search-clear" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);font-size:14px;cursor:pointer;">✕</button>
+      </div>
+
+      <div class="catalog-grid" id="m-vault-grid"></div>
+      <div class="empty-state" id="m-vault-empty" style="display:none;">
+        <div class="empty-icon">☁️</div>
+        <div class="empty-title">Your Cloud Vault is empty</div>
+        <p>Add stream links from Google Drive, Pixeldrain, Dropbox or direct MP4/MKV to watch here</p>
+        <button type="button" class="settings-btn" id="m-btn-vault-empty-add" style="margin-top:14px;color:#12d8b4;border-color:rgba(18,216,180,0.4);font-weight:700;">
+          ➕ Add Stream Link
+        </button>
+      </div>
+    </div>
 
     <!-- WATCHLIST TAB -->
     <div class="tab-view" id="tab-watchlist">
@@ -3933,6 +4218,13 @@
           </div>
           <button class="settings-btn" style="color:var(--cine-primary);border-color:rgba(220,252,53,0.3);">Watch ›</button>
         </div>
+        <div class="settings-card" onclick="switchTab('tab-vault')">
+          <div class="settings-info">
+            <h4>☁️ My Cloud Vault</h4>
+            <p>Direct streams &amp; cloud links with instant audio switcher</p>
+          </div>
+          <button class="settings-btn" style="color:#12d8b4;border-color:rgba(18,216,180,0.3);">Open ›</button>
+        </div>
       </div>
     </div>
 
@@ -3951,6 +4243,10 @@
     <button class="nav-tab-btn" data-tab="tab-cinestream" id="btn-tab-cinestream">
       <span class="nav-icon">🎬</span>
       <span class="nav-label">CineStream</span>
+    </button>
+    <button class="nav-tab-btn" data-tab="tab-vault" id="btn-tab-vault">
+      <span class="nav-icon">☁️</span>
+      <span class="nav-label">Vault</span>
     </button>
     <button class="nav-tab-btn" data-tab="tab-watchlist">
       <span class="nav-icon">♥</span>
@@ -4320,6 +4616,65 @@
     </div>
   </div>
 
+  <!-- ADD STREAM LINK BOTTOM SHEET -->
+  <div class="sheet-backdrop" id="m-vault-sheet-backdrop"></div>
+  <div class="bottom-sheet" id="m-vault-add-sheet">
+    <div class="sheet-drag-handle" id="m-vault-sheet-handle"></div>
+    <div class="sheet-body" style="padding-top:4px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">☁️</span>
+          <h3 style="margin:0;font-size:16.5px;font-weight:700;color:#fff;">Add to Cloud Vault</h3>
+        </div>
+        <button type="button" class="search-clear-btn" id="m-vault-add-close" style="display:grid;width:28px;height:28px;">✕</button>
+      </div>
+
+      <form id="m-vault-form" onsubmit="return false;" style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:5px;">TITLE *</label>
+          <input type="text" id="m-vault-in-title" class="search-input" style="border-radius:10px;font-size:13.5px;" placeholder="e.g. Leo (2023) Dual Audio" required>
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;">
+            <label style="display:block;font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:5px;">YEAR</label>
+            <input type="number" id="m-vault-in-year" class="search-input" style="border-radius:10px;font-size:13.5px;" placeholder="2024" min="1920" max="2035">
+          </div>
+          <div style="flex:1.2;">
+            <label style="display:block;font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:5px;">QUALITY</label>
+            <select id="m-vault-in-quality" class="search-input" style="border-radius:10px;font-size:13.5px;background:#1a1d2d;color:#fff;">
+              <option value="1080p FHD">1080p FHD</option>
+              <option value="720p HD">720p HD</option>
+              <option value="4K UHD">4K UHD</option>
+              <option value="Multi-Audio">Multi-Audio</option>
+              <option value="HDR / WEB-DL">HDR / WEB-DL</option>
+              <option value="Auto">Auto</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+            <label style="font-size:12px;font-weight:700;color:var(--text-dim);">STREAM / VIDEO URL *</label>
+            <button type="button" id="m-btn-vault-paste" style="background:none;border:none;color:#12d8b4;font-size:11.5px;font-weight:700;cursor:pointer;padding:2px 4px;">
+              📋 Paste Clipboard
+            </button>
+          </div>
+          <textarea id="m-vault-in-url" class="search-input" rows="3" style="border-radius:10px;font-size:13px;resize:vertical;min-height:75px;font-family:monospace;" placeholder="https://... direct .mp4, .mkv, Pixeldrain, Google Drive" required></textarea>
+        </div>
+
+        <div id="m-vault-add-status" style="display:none;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:600;"></div>
+
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button type="button" class="settings-btn" id="m-btn-vault-cancel" style="flex:1;padding:12px;">Cancel</button>
+          <button type="submit" class="btn-play-primary" id="m-btn-vault-submit" style="flex:1.8;padding:12px;border-radius:12px;justify-content:center;">
+            <span>✨ Save to Vault</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Dedicated Mobile Video Player (For Direct MP4 & Anime) -->
   <div class="mobile-player-overlay" id="m-player-overlay">
     <div class="player-video-container">
@@ -4376,6 +4731,7 @@
         </div>
         <div class="anime-srv-chips-row" id="m-anime-srv-row" style="display:none;"></div>
         <div class="player-top-tools">
+          <button class="player-tool-btn" id="m-player-audio" title="Change Audio Track / Channels">🎵</button>
           <button class="player-tool-btn" id="m-player-aspect" title="Toggle Aspect: Fit / Zoom / Stretch">📐</button>
           <button class="player-tool-btn" id="m-player-pip" title="Picture-in-Picture">🗖</button>
           <button class="player-tool-btn" id="m-player-ext" title="Open in VLC / MX Player">🚀</button>
@@ -4416,6 +4772,103 @@
         <div class="player-sub-tools">
           <button class="sub-tool-pill" id="m-btn-speed">1.0x Speed</button>
           <button class="sub-tool-pill" id="m-btn-quality">1080p FHD</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE PLAYER AUDIO SHEET -->
+    <div class="m-audio-backdrop" id="m-audio-backdrop"></div>
+    <div class="m-audio-sheet" id="m-audio-sheet">
+      <div class="sheet-drag-handle" id="m-audio-drag-handle"></div>
+      <div class="m-audio-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:18px;">🎵</span>
+          <h3 style="margin:0;font-size:15.5px;font-weight:700;color:#fff;">Audio &amp; Channels</h3>
+        </div>
+        <button class="m-audio-close" id="m-audio-close" title="Close">✕</button>
+      </div>
+
+      <div class="m-audio-content">
+        <!-- 1. Dual Audio Channel Router -->
+        <div class="m-audio-sec">
+          <div class="m-audio-sec-title">
+            <span>🎧</span> <span>Dual-Audio Channel Router (Zero Delay)</span>
+          </div>
+          <div class="m-audio-sec-sub">
+            For movies with Tamil / English audio mixed into Left &amp; Right channels
+          </div>
+          <div class="m-audio-ch-grid">
+            <button type="button" class="m-audio-ch-btn active" id="m-ch-stereo" data-ch="stereo">
+              <div class="m-audio-ch-top">
+                <span class="m-audio-ch-icon">🎧</span>
+                <span class="m-audio-ch-chk">✓</span>
+              </div>
+              <div class="m-audio-ch-name">Stereo</div>
+              <div class="m-audio-ch-desc">Default • Both Ears</div>
+            </button>
+            <button type="button" class="m-audio-ch-btn" id="m-ch-left" data-ch="left">
+              <div class="m-audio-ch-top">
+                <span class="m-audio-ch-icon">🗣️</span>
+                <span class="m-audio-ch-chk" style="display:none;">✓</span>
+              </div>
+              <div class="m-audio-ch-name">Left Channel</div>
+              <div class="m-audio-ch-desc">Audio 1 • Tamil in both ears</div>
+            </button>
+            <button type="button" class="m-audio-ch-btn" id="m-ch-right" data-ch="right">
+              <div class="m-audio-ch-top">
+                <span class="m-audio-ch-icon">🗣️</span>
+                <span class="m-audio-ch-chk" style="display:none;">✓</span>
+              </div>
+              <div class="m-audio-ch-name">Right Channel</div>
+              <div class="m-audio-ch-desc">Audio 2 • English in both ears</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Dialogue Clarity & Boost -->
+        <div class="m-audio-sec">
+          <div class="m-audio-sec-title">
+            <span>🔊</span> <span>Dialogue Clarity &amp; Volume Boost</span>
+          </div>
+          <div class="m-audio-boost-row">
+            <button type="button" class="m-boost-btn active" id="m-boost-0" data-boost="0">Normal (100%)</button>
+            <button type="button" class="m-boost-btn" id="m-boost-1" data-boost="1">Clear Dialogue</button>
+            <button type="button" class="m-boost-btn" id="m-boost-2" data-boost="2">200% Loud Boost</button>
+          </div>
+        </div>
+
+        <!-- 3. Detected Multi-Audio Stream Tracks -->
+        <div class="m-audio-sec">
+          <div class="m-audio-sec-title">
+            <span>🎬</span> <span>Multi-Audio Stream Tracks</span>
+          </div>
+          <div class="m-audio-sec-sub">
+            Discrete audio streams in video container
+          </div>
+          <div class="m-tracks-list" id="m-tracks-list">
+            <div style="padding:10px;font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:8px;">
+              <div class="spinner-sm"></div> Scanning audio tracks…
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. External Audio File / Track -->
+        <div class="m-audio-sec" style="margin-bottom:0;">
+          <div class="m-audio-sec-title">
+            <span>➕</span> <span>External Audio Sync</span>
+          </div>
+          <div class="m-audio-sec-sub">
+            Sync an external audio file (.mp3, .m4a, .aac) with this video
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <label class="m-ext-audio-file-btn">
+              📁 Choose Audio File
+              <input type="file" id="m-ext-audio-file" accept="audio/*,.mp3,.m4a,.aac,.ac3" style="display:none;">
+            </label>
+            <button type="button" class="m-boost-btn" id="m-btn-ext-audio-detach" style="display:none;color:#ff6b6b;border-color:rgba(255,107,107,0.3);">
+              ✕ Detach Audio
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -4563,6 +5016,19 @@
       controlsTimeout: null
     };
 
+    let mobileVaultItems = [];
+    let mobileAudioCtx = null;
+    let mobileAudioSourceNode = null;
+    let mobileAudioSplitterNode = null;
+    let mobileAudioMergerNode = null;
+    let mobileAudioCompressorNode = null;
+    let mobileAudioGainNode = null;
+    let mobileCurrentChannelMode = localStorage.getItem('cinestream_audio_channel') || 'stereo';
+    let mobileCurrentBoostMode = 0;
+    let mobileProbedAudioTracks = [];
+    let mobileActiveAudioTrackIndex = 0;
+    let mobileExtAudioElem = null;
+
     if (localStorage.getItem('sdk_oled_mode') === '1') {
       document.body.classList.add('oled-theme');
     }
@@ -4687,6 +5153,9 @@
       setupCineFilters();
       setupSettings();
       setupEasterEgg();
+      setupVaultMobile();
+      setupMobilePlayerAudio();
+      setupMobileExternalAudio();
 
       renderWatchlist();
       renderContinueWatching();
@@ -4696,6 +5165,7 @@
         fetchShelves(),
         fetchAnimeHome(),
         fetchRecentReleases(),
+        fetchVaultItems(),
         checkServerHealth()
       ]);
     }
@@ -5144,10 +5614,14 @@
         $('#sheet-btn-fav').style.color = favNow ? '#ff4d8d' : '#fff';
       };
 
+      const isVault = movie.is_vault || movie.source === 'vault' || src === 'vault' || src === 'cloud_vault';
+
       if (isAnime) {
         closeDetails();
         openAnimeDetails(movie.toon_id || movie.id || movie.title);
         return;
+      } else if (isVault) {
+        renderVaultDetails(movie);
       } else if (isDirect || isDubbed) {
         await loadDirectMovieDetails(movie, autoPlay);
       } else {
@@ -5722,6 +6196,7 @@
       $('#m-player-pip').onclick = togglePiP;
       $('#m-btn-speed').onclick = cyclePlaybackSpeed;
       $('#m-player-ext').onclick = launchExternalPlayer;
+      $('#m-player-audio').onclick = openMobileAudioSheet;
 
       $('#m-next-ep-play-btn').onclick = () => {
         clearInterval(nextEpTimerInterval);
@@ -5770,6 +6245,7 @@
         console.warn('Playback notice:', e);
       });
 
+      probeMobileAudioTracks(streamUrl);
       requestWakeLock();
       nextEpCountdownStarted = false;
       $('#m-player-next-ep-card').style.display = 'none';
@@ -5789,6 +6265,18 @@
     function closePlayer() {
       const video = $('#m-video');
       const iframe = $('#m-player-iframe');
+
+      closeMobileAudioSheet();
+      if (mobileExtAudioElem) {
+        mobileExtAudioElem.pause();
+        mobileExtAudioElem.remove();
+        mobileExtAudioElem = null;
+      }
+      const detachBtn = $('#m-btn-ext-audio-detach');
+      if (detachBtn) detachBtn.style.display = 'none';
+      const fileIn = $('#m-ext-audio-file');
+      if (fileIn) fileIn.value = '';
+      if (video) video.muted = false;
 
       if (video.currentTime > 15 && state.currentMovie) {
         saveProgress(state.currentMovie, video.currentTime, video.duration);
@@ -6534,6 +7022,7 @@
         video.load();
         video.play().catch(() => { });
         showControls();
+        probeMobileAudioTracks(streamUrl);
       }
     }
 
@@ -7057,10 +7546,15 @@
 
       $$('#source-chips .chip-btn').forEach(chip => {
         chip.onclick = () => {
+          const src = chip.getAttribute('data-source');
+          triggerHaptic('light');
+          if (src === 'cloud_vault') {
+            switchTab('tab-vault');
+            return;
+          }
           $$('#source-chips .chip-btn').forEach(c => c.classList.remove('active'));
           chip.classList.add('active');
-          triggerHaptic('light');
-          state.activeSource = chip.getAttribute('data-source');
+          state.activeSource = src;
           renderShelves();
         };
       });
@@ -7074,6 +7568,7 @@
     function switchTab(tabId) {
       state.activeTab = tabId;
       if (tabId === 'tab-cinestream') fetchCineStreamHome();
+      if (tabId === 'tab-vault') fetchVaultItems();
       $$('.tab-view').forEach(t => t.classList.remove('active'));
       const target = $(`#${tabId}`);
       if (target) target.classList.add('active');
@@ -7086,6 +7581,10 @@
     }
 
     function filterBySource(sourceKey) {
+      if (sourceKey === 'cloud_vault') {
+        switchTab('tab-vault');
+        return;
+      }
       state.activeSource = sourceKey;
       switchTab('tab-home');
       $$('#source-chips .chip-btn').forEach(c => {
@@ -7226,6 +7725,19 @@
         } catch (e) {
           console.warn('CineStream search error:', e);
         }
+      }
+
+      // Specialized search when Vault filter is active
+      if (searchFilterSource === 'cloud_vault') {
+        resultsGrid.innerHTML = '';
+        const qLower = query.toLowerCase();
+        const matches = mobileVaultItems.filter(m => (m.title || '').toLowerCase().includes(qLower) || (m.year || '').toString().includes(qLower));
+        if (matches.length > 0) {
+          matches.forEach(m => resultsGrid.appendChild(createVaultCard(m)));
+        } else {
+          emptyState.style.display = 'flex';
+        }
+        return;
       }
 
       try {
@@ -8555,6 +9067,588 @@
       const pwaCard = $('#m-pwa-install-card');
       if (pwaCard) pwaCard.style.display = 'flex';
     });
+
+    // ==========================================================================
+    // VAULT DETAILS MODAL RENDERING
+    // ==========================================================================
+    function renderVaultDetails(movie) {
+      $('#sheet-source-badge').textContent = '☁️ Cloud Vault';
+      $('#sheet-source-badge').className = 'badge-tag primary';
+      $('#sheet-rating-badge').textContent = movie.quality || '1080p FHD';
+      $('#sheet-year-badge').textContent = movie.year || 'Vault';
+
+      const streamUrl = movie.stream_url || movie.url || '';
+      const optsList = $('#sheet-options-list');
+      optsList.innerHTML = `
+        <div class="stream-opt-card" style="border:1px solid rgba(18,216,180,0.3);background:rgba(18,216,180,0.08);">
+          <div class="stream-opt-left">
+            <span class="stream-opt-badge" style="background:#12d8b4;color:#000;font-weight:800;">${esc(movie.quality || '1080p')}</span>
+            <div>
+              <div class="stream-opt-title">${esc(movie.title)}</div>
+              <div class="stream-opt-sub" style="color:var(--text-dim);font-size:12px;margin-top:2px;">Personal Cloud Stream • Web Audio Multi-Track</div>
+            </div>
+          </div>
+          <button class="stream-play-btn" id="m-vault-detail-play" style="background:#12d8b4;color:#000;">▶ Play</button>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:14px;">
+          <button class="settings-btn" id="m-vault-detail-copy" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;">
+            <span>📋</span> <span>Copy Link</span>
+          </button>
+          <button class="settings-btn" id="m-vault-detail-del" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;color:#ff6b6b;border-color:rgba(255,107,107,0.3);">
+            <span>🗑️</span> <span>Remove</span>
+          </button>
+        </div>
+      `;
+
+      $('#m-vault-detail-play').onclick = () => {
+        closeDetails();
+        playVideoStream(streamUrl, movie.title, movie.quality || '1080p FHD', streamUrl);
+      };
+
+      $('#m-vault-detail-copy').onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(streamUrl);
+          showToast('📋 Stream link copied to clipboard!');
+        } catch (e) {
+          showToast('Stream link: ' + streamUrl);
+        }
+      };
+
+      $('#m-vault-detail-del').onclick = async () => {
+        if (!confirm(`Remove "${movie.title}" from your Cloud Vault?`)) return;
+        try {
+          const res = await fetch(`/api/vault/${movie.vault_id || movie.id}`, { method: 'DELETE' });
+          if (res.ok) {
+            showToast(`🗑️ Removed "${movie.title}"`);
+            closeDetails();
+            fetchVaultItems();
+          } else {
+            showToast('Failed to remove item');
+          }
+        } catch (e) {
+          showToast('Error removing item');
+        }
+      };
+    }
+
+    // ==========================================================================
+    // CLOUD VAULT MOBILE ENGINE
+    // ==========================================================================
+    async function fetchVaultItems() {
+      const grid = $('#m-vault-grid');
+      const emptyState = $('#m-vault-empty');
+      if (!grid) return;
+
+      if (!mobileVaultItems || mobileVaultItems.length === 0) {
+        grid.innerHTML = '<div style="grid-column:span 2;text-align:center;padding:30px;color:#94a3b8;"><div class="spinner-sm" style="margin:0 auto 10px;"></div>Loading Vault items…</div>';
+      }
+      if (emptyState) emptyState.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/vault');
+        if (!res.ok) throw new Error('Failed to load vault');
+        const data = await res.json();
+        mobileVaultItems = data.movies || [];
+        renderVaultGrid(mobileVaultItems);
+      } catch (e) {
+        console.warn('Vault fetch error:', e);
+        if (grid) grid.innerHTML = '';
+        if (emptyState) emptyState.style.display = 'flex';
+      }
+    }
+
+    function renderVaultGrid(items) {
+      const grid = $('#m-vault-grid');
+      const emptyState = $('#m-vault-empty');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        if (emptyState) emptyState.style.display = 'flex';
+        return;
+      }
+      if (emptyState) emptyState.style.display = 'none';
+
+      items.forEach(movie => {
+        grid.appendChild(createVaultCard(movie));
+      });
+    }
+
+    function createVaultCard(movie) {
+      const card = document.createElement('div');
+      card.className = 'grid-card';
+      const poster = getPosterUrl(movie);
+
+      card.innerHTML = `
+        <div class="grid-img-wrap" style="background:linear-gradient(135deg, #161a29 0%, #0d0e16 100%);">
+          ${poster ? `
+            <img class="grid-img" src="${esc(poster)}" alt="${esc(movie.title)}" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          ` : ''}
+          <div class="vault-fallback-art" style="${poster ? 'display:none;' : 'display:flex;'}">
+            <span style="font-size:32px;margin-bottom:6px;">☁️</span>
+            <span style="font-size:12px;font-weight:700;color:#fff;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${esc(movie.title)}</span>
+          </div>
+          <div class="card-rating-pill" style="background:rgba(18,216,180,0.2);color:#12d8b4;border:1px solid rgba(18,216,180,0.4);font-weight:700;">
+            ${esc(movie.quality || '1080p')}
+          </div>
+        </div>
+        <div class="poster-info">
+          <div class="poster-title">${esc(movie.title)}</div>
+          <div class="poster-meta">
+            <span>${movie.year || 'Vault'}</span>
+            <span style="color:#12d8b4;font-weight:600;">• ☁️ Cloud Vault</span>
+          </div>
+        </div>
+      `;
+
+      card.onclick = () => openDetails(movie);
+      return card;
+    }
+
+    function openVaultAddSheet() {
+      triggerHaptic('light');
+      const sheet = $('#m-vault-add-sheet');
+      const backdrop = $('#m-vault-sheet-backdrop');
+      if (sheet && backdrop) {
+        sheet.classList.add('active');
+        backdrop.classList.add('active');
+        setTimeout(() => $('#m-vault-in-title')?.focus(), 80);
+      }
+    }
+
+    function closeVaultAddSheet() {
+      const sheet = $('#m-vault-add-sheet');
+      const backdrop = $('#m-vault-sheet-backdrop');
+      if (sheet && backdrop) {
+        sheet.classList.remove('active');
+        backdrop.classList.remove('active');
+        $('#m-vault-form')?.reset();
+        const statusEl = $('#m-vault-add-status');
+        if (statusEl) {
+          statusEl.style.display = 'none';
+          statusEl.textContent = '';
+        }
+      }
+    }
+
+    async function handleVaultAddSubmit(e) {
+      if (e) e.preventDefault();
+      const title = $('#m-vault-in-title').value.trim();
+      const year = $('#m-vault-in-year').value.trim();
+      const quality = $('#m-vault-in-quality').value;
+      const url = $('#m-vault-in-url').value.trim();
+      const statusEl = $('#m-vault-add-status');
+      const submitBtn = $('#m-btn-vault-submit');
+
+      if (!title || !url) {
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.style.background = 'rgba(255, 107, 107, 0.15)';
+          statusEl.style.color = '#ff6b6b';
+          statusEl.textContent = 'Please enter both Title and Stream URL.';
+        }
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Saving…</span>';
+      }
+
+      try {
+        const res = await fetch('/api/vault/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, year, quality, url })
+        });
+        const data = await res.json();
+        if (data.success) {
+          triggerHaptic('success');
+          showToast(`✨ Added "${title}" to Cloud Vault!`);
+          closeVaultAddSheet();
+          fetchVaultItems();
+        } else {
+          throw new Error(data.error || 'Failed to save');
+        }
+      } catch (err) {
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.style.background = 'rgba(255, 107, 107, 0.15)';
+          statusEl.style.color = '#ff6b6b';
+          statusEl.textContent = err.message || 'Error saving stream link';
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>✨ Save to Vault</span>';
+        }
+      }
+    }
+
+    function setupVaultMobile() {
+      $('#m-btn-open-vault-add')?.addEventListener('click', openVaultAddSheet);
+      $('#m-btn-vault-empty-add')?.addEventListener('click', openVaultAddSheet);
+      $('#m-vault-add-close')?.addEventListener('click', closeVaultAddSheet);
+      $('#m-btn-vault-cancel')?.addEventListener('click', closeVaultAddSheet);
+      $('#m-vault-sheet-backdrop')?.addEventListener('click', closeVaultAddSheet);
+      $('#m-vault-sheet-handle')?.addEventListener('click', closeVaultAddSheet);
+
+      $('#m-vault-form')?.addEventListener('submit', handleVaultAddSubmit);
+      $('#m-btn-vault-submit')?.addEventListener('click', handleVaultAddSubmit);
+
+      $('#m-btn-vault-paste')?.addEventListener('click', async () => {
+        triggerHaptic('light');
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            $('#m-vault-in-url').value = text.trim();
+            if (!$('#m-vault-in-title').value) {
+              const match = text.match(/\/([^\/?#]+?)(?:\.[a-zA-Z0-9]+)?(?:[?#]|$)/);
+              if (match && match[1]) {
+                $('#m-vault-in-title').value = decodeURIComponent(match[1]).replace(/[._]/g, ' ').trim();
+              }
+            }
+            showToast('📋 Pasted from clipboard');
+          }
+        } catch (e) {
+          showToast('Clipboard access not granted');
+        }
+      });
+
+      const vaultSearchInput = $('#m-vault-search-input');
+      const vaultSearchClear = $('#m-vault-search-clear');
+      if (vaultSearchInput) {
+        vaultSearchInput.addEventListener('input', () => {
+          const q = vaultSearchInput.value.trim().toLowerCase();
+          if (vaultSearchClear) vaultSearchClear.style.display = q ? 'block' : 'none';
+          if (!q) {
+            renderVaultGrid(mobileVaultItems);
+            return;
+          }
+          const filtered = mobileVaultItems.filter(m => (m.title || '').toLowerCase().includes(q) || (m.year || '').toString().includes(q) || (m.quality || '').toLowerCase().includes(q));
+          renderVaultGrid(filtered);
+        });
+        if (vaultSearchClear) {
+          vaultSearchClear.onclick = () => {
+            vaultSearchInput.value = '';
+            vaultSearchClear.style.display = 'none';
+            renderVaultGrid(mobileVaultItems);
+          };
+        }
+      }
+    }
+
+    // ==========================================================================
+    // MOBILE VIDEO PLAYER AUDIO & CHANNEL SWITCHER ENGINE
+    // ==========================================================================
+    function initMobileWebAudio() {
+      if (mobileAudioCtx) return;
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        const video = $('#m-video');
+        if (!AudioContextClass || !video) return;
+        mobileAudioCtx = new AudioContextClass();
+        mobileAudioSourceNode = mobileAudioCtx.createMediaElementSource(video);
+
+        mobileAudioSplitterNode = mobileAudioCtx.createChannelSplitter(2);
+        mobileAudioMergerNode = mobileAudioCtx.createChannelMerger(2);
+
+        mobileAudioCompressorNode = mobileAudioCtx.createDynamicsCompressor();
+        mobileAudioCompressorNode.threshold.setValueAtTime(-24, mobileAudioCtx.currentTime);
+        mobileAudioCompressorNode.knee.setValueAtTime(30, mobileAudioCtx.currentTime);
+        mobileAudioCompressorNode.ratio.setValueAtTime(12, mobileAudioCtx.currentTime);
+        mobileAudioCompressorNode.attack.setValueAtTime(0.003, mobileAudioCtx.currentTime);
+        mobileAudioCompressorNode.release.setValueAtTime(0.25, mobileAudioCtx.currentTime);
+
+        mobileAudioGainNode = mobileAudioCtx.createGain();
+        mobileAudioGainNode.gain.setValueAtTime(1.0, mobileAudioCtx.currentTime);
+
+        mobileAudioSourceNode.connect(mobileAudioSplitterNode);
+        applyMobileAudioChannelRouting(mobileCurrentChannelMode);
+        mobileAudioMergerNode.connect(mobileAudioCompressorNode);
+        mobileAudioCompressorNode.connect(mobileAudioGainNode);
+        mobileAudioGainNode.connect(mobileAudioCtx.destination);
+      } catch (e) {
+        console.warn('[MobileWebAudio] Init note:', e);
+      }
+    }
+
+    function applyMobileAudioChannelRouting(mode) {
+      if (mode) mobileCurrentChannelMode = mode;
+      localStorage.setItem('cinestream_audio_channel', mobileCurrentChannelMode);
+      if (!mobileAudioCtx || !mobileAudioSplitterNode || !mobileAudioMergerNode) return;
+
+      try {
+        mobileAudioSplitterNode.disconnect();
+      } catch (e) { }
+
+      try {
+        if (mobileCurrentChannelMode === 'left') {
+          mobileAudioSplitterNode.connect(mobileAudioMergerNode, 0, 0);
+          mobileAudioSplitterNode.connect(mobileAudioMergerNode, 0, 1);
+        } else if (mobileCurrentChannelMode === 'right') {
+          mobileAudioSplitterNode.connect(mobileAudioMergerNode, 1, 0);
+          mobileAudioSplitterNode.connect(mobileAudioMergerNode, 1, 1);
+        } else {
+          mobileAudioSplitterNode.connect(mobileAudioMergerNode, 0, 0);
+          mobileAudioSplitterNode.connect(mobileAudioMergerNode, 1, 1);
+        }
+      } catch (err) {
+        console.warn('[MobileWebAudio] Channel routing error:', err);
+      }
+      updateMobileAudioMenuUI();
+    }
+
+    function setMobileAudioChannelMode(mode) {
+      initMobileWebAudio();
+      if (mobileAudioCtx && mobileAudioCtx.state === 'suspended') {
+        mobileAudioCtx.resume();
+      }
+      triggerHaptic('light');
+      applyMobileAudioChannelRouting(mode);
+      if (mode === 'left') {
+        showToast('🎵 Left Channel (Tamil in both ears)');
+      } else if (mode === 'right') {
+        showToast('🎵 Right Channel (English in both ears)');
+      } else {
+        showToast('🎵 Stereo (Default)');
+      }
+    }
+
+    function updateMobileAudioMenuUI() {
+      const chStereo = $('#m-ch-stereo');
+      const chLeft = $('#m-ch-left');
+      const chRight = $('#m-ch-right');
+
+      [chStereo, chLeft, chRight].forEach(b => {
+        if (!b) return;
+        const isAct = b.dataset.ch === mobileCurrentChannelMode;
+        b.classList.toggle('active', isAct);
+        const chk = b.querySelector('.m-audio-ch-chk');
+        if (chk) chk.style.display = isAct ? 'inline-block' : 'none';
+      });
+    }
+
+    function setMobileAudioBoost(mode) {
+      initMobileWebAudio();
+      if (mobileAudioCtx && mobileAudioCtx.state === 'suspended') {
+        mobileAudioCtx.resume();
+      }
+      triggerHaptic('light');
+      mobileCurrentBoostMode = mode;
+
+      [0, 1, 2].forEach(b => {
+        const btn = $(`#m-boost-${b}`);
+        if (btn) btn.classList.toggle('active', b === mode);
+      });
+
+      if (mode === 1) {
+        if (mobileAudioCompressorNode && mobileAudioCtx) mobileAudioCompressorNode.threshold.setValueAtTime(-28, mobileAudioCtx.currentTime);
+        if (mobileAudioGainNode && mobileAudioCtx) mobileAudioGainNode.gain.setValueAtTime(1.4, mobileAudioCtx.currentTime);
+        showToast('🔊 Dialogue Clarity: ON (+140%)');
+      } else if (mode === 2) {
+        if (mobileAudioCompressorNode && mobileAudioCtx) mobileAudioCompressorNode.threshold.setValueAtTime(-18, mobileAudioCtx.currentTime);
+        if (mobileAudioGainNode && mobileAudioCtx) mobileAudioGainNode.gain.setValueAtTime(2.0, mobileAudioCtx.currentTime);
+        showToast('🔊 Audio Boost: 200% Gain');
+      } else {
+        if (mobileAudioGainNode && mobileAudioCtx) mobileAudioGainNode.gain.setValueAtTime(1.0, mobileAudioCtx.currentTime);
+        showToast('🔊 Audio: Standard 100%');
+      }
+    }
+
+    async function probeMobileAudioTracks(streamUrl) {
+      const trackListEl = $('#m-tracks-list');
+      if (!trackListEl) return;
+      trackListEl.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:8px;"><div class="spinner-sm"></div> Scanning audio tracks…</div>';
+
+      mobileProbedAudioTracks = [];
+      mobileActiveAudioTrackIndex = 0;
+
+      const video = $('#m-video');
+      if (video && video.audioTracks && video.audioTracks.length > 0) {
+        for (let i = 0; i < video.audioTracks.length; i++) {
+          const t = video.audioTracks[i];
+          mobileProbedAudioTracks.push({
+            is_native: true,
+            audio_index: i,
+            label: t.label || `Track ${i + 1}${t.language ? ' (' + t.language.toUpperCase() + ')' : ''}`,
+            language: t.language || '',
+            enabled: t.enabled
+          });
+          if (t.enabled) mobileActiveAudioTrackIndex = i;
+        }
+      }
+
+      if (mobileProbedAudioTracks.length <= 1 && streamUrl) {
+        try {
+          const probeUrl = streamUrl.startsWith('blob:') ? null : streamUrl;
+          if (probeUrl) {
+            const res = await fetch(`/api/media/audio-tracks?url=${encodeURIComponent(probeUrl)}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.tracks && data.tracks.length > 0) {
+                mobileProbedAudioTracks = data.tracks;
+              }
+            }
+          }
+        } catch (e) {
+          console.debug('[MobileAudio] Probe fetch note:', e);
+        }
+      }
+
+      renderMobileAudioTracksList();
+    }
+
+    function renderMobileAudioTracksList() {
+      const trackListEl = $('#m-tracks-list');
+      if (!trackListEl) return;
+
+      if (!mobileProbedAudioTracks || mobileProbedAudioTracks.length === 0) {
+        trackListEl.innerHTML = `
+          <div class="m-track-item active" data-track-idx="0">
+            <span>🎵 Main Audio Stream (Default)</span>
+            <span style="color:#12d8b4;font-weight:800;">✓</span>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      mobileProbedAudioTracks.forEach((t, idx) => {
+        const isActive = idx === mobileActiveAudioTrackIndex;
+        html += `
+          <div class="m-track-item ${isActive ? 'active' : ''}" data-track-idx="${idx}">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span>🎵</span>
+              <span>${esc(t.label)}</span>
+            </div>
+            <span class="m-track-chk" style="${isActive ? 'color:#12d8b4;font-weight:800;' : 'display:none;'}">✓</span>
+          </div>
+        `;
+      });
+      trackListEl.innerHTML = html;
+
+      trackListEl.querySelectorAll('.m-track-item').forEach(el => {
+        el.onclick = () => {
+          const idx = parseInt(el.dataset.trackIdx, 10) || 0;
+          switchMobileAudioTrack(idx);
+        };
+      });
+    }
+
+    function switchMobileAudioTrack(idx) {
+      if (!mobileProbedAudioTracks || !mobileProbedAudioTracks[idx]) return;
+      mobileActiveAudioTrackIndex = idx;
+      const target = mobileProbedAudioTracks[idx];
+      const video = $('#m-video');
+
+      if (video && video.audioTracks && video.audioTracks.length > 1) {
+        for (let i = 0; i < video.audioTracks.length; i++) {
+          video.audioTracks[i].enabled = (i === idx);
+        }
+        showToast(`🎵 Audio: ${target.label}`);
+        renderMobileAudioTracksList();
+        return;
+      }
+
+      if (state.currentStreamUrl) {
+        const origSrc = state.currentStreamUrl;
+        const curTime = video.currentTime || 0;
+        const isPaused = video.paused;
+        const remuxUrl = `/api/media/stream-remux?url=${encodeURIComponent(origSrc)}&audio_index=${target.audio_index}&ss=${Math.floor(curTime)}`;
+        video.src = remuxUrl;
+        video.load();
+        if (!isPaused) video.play().catch(() => { });
+        showToast(`🎵 Audio Track: ${target.label}`);
+        renderMobileAudioTracksList();
+      } else {
+        showToast(`🎵 Audio: ${target.label}`);
+        renderMobileAudioTracksList();
+      }
+    }
+
+    function openMobileAudioSheet() {
+      initMobileWebAudio();
+      if (mobileAudioCtx && mobileAudioCtx.state === 'suspended') {
+        mobileAudioCtx.resume();
+      }
+      triggerHaptic('light');
+      updateMobileAudioMenuUI();
+      $('#m-audio-backdrop')?.classList.add('active');
+      $('#m-audio-sheet')?.classList.add('active');
+    }
+
+    function closeMobileAudioSheet() {
+      $('#m-audio-backdrop')?.classList.remove('active');
+      $('#m-audio-sheet')?.classList.remove('active');
+    }
+
+    function setupMobilePlayerAudio() {
+      $('#m-player-audio')?.addEventListener('click', openMobileAudioSheet);
+      $('#m-audio-close')?.addEventListener('click', closeMobileAudioSheet);
+      $('#m-audio-backdrop')?.addEventListener('click', closeMobileAudioSheet);
+      $('#m-audio-drag-handle')?.addEventListener('click', closeMobileAudioSheet);
+
+      // Channel Mode Buttons
+      $('#m-ch-stereo')?.addEventListener('click', () => setMobileAudioChannelMode('stereo'));
+      $('#m-ch-left')?.addEventListener('click', () => setMobileAudioChannelMode('left'));
+      $('#m-ch-right')?.addEventListener('click', () => setMobileAudioChannelMode('right'));
+
+      // Boost Mode Buttons
+      $('#m-boost-0')?.addEventListener('click', () => setMobileAudioBoost(0));
+      $('#m-boost-1')?.addEventListener('click', () => setMobileAudioBoost(1));
+      $('#m-boost-2')?.addEventListener('click', () => setMobileAudioBoost(2));
+    }
+
+    function setupMobileExternalAudio() {
+      const fileIn = $('#m-ext-audio-file');
+      const detachBtn = $('#m-btn-ext-audio-detach');
+      const video = $('#m-video');
+
+      if (!fileIn || !detachBtn || !video) return;
+
+      fileIn.addEventListener('change', () => {
+        const file = fileIn.files?.[0];
+        if (!file) return;
+
+        if (mobileExtAudioElem) {
+          mobileExtAudioElem.pause();
+          mobileExtAudioElem.remove();
+          mobileExtAudioElem = null;
+        }
+
+        const audioUrl = URL.createObjectURL(file);
+        mobileExtAudioElem = new Audio(audioUrl);
+        mobileExtAudioElem.currentTime = video.currentTime || 0;
+
+        video.muted = true;
+
+        if (!video.paused) mobileExtAudioElem.play().catch(() => {});
+
+        video.addEventListener('play', () => mobileExtAudioElem?.play().catch(() => {}));
+        video.addEventListener('pause', () => mobileExtAudioElem?.pause());
+        video.addEventListener('seeking', () => {
+          if (mobileExtAudioElem) mobileExtAudioElem.currentTime = video.currentTime;
+        });
+
+        detachBtn.style.display = 'inline-flex';
+        showToast(`🎵 Synced audio: ${file.name}`);
+        closeMobileAudioSheet();
+      });
+
+      detachBtn.addEventListener('click', () => {
+        if (mobileExtAudioElem) {
+          mobileExtAudioElem.pause();
+          mobileExtAudioElem.remove();
+          mobileExtAudioElem = null;
+        }
+        video.muted = false;
+        detachBtn.style.display = 'none';
+        fileIn.value = '';
+        showToast('Detached external audio');
+      });
+    }
 
     function setupSettings() {
       $('#btn-switch-desktop').onclick = switchToDesktop;

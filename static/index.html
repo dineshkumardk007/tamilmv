@@ -9028,6 +9028,65 @@
       margin: 2px 0;
     }
 
+    .atv-audio-menu {
+      min-width: 280px !important;
+      max-height: 80vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .atv-audio-menu::-webkit-scrollbar {
+      display: none;
+    }
+    .atv-audio-menu .ext-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      background: none;
+      border: 1px solid transparent;
+      width: 100%;
+      text-align: left;
+      transition: all .15s ease;
+    }
+    .atv-audio-menu .ext-item:hover,
+    .atv-audio-menu .ext-item.tv-focused {
+      color: #fff !important;
+      background: rgba(124, 92, 255, 0.28) !important;
+      border-color: rgba(124, 92, 255, 0.6) !important;
+      box-shadow: 0 0 14px rgba(124, 92, 255, 0.45) !important;
+      transform: translateX(3px);
+      outline: none !important;
+    }
+    .atv-audio-menu .ext-item.active {
+      color: #fff;
+      font-weight: 600;
+      background: rgba(124, 92, 255, 0.18);
+      border-color: rgba(124, 92, 255, 0.4);
+    }
+    .atv-audio-menu .ext-item .audio-check {
+      font-weight: 800;
+      color: #7c5cff;
+      font-size: 14px;
+    }
+    .atv-audio-menu .ext-item.active .audio-check {
+      display: inline-block !important;
+    }
+    .audio-stream-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--muted-2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .btn-pip {
       display: flex;
       align-items: center;
@@ -11013,6 +11072,7 @@
               <select class="premium-select" id="sort-select" aria-label="Filter Source and Sort">
                 <optgroup label="── Sources ──">
                   <option value="all" selected>✨ All Sources</option>
+                  <option value="cloud_vault">☁️ My Cloud Vault</option>
                   <option value="isaimini">⚡ TamilMov (Direct MP4)</option>
                   <option value="isaidub">🎙️ TamDub (Dubbed MP4)</option>
                   <option value="tamilmv">🧲 Tamil(Torrents)</option>
@@ -11166,6 +11226,56 @@
               <span id="audio-boost-icon">🔊</span>
               <span id="audio-boost-label">100%</span>
             </button>
+
+            <!-- Audio Track & Multi-Language Menu (TV Mode & Desktop) -->
+            <div class="player-ext-dropdown" id="player-audio-dropdown" style="position:relative;">
+              <button class="atv-glass-btn tv-nav-item" id="btn-player-audio" title="Change Audio Track / Language / Channels (Press 'A' on TV Remote)">
+                <span id="player-audio-icon">🎵</span>
+                <span id="player-audio-label">Audio Track</span>
+              </button>
+              <div class="player-ext-menu atv-audio-menu" id="player-audio-menu" style="display:none;min-width:280px;right:0;">
+                <div class="ext-menu-header" style="padding:6px 10px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:center;justify-content:space-between;">
+                  <span>Audio Selection</span>
+                  <span style="font-size:10px;opacity:0.75;background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);">TV: Press [A]</span>
+                </div>
+                
+                <!-- Dynamic Embedded Streams Section -->
+                <div id="player-audio-track-list">
+                  <div class="audio-track-loading" style="padding:6px 10px;font-size:11.5px;color:var(--muted-2);">Scanning audio tracks…</div>
+                </div>
+
+                <div class="ext-divider"></div>
+                
+                <!-- Dual-Audio Channel Splitter Section -->
+                <div style="padding:4px 10px;font-size:10.5px;font-weight:600;color:var(--muted-2);text-transform:uppercase;">Dual-Audio Channel Router</div>
+                <button type="button" class="ext-item active" id="audio-ch-stereo" data-ch="stereo" title="Standard stereo playback (both channels)">
+                  <span>🎧 Stereo (Standard / Both)</span>
+                  <span class="audio-check">✓</span>
+                </button>
+                <button type="button" class="ext-item" id="audio-ch-left" data-ch="left" title="Route left channel to both ears (Language 1 / Tamil / Original)">
+                  <span>🔊 Left Channel (Audio 1 / Tamil)</span>
+                  <span class="audio-check" style="display:none;">✓</span>
+                </button>
+                <button type="button" class="ext-item" id="audio-ch-right" data-ch="right" title="Route right channel to both ears (Language 2 / English / Dub)">
+                  <span>🔊 Right Channel (Audio 2 / English)</span>
+                  <span class="audio-check" style="display:none;">✓</span>
+                </button>
+
+                <div class="ext-divider"></div>
+
+                <!-- External Audio Source Section -->
+                <button type="button" class="ext-item" id="audio-opt-upload">
+                  <span>📁 Load Audio File (.mp3/.m4a)</span>
+                </button>
+                <button type="button" class="ext-item" id="audio-opt-url">
+                  <span>🔗 Paste Audio Track URL</span>
+                </button>
+                <button type="button" class="ext-item" id="audio-opt-clear" style="display:none;color:#ff6b6b;">
+                  <span>✕ Remove External Audio</span>
+                </button>
+                <input type="file" id="audio-file-input" accept="audio/*,.mp3,.m4a,.aac,.ogg,.wav" style="display:none;" />
+              </div>
+            </div>
 
             <!-- Subtitles & Captions Menu -->
             <div class="player-ext-dropdown" id="player-sub-dropdown" style="position:relative;">
@@ -13749,6 +13859,10 @@
           openCineStreamHub();
           return;
         }
+        if (val === 'cloud_vault') {
+          openSourceHub('cloud_vault');
+          return;
+        }
         if (currentMode === 'cinestream') {
           closeCineStreamHub(false);
         }
@@ -15207,12 +15321,6 @@
                   <div class="state" style="padding:32px 10px">
                     <div class="ico" style="font-size:32px;margin-bottom:8px;">🔍</div>
                     <h4 style="font-size:15px;color:#f1f5f9;">No matching files found</h4>
-                    <p style="font-size:12.5px;color:var(--muted);margin-top:4px;">Try clearing your search query or switching movie/quality filters.</p>
-                  </div>
-                `;
-                return;
-              }
-
               listEl.innerHTML = filtered.map((f, i) => {
                 const meta = f._meta || extractMediaItemMeta(f.file_name, m.title, f.quality_label);
                 const isSample = Boolean(f.is_sample || meta.is_sample);
@@ -16137,11 +16245,16 @@
 
         if (directUrl) {
           const streamUrl = file.is_vault ? directUrl : ('/api/direct-stream?url=' + encodeURIComponent(directUrl));
+          currentPlayingStreamMeta.original_src = directUrl;
+          currentPlayingStreamMeta.stream_url = streamUrl;
           playerVideo.src = streamUrl;
           restorePlayerPreferences();
           playerVideo.load();
           playerVideo.play().catch(() => { });
           updatePlayerPlaybackUI();
+          initWebAudio();
+          applyAudioChannelRouting();
+          probeMediaAudioTracks(streamUrl);
 
           playerVideo.onplaying = () => {
             playerLoader.style.opacity = '0';
@@ -16335,6 +16448,8 @@
 
       const menuExt = $('#player-ext-menu');
       if (menuExt) menuExt.classList.remove('open');
+      togglePlayerAudioMenu(false);
+      removeExternalAudio();
       atvEpisodesDrawer?.classList.remove('open');
       atvSpeedMenu?.classList.remove('open');
       atvPlayerWrap?.classList.remove('user-idle');
@@ -17563,7 +17678,7 @@
           $('#dock-home')?.classList.add('active');
         }
         const sortSelect = $('#sort-select');
-        if (sortSelect && sortSelect.value === 'cinestream') sortSelect.value = 'all';
+        if (sortSelect && (sortSelect.value === 'cinestream' || sortSelect.value === 'cloud_vault')) sortSelect.value = 'all';
         currentMode = 'recent';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -18008,7 +18123,7 @@
           $('#dock-home')?.classList.add('active');
         }
         const sortSelect = $('#sort-select');
-        if (sortSelect && sortSelect.value === 'cinestream') sortSelect.value = 'all';
+        if (sortSelect && (sortSelect.value === 'cinestream' || sortSelect.value === 'cloud_vault')) sortSelect.value = 'all';
         currentMode = 'recent';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -18570,7 +18685,7 @@
           $('#dock-home')?.classList.add('active');
         }
         const sortSelect = $('#sort-select');
-        if (sortSelect && sortSelect.value === 'cinestream') sortSelect.value = 'all';
+        if (sortSelect && (sortSelect.value === 'cinestream' || sortSelect.value === 'cloud_vault')) sortSelect.value = 'all';
         currentMode = 'recent';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -18837,6 +18952,9 @@
           e.preventDefault();
           playPlaylistItem(activePlaylistIndex + 1);
         }
+      } else if (e.code === 'KeyA') {
+        e.preventDefault();
+        togglePlayerAudioMenu();
       }
     });
 
@@ -20600,6 +20718,59 @@
 
       // 2. Video player media keys & D-Pad when player modal is active
       if (playerScrim && playerScrim.classList.contains('on')) {
+        const audioMenu = $('#player-audio-menu');
+        const isAudioMenuOpen = audioMenu && (audioMenu.style.display === 'flex' || audioMenu.classList.contains('open'));
+
+        // Handle TV D-Pad navigation within open Audio Track Menu
+        if (isAudioMenuOpen) {
+          const items = Array.from(audioMenu.querySelectorAll('.ext-item:not([style*="display: none"])'));
+          let focusedIndex = items.findIndex(el => el.classList.contains('tv-focused'));
+
+          if (isDown) {
+            e.preventDefault();
+            const nextIdx = (focusedIndex < items.length - 1 && focusedIndex >= 0) ? focusedIndex + 1 : 0;
+            items.forEach(el => el.classList.remove('tv-focused'));
+            if (items[nextIdx]) {
+              items[nextIdx].classList.add('tv-focused');
+              items[nextIdx].focus();
+              items[nextIdx].scrollIntoView({ block: 'nearest' });
+            }
+            return;
+          }
+          if (isUp) {
+            e.preventDefault();
+            const prevIdx = focusedIndex > 0 ? focusedIndex - 1 : items.length - 1;
+            items.forEach(el => el.classList.remove('tv-focused'));
+            if (items[prevIdx]) {
+              items[prevIdx].classList.add('tv-focused');
+              items[prevIdx].focus();
+              items[prevIdx].scrollIntoView({ block: 'nearest' });
+            }
+            return;
+          }
+          if (isEnter) {
+            e.preventDefault();
+            if (focusedIndex >= 0 && items[focusedIndex]) {
+              items[focusedIndex].click();
+            }
+            togglePlayerAudioMenu(false);
+            return;
+          }
+          if (isBack || e.key === 'Escape' || e.code === 'KeyA' || e.keyCode === 209 || e.keyCode === 170) {
+            e.preventDefault();
+            togglePlayerAudioMenu(false);
+            return;
+          }
+          return;
+        }
+
+        // Hotkey 'A' or TV remote Audio button (Key 209, 170, 'AudioTrack', 'Audio')
+        if (e.code === 'KeyA' || e.key === 'AudioTrack' || e.key === 'Audio' || e.keyCode === 209 || e.keyCode === 170) {
+          e.preventDefault();
+          togglePlayerAudioMenu();
+          return;
+        }
+
         if (isPlayPause) {
           e.preventDefault();
           togglePlayPause();
@@ -21158,15 +21329,21 @@
     setInterval(checkStreamerHealth, 10000);
 
     // ==============================================================================
-    // OPTIONS A & B: Audio Boost, Subtitle Engine, Instant Typeahead & QR Handoff
+    // OPTIONS A & B: Audio Boost, Audio Track & Dual-Audio Router, Subtitles & QR Handoff
     // ==============================================================================
 
-    // ---------- Option A1: Web Audio API Dialogue Clarity & 200% Boost ----------
+    // ---------- Option A1: Web Audio API Dialogue Clarity, 200% Boost & Dual-Audio Router ----------
     let audioCtx = null;
     let audioSourceNode = null;
+    let audioSplitterNode = null;
+    let audioMergerNode = null;
     let audioCompressorNode = null;
     let audioGainNode = null;
     let currentAudioBoostMode = 0; // 0 = 100%, 1 = Clarity (140% + Compressor), 2 = 200% Max
+    let currentAudioChannelMode = localStorage.getItem('cinestream_audio_channel') || 'stereo'; // 'stereo' | 'left' | 'right'
+    let currentProbedAudioTracks = [];
+    let currentActiveAudioTrackIndex = 0;
+    let activeExternalAudioElem = null;
 
     function initWebAudio() {
       if (audioCtx) return;
@@ -21175,6 +21352,10 @@
         if (!AudioContextClass || !playerVideo) return;
         audioCtx = new AudioContextClass();
         audioSourceNode = audioCtx.createMediaElementSource(playerVideo);
+
+        // Splitter and Merger for Channel Routing (Stereo / Left / Right)
+        audioSplitterNode = audioCtx.createChannelSplitter(2);
+        audioMergerNode = audioCtx.createChannelMerger(2);
 
         audioCompressorNode = audioCtx.createDynamicsCompressor();
         audioCompressorNode.threshold.setValueAtTime(-24, audioCtx.currentTime);
@@ -21186,11 +21367,85 @@
         audioGainNode = audioCtx.createGain();
         audioGainNode.gain.setValueAtTime(1.0, audioCtx.currentTime);
 
-        audioSourceNode.connect(audioCompressorNode);
+        // Audio Chain: Source -> Splitter -> (Routing) -> Merger -> Compressor -> Gain -> Destination
+        audioSourceNode.connect(audioSplitterNode);
+        applyAudioChannelRouting(currentAudioChannelMode);
+        audioMergerNode.connect(audioCompressorNode);
         audioCompressorNode.connect(audioGainNode);
         audioGainNode.connect(audioCtx.destination);
       } catch (e) {
         console.warn('[WebAudio] Init note:', e);
+      }
+    }
+
+    function applyAudioChannelRouting(mode) {
+      if (mode) currentAudioChannelMode = mode;
+      localStorage.setItem('cinestream_audio_channel', currentAudioChannelMode);
+      if (!audioCtx || !audioSplitterNode || !audioMergerNode) return;
+      try {
+        audioSplitterNode.disconnect();
+      } catch (e) { }
+
+      try {
+        if (currentAudioChannelMode === 'left') {
+          // Left channel only -> routed into both left and right speakers/headphones
+          audioSplitterNode.connect(audioMergerNode, 0, 0);
+          audioSplitterNode.connect(audioMergerNode, 0, 1);
+        } else if (currentAudioChannelMode === 'right') {
+          // Right channel only -> routed into both left and right speakers/headphones
+          audioSplitterNode.connect(audioMergerNode, 1, 0);
+          audioSplitterNode.connect(audioMergerNode, 1, 1);
+        } else {
+          // Normal Stereo: Left to Left, Right to Right
+          audioSplitterNode.connect(audioMergerNode, 0, 0);
+          audioSplitterNode.connect(audioMergerNode, 1, 1);
+        }
+      } catch (err) {
+        console.warn('[WebAudio] Channel routing error:', err);
+      }
+      updateAudioMenuUI();
+    }
+
+    function setAudioChannelMode(mode) {
+      initWebAudio();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      applyAudioChannelRouting(mode);
+      if (mode === 'left') {
+        showOSD('🎵', 'Audio: Left Channel (Audio 1)');
+      } else if (mode === 'right') {
+        showOSD('🎵', 'Audio: Right Channel (Audio 2)');
+      } else {
+        showOSD('🎵', 'Audio: Stereo (Default)');
+      }
+      setTimeout(() => {
+        togglePlayerAudioMenu(false);
+      }, 350);
+    }
+
+    function updateAudioMenuUI() {
+      const chStereo = $('#audio-ch-stereo');
+      const chLeft = $('#audio-ch-left');
+      const chRight = $('#audio-ch-right');
+      const btnLbl = $('#player-audio-label');
+
+      [chStereo, chLeft, chRight].forEach(b => {
+        if (!b) return;
+        const isAct = b.dataset.ch === currentAudioChannelMode;
+        b.classList.toggle('active', isAct);
+        const chk = b.querySelector('.audio-check');
+        if (chk) chk.style.display = isAct ? 'inline-block' : 'none';
+      });
+
+      if (currentAudioChannelMode === 'left') {
+        if (btnLbl) btnLbl.textContent = 'Audio: Left Ch';
+      } else if (currentAudioChannelMode === 'right') {
+        if (btnLbl) btnLbl.textContent = 'Audio: Right Ch';
+      } else if (currentProbedAudioTracks.length > 1 && currentActiveAudioTrackIndex > 0) {
+        if (btnLbl) btnLbl.textContent = `Track ${currentActiveAudioTrackIndex + 1}`;
+      } else {
+        if (btnLbl) btnLbl.textContent = 'Audio Track';
       }
     }
 
@@ -21221,6 +21476,203 @@
         btn?.classList.remove('active');
         showOSD('🔊', 'Audio: Standard (100%)');
       }
+    }
+
+    // ---------- Option A1.2: Multi-Audio Stream Detection & Track Switching Engine ----------
+    async function probeMediaAudioTracks(streamUrl) {
+      const trackListEl = $('#player-audio-track-list');
+      if (!trackListEl) return;
+      trackListEl.innerHTML = '<div style="padding:6px 10px;font-size:11.5px;color:var(--muted-2);">Scanning audio tracks…</div>';
+
+      currentProbedAudioTracks = [];
+      currentActiveAudioTrackIndex = 0;
+
+      // 1. Check native HTML5 audioTracks (available on Safari & Smart TV WebViews)
+      if (playerVideo && playerVideo.audioTracks && playerVideo.audioTracks.length > 0) {
+        for (let i = 0; i < playerVideo.audioTracks.length; i++) {
+          const t = playerVideo.audioTracks[i];
+          currentProbedAudioTracks.push({
+            is_native: true,
+            audio_index: i,
+            label: t.label || `Track ${i + 1}${t.language ? ' (' + t.language.toUpperCase() + ')' : ''}`,
+            language: t.language || '',
+            enabled: t.enabled
+          });
+          if (t.enabled) currentActiveAudioTrackIndex = i;
+        }
+      }
+
+      // 2. Query backend ffprobe inspector for stream info if native list has <= 1 track
+      if (currentProbedAudioTracks.length <= 1 && streamUrl) {
+        try {
+          const probeUrl = streamUrl.startsWith('blob:') ? null : streamUrl;
+          if (probeUrl) {
+            const res = await fetch(`/api/media/audio-tracks?url=${encodeURIComponent(probeUrl)}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.tracks && data.tracks.length > 0) {
+                currentProbedAudioTracks = data.tracks;
+              }
+            }
+          }
+        } catch (e) {
+          console.debug('[Audio] Probe fetch note:', e);
+        }
+      }
+
+      renderAudioTracksList();
+    }
+
+    function renderAudioTracksList() {
+      const trackListEl = $('#player-audio-track-list');
+      if (!trackListEl) return;
+
+      if (!currentProbedAudioTracks || currentProbedAudioTracks.length === 0) {
+        trackListEl.innerHTML = `
+          <button type="button" class="ext-item active" data-track-idx="0">
+            <span>🎵 Main Audio Stream (Default)</span>
+            <span class="audio-check">✓</span>
+          </button>
+        `;
+        return;
+      }
+
+      let html = '';
+      currentProbedAudioTracks.forEach((t, idx) => {
+        const isActive = idx === currentActiveAudioTrackIndex;
+        html += `
+          <button type="button" class="ext-item ${isActive ? 'active' : ''}" data-track-idx="${idx}" title="Switch to ${esc(t.label)}">
+            <span style="display:flex;align-items:center;gap:6px;">
+              <span>🎵</span>
+              <span>${esc(t.label)}</span>
+            </span>
+            <span class="audio-check" style="${isActive ? '' : 'display:none;'}">✓</span>
+          </button>
+        `;
+      });
+      trackListEl.innerHTML = html;
+
+      // Attach click events
+      trackListEl.querySelectorAll('.ext-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.trackIdx, 10) || 0;
+          switchAudioTrack(idx);
+        });
+      });
+    }
+
+    function switchAudioTrack(idx) {
+      if (!currentProbedAudioTracks || !currentProbedAudioTracks[idx]) return;
+      currentActiveAudioTrackIndex = idx;
+      const target = currentProbedAudioTracks[idx];
+
+      // Native audioTracks switch
+      if (playerVideo && playerVideo.audioTracks && playerVideo.audioTracks.length > 1) {
+        for (let i = 0; i < playerVideo.audioTracks.length; i++) {
+          playerVideo.audioTracks[i].enabled = (i === idx);
+        }
+        showOSD('🎵', `Audio: ${target.label}`);
+        renderAudioTracksList();
+        updateAudioMenuUI();
+        setTimeout(() => togglePlayerAudioMenu(false), 350);
+        return;
+      }
+
+      // Backend remux switch if video has multiple audio streams
+      if (currentPlayingStreamMeta && (currentPlayingStreamMeta.original_src || currentPlayingStreamMeta.stream_url)) {
+        const origSrc = currentPlayingStreamMeta.original_src || currentPlayingStreamMeta.stream_url;
+        const curTime = playerVideo.currentTime || 0;
+        const isPaused = playerVideo.paused;
+        const remuxUrl = `/api/media/stream-remux?url=${encodeURIComponent(origSrc)}&audio_index=${target.audio_index}&ss=${Math.floor(curTime)}`;
+        playerVideo.src = remuxUrl;
+        playerVideo.load();
+        if (!isPaused) playerVideo.play().catch(() => { });
+        showOSD('🎵', `Audio Track: ${target.label}`);
+        renderAudioTracksList();
+        updateAudioMenuUI();
+        setTimeout(() => togglePlayerAudioMenu(false), 350);
+      } else {
+        showOSD('🎵', `Audio: ${target.label}`);
+        renderAudioTracksList();
+        updateAudioMenuUI();
+        setTimeout(() => togglePlayerAudioMenu(false), 350);
+      }
+    }
+
+    function togglePlayerAudioMenu(force) {
+      const menu = $('#player-audio-menu');
+      if (!menu) return;
+      const isOpen = menu.style.display === 'flex' || menu.classList.contains('open');
+      const shouldOpen = force !== undefined ? force : !isOpen;
+
+      if (shouldOpen) {
+        initWebAudio();
+        // Close subtitle menu if open
+        const subMenu = $('#player-sub-menu');
+        if (subMenu) subMenu.style.display = 'none';
+        menu.style.display = 'flex';
+        menu.classList.add('open');
+        resetPlayerIdleTimer();
+        setTimeout(() => {
+          const items = Array.from(menu.querySelectorAll('.ext-item'));
+          items.forEach(el => el.classList.remove('tv-focused'));
+          const act = menu.querySelector('.ext-item.active') || items[0];
+          if (act) {
+            act.classList.add('tv-focused');
+            act.focus();
+          }
+        }, 50);
+      } else {
+        menu.style.display = 'none';
+        menu.classList.remove('open');
+        menu.querySelectorAll('.ext-item.tv-focused').forEach(el => el.classList.remove('tv-focused'));
+      }
+    }
+
+    function loadExternalAudio(audioUrl, label = 'External Audio') {
+      if (!playerVideo) return;
+      if (activeExternalAudioElem) {
+        activeExternalAudioElem.pause();
+        activeExternalAudioElem.remove();
+        activeExternalAudioElem = null;
+      }
+      const aud = document.createElement('audio');
+      aud.id = 'player-ext-audio-elem';
+      aud.src = audioUrl;
+      aud.preload = 'auto';
+      document.body.appendChild(aud);
+      activeExternalAudioElem = aud;
+
+      playerVideo.muted = true;
+      aud.volume = playerVideo.volume;
+      aud.currentTime = playerVideo.currentTime;
+      if (!playerVideo.paused) {
+        aud.play().catch(() => { });
+      }
+
+      playerVideo.addEventListener('play', () => { if (activeExternalAudioElem) activeExternalAudioElem.play().catch(() => { }); });
+      playerVideo.addEventListener('pause', () => { if (activeExternalAudioElem) activeExternalAudioElem.pause(); });
+      playerVideo.addEventListener('seeking', () => { if (activeExternalAudioElem) activeExternalAudioElem.currentTime = playerVideo.currentTime; });
+      playerVideo.addEventListener('ratechange', () => { if (activeExternalAudioElem) activeExternalAudioElem.playbackRate = playerVideo.playbackRate; });
+      playerVideo.addEventListener('volumechange', () => { if (activeExternalAudioElem) activeExternalAudioElem.volume = playerVideo.volume; });
+
+      $('#audio-opt-clear')?.style.setProperty('display', 'flex');
+      showOSD('🎵', `External Audio: ${label}`);
+      showToast(`Loaded external audio track: ${label}`);
+      togglePlayerAudioMenu(false);
+      if ($('#player-audio-label')) $('#player-audio-label').textContent = 'Ext Audio';
+    }
+
+    function removeExternalAudio() {
+      if (activeExternalAudioElem) {
+        activeExternalAudioElem.pause();
+        activeExternalAudioElem.remove();
+        activeExternalAudioElem = null;
+      }
+      if (playerVideo) playerVideo.muted = false;
+      $('#audio-opt-clear')?.style.setProperty('display', 'none');
+      showOSD('🎵', 'External Audio Removed');
+      updateAudioMenuUI();
     }
 
     // ---------- Option A2: Subtitle Engine (.srt / .vtt) ----------
@@ -21504,6 +21956,47 @@
 
     // Attach Event Listeners for Options A & B
     $('#btn-audio-boost')?.addEventListener('click', cycleAudioBoost);
+
+    // Audio Track dropdown toggle & Channel Router
+    $('#btn-player-audio')?.addEventListener('click', e => {
+      e.stopPropagation();
+      togglePlayerAudioMenu();
+    });
+
+    $('#audio-ch-stereo')?.addEventListener('click', () => setAudioChannelMode('stereo'));
+    $('#audio-ch-left')?.addEventListener('click', () => setAudioChannelMode('left'));
+    $('#audio-ch-right')?.addEventListener('click', () => setAudioChannelMode('right'));
+
+    $('#audio-opt-upload')?.addEventListener('click', () => {
+      $('#audio-file-input')?.click();
+      togglePlayerAudioMenu(false);
+    });
+
+    $('#audio-file-input')?.addEventListener('change', e => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const audioUrl = URL.createObjectURL(file);
+      loadExternalAudio(audioUrl, file.name);
+    });
+
+    $('#audio-opt-url')?.addEventListener('click', () => {
+      togglePlayerAudioMenu(false);
+      const url = prompt('Enter External Audio Track URL (.mp3, .m4a, .aac, .wav):');
+      if (!url || !url.trim()) return;
+      loadExternalAudio(url.trim(), 'External URL');
+    });
+
+    $('#audio-opt-clear')?.addEventListener('click', () => {
+      removeExternalAudio();
+      togglePlayerAudioMenu(false);
+    });
+
+    // Close audio menu on outside click
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#player-audio-dropdown')) {
+        togglePlayerAudioMenu(false);
+      }
+    });
 
     // Subtitle dropdown toggle
     $('#btn-player-subtitles')?.addEventListener('click', e => {
