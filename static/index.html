@@ -15321,6 +15321,12 @@
                   <div class="state" style="padding:32px 10px">
                     <div class="ico" style="font-size:32px;margin-bottom:8px;">🔍</div>
                     <h4 style="font-size:15px;color:#f1f5f9;">No matching files found</h4>
+                    <p style="font-size:12.5px;color:var(--muted);margin-top:4px;">Try clearing your search query or switching movie/quality filters.</p>
+                  </div>
+                `;
+                return;
+              }
+
               listEl.innerHTML = filtered.map((f, i) => {
                 const meta = f._meta || extractMediaItemMeta(f.file_name, m.title, f.quality_label);
                 const isSample = Boolean(f.is_sample || meta.is_sample);
