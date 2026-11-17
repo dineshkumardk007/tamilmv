@@ -38,18 +38,17 @@
     ]
   },
   "moviesda": {
-    "active_host": "isaimini.co",
+    "active_host": "moviezda.co",
     "protocol": "https",
     "label": "TamilMov (Direct)",
     "mirrors": [
+      "moviezda.co",
       "moviezda.me",
       "moviesda.ski",
       "isaimini.com.co",
       "moviesda.net",
       "isaimini.io",
-      "isaimini.co",
-      "isaiminimob.com",
-      "moviezda.co"
+      "isaiminimob.com"
     ]
   },
   "toonplay": {

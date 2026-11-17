@@ -1915,8 +1915,29 @@ async def api_isaimini_files(url: str = Query(...), refresh: bool = False):
                     for f in files:
                         isaimini_db.upsert_file(conn, movie_id, f)
         except Exception as exc:
-            if not files:
-                raise HTTPException(status_code=502, detail=f"Failed to fetch files: {exc}")
+            logger.warning(f"Local isaimini files fetch failed: {exc}, attempting cloud fallback...")
+
+        # Cloud Proxy Fallback: if local fetch failed or returned 0 files due to ISP blocking
+        if not files:
+            try:
+                import os
+                if not os.environ.get("RENDER"):
+                    import urllib.parse
+                    encoded_url = urllib.parse.quote(clean_target_url)
+                    cloud_url = f"https://tamilmv-4vej.onrender.com/api/isaimini/files?url={encoded_url}"
+                    r_cloud = await asyncio.to_thread(requests.get, cloud_url, timeout=10)
+                    if r_cloud.status_code == 200:
+                        cloud_data = r_cloud.json()
+                        files = cloud_data.get("files", [])
+                        if movie_id and files:
+                            with isaimini_db.get_conn() as conn:
+                                for f in files:
+                                    isaimini_db.upsert_file(conn, movie_id, f)
+            except Exception as cloud_exc:
+                logger.warning(f"Cloud fallback failed: {cloud_exc}")
+
+        if not files:
+            raise HTTPException(status_code=502, detail="Failed to fetch files from both local and cloud sources.")
 
     if movie and (not movie.get("poster") or movie.get("poster") == ""):
         poster_candidate = None
@@ -1980,25 +2001,42 @@ async def api_isaimini_files(url: str = Query(...), refresh: bool = False):
 @app.get("/api/isaimini/resolve")
 async def api_isaimini_resolve(download_page_url: str = Query(...)):
     """Resolve direct CDN MP4 download / stream URL through 3-stage anti-leech gateway."""
+    clean_dl_url = domain_manager.rewrite_url_to_active(download_page_url)
+    resolved = None
     try:
-        resolved = await asyncio.to_thread(isaimini_scraper.resolve_download_link, download_page_url)
-        if resolved and resolved.get("direct_url"):
-            try:
-                isaimini_db.update_resolved_file(download_page_url, resolved)
-            except Exception:
-                pass
-        return JSONResponse({
-            "status": "ok",
-            "direct_url": resolved.get("direct_url"),
-            "watch_online_url": resolved.get("watch_online_url"),
-            "file_name": resolved.get("file_name"),
-            "file_size": resolved.get("file_size"),
-            "resolution": resolved.get("resolution"),
-            "duration": resolved.get("duration"),
-            "format": resolved.get("format"),
-        })
+        resolved = await asyncio.to_thread(isaimini_scraper.resolve_download_link, clean_dl_url)
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"Failed to resolve download link: {exc}")
+        logger.warning(f"Local isaimini resolve failed: {exc}, attempting cloud bridge fallback...")
+        try:
+            import os
+            if not os.environ.get("RENDER"):
+                import urllib.parse
+                encoded_url = urllib.parse.quote(clean_dl_url)
+                cloud_url = f"https://tamilmv-4vej.onrender.com/api/isaimini/resolve?download_page_url={encoded_url}"
+                r_cloud = await asyncio.to_thread(requests.get, cloud_url, timeout=12)
+                if r_cloud.status_code == 200:
+                    resolved = r_cloud.json()
+        except Exception as cloud_exc:
+            logger.warning(f"Cloud resolve fallback failed: {cloud_exc}")
+
+    if not resolved or not resolved.get("direct_url"):
+        raise HTTPException(status_code=502, detail="Failed to resolve download link from local and cloud sources")
+
+    try:
+        isaimini_db.update_resolved_file(download_page_url, resolved)
+    except Exception:
+        pass
+
+    return JSONResponse({
+        "status": "ok",
+        "direct_url": resolved.get("direct_url"),
+        "watch_online_url": resolved.get("watch_online_url"),
+        "file_name": resolved.get("file_name"),
+        "file_size": resolved.get("file_size"),
+        "resolution": resolved.get("resolution"),
+        "duration": resolved.get("duration"),
+        "format": resolved.get("format"),
+    })
 
 
 @app.get("/api/direct-download")

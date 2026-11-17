@@ -964,8 +964,11 @@ def resolve_download_link(
     """
     s = session or create_session()
 
+    # Ensure URL points to the active host
+    clean_dl_url = rewrite_url(download_page_url)
+
     # --- STAGE 0: Initial Download Info Page ---
-    r0 = s.get(download_page_url, timeout=DEFAULT_TIMEOUT)
+    r0 = s.get(clean_dl_url, timeout=DEFAULT_TIMEOUT)
     r0.raise_for_status()
     soup0 = BeautifulSoup(r0.text, "html.parser")
 

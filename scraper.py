@@ -801,7 +801,7 @@ def fetch_download_details(topic_url: str) -> dict:
             import os
             if not os.environ.get("RENDER"):
                 cloud_proxy = f"https://tamilmv-4vej.onrender.com/api/downloads?url={quote_plus(clean_url)}"
-                r = requests.get(cloud_proxy, headers=HEADERS, timeout=8)
+                r = requests.get(cloud_proxy, headers=HEADERS, timeout=5)
                 if r.status_code == 200:
                     data = r.json()
                     if data and (data.get("options") or data.get("poster_url")):
@@ -812,18 +812,16 @@ def fetch_download_details(topic_url: str) -> dict:
         except Exception:
             pass
 
-    # 3. Fallback to alternate mirrors if primary host is blocked/offline
+    # 3. Fast fallback to alternate candidate mirrors if primary host is blocked/offline
     if not html:
         try:
             import domain_manager
             cfg = domain_manager.load_config()
-            mirrors = cfg.get("tamilmv", {}).get("mirrors", [])
-            for m in mirrors:
-                if m.lower() in clean_url.lower():
-                    continue
+            mirrors = [m for m in cfg.get("tamilmv", {}).get("mirrors", []) if m.lower() not in clean_url.lower()]
+            for m in mirrors[:4]:
                 mirror_url = re.sub(r"^https?://[^/]+", f"https://{m}", clean_url)
                 try:
-                    resp = _SESSION.get(mirror_url, timeout=5)
+                    resp = _SESSION.get(mirror_url, timeout=2.5)
                     if resp.status_code == 200 and ("attachment.php" in resp.text or "magnet:?" in resp.text):
                         html = resp.text
                         set_base_host(m)
@@ -841,12 +839,12 @@ def fetch_download_details(topic_url: str) -> dict:
             import subprocess
             curl_bin = "curl" if shutil.which("curl") else "curl.exe"
             res = subprocess.run(
-                [curl_bin, "-s", "-L", "-A", HEADERS["User-Agent"], clean_url],
+                [curl_bin, "-s", "-L", "--max-time", "4", "-A", HEADERS["User-Agent"], clean_url],
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
                 errors="ignore",
-                timeout=10,
+                timeout=5,
             )
             if res.stdout and ("attachment.php" in res.stdout or "magnet:?" in res.stdout):
                 html = res.stdout

@@ -357,8 +357,26 @@ def check_candidate_health(source: str, host_or_url: str, timeout: float = 2.5) 
         final_parsed = urlparse(r.url)
         final_host = final_parsed.netloc
 
+        # Reject redirects to search engines, telegram, parking portals, or social networks
+        if any(bad in (final_host or "").lower() for bad in ("google.", "t.me", "telegram.", "blogger.", "wordpress.", "facebook.", "twitter.", "x.com", "instagram.")):
+            return {
+                "online": False,
+                "status": "redirected_to_external",
+                "initial_host": host_or_url,
+                "latency_ms": elapsed_ms,
+            }
+
         if r.status_code == 200:
             html_low = r.text[:3000].lower() if r.text else ""
+
+            # Reject parked domains or immediate JavaScript redirection pages
+            if any(p in html_low for p in ("window.location.replace", "domain for sale", "this domain is parked", "buy this domain")):
+                return {
+                    "online": False,
+                    "status": "parked_or_redirect_page",
+                    "initial_host": host_or_url,
+                    "latency_ms": elapsed_ms,
+                }
 
             # Validate domain-specific signature
             is_valid = True
@@ -375,9 +393,17 @@ def check_candidate_health(source: str, host_or_url: str, timeout: float = 2.5) 
                         and ("tamilmv" in html_low or "banger" in html_low)
                     )
             elif src == "isaidub":
-                is_valid = ("isaidub" in html_low or "tamil" in html_low or "dubbed" in html_low or "mv-content" in html_low)
+                host_check = (final_host or host_or_url).lower()
+                is_valid = ("isaidub" in host_check or "isaidub" in html_low) and ("tamil" in html_low or "dubbed" in html_low or "mv-content" in html_low)
             elif src == "moviesda":
-                is_valid = ("moviesda" in html_low or "isaimini" in html_low or "moviezda" in html_low or "tamil" in html_low)
+                host_check = (final_host or host_or_url).lower()
+                # Must be a true moviesda/moviezda/isaimini host with real folder/download structure
+                is_valid = (
+                    any(k in host_check for k in ("moviesda", "moviezda", "isaimini"))
+                    and any(k in html_low for k in ("moviesda", "moviezda", "isaimini"))
+                    and any(k in html_low for k in ("folder", "download", "tamil", "view"))
+                    and not ("facebook fan page" in html_low and "telegram" in html_low and "folder" not in html_low)
+                )
             elif src == "toonplay":
                 is_valid = ("success" in html_low or "data" in html_low or "_fromcache" in html_low)
             elif src == "cinestream":
